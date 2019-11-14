@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class DeviseCreateAdmins < ActiveRecord::Migration[5.2]
+class DeviseCreateUsers < ActiveRecord::Migration[5.2]
   def change
-    create_table :admins do |t|
+    create_table :users do |t|
       ## Database authenticatable
       t.string :email,              null: false, default: ""
       t.string :encrypted_password, null: false, default: ""
@@ -10,10 +10,29 @@ class DeviseCreateAdmins < ActiveRecord::Migration[5.2]
       ## Recoverable
       t.string   :reset_password_token
       t.datetime :reset_password_sent_at
-      t.string :login
 
       ## Rememberable
       t.datetime :remember_created_at
+      t.string :login
+      # t.string :type
+      t.string :authentication_token
+      t.integer :account_id
+      t.string :code
+      t.integer :gender
+      t.string :nick_name
+      t.string :country
+      t.string :province
+      t.string :city
+      t.string :avatar_url
+      t.string :open_id
+      t.string :unionid
+      t.string :session_key
+      t.string :session_token
+      t.string :delete_at
+      t.datetime :code_create_at
+      t.bigint :coin
+      t.integer :view_num
+
 
       ## Trackable
       # t.integer  :sign_in_count, default: 0, null: false
@@ -37,8 +56,9 @@ class DeviseCreateAdmins < ActiveRecord::Migration[5.2]
       t.timestamps null: false
     end
 
-    add_index :admins, :reset_password_token, unique: true
-    # add_index :admins, :confirmation_token,   unique: true
-    # add_index :admins, :unlock_token,         unique: true
+    add_index :users, :email,                unique: true
+    add_index :users, :reset_password_token, unique: true
+    # add_index :users, :confirmation_token,   unique: true
+    # add_index :users, :unlock_token,         unique: true
   end
 end

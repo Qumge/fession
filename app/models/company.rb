@@ -19,12 +19,18 @@
 #
 
 class Company < ApplicationRecord
-
+  include AASM
+  validates_uniqueness_of :name
+  validates_presence_of :name
 
   before_create :set_no
+  has_many :customers
+  has_one :customer, -> { where(role_type: 'admin_customer') }
+  has_many :money_products
 
   def set_no
-
+    login = self.customer.login
+    "#{login[(login.size-4)..(login.size-1)]}#{Time.now.to_i}"
   end
 
   include AASM

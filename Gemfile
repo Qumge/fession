@@ -66,8 +66,13 @@ gem 'devise'
 gem 'grape'
 gem 'mysql2'
 gem 'aasm'
+gem 'kaminari'   #分页
+gem 'config'
+gem 'ancestry'
+gem 'grape-entity'
+gem 'aliyunsdkcore'
 group :development do
   gem 'annotate'
-  gem 'grape-swagger'
+  gem 'grape-swagger', '>= 0.32.1'
   gem 'grape-swagger-rails'
 end
