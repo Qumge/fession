@@ -8,6 +8,7 @@ module V1
         mount V1::Admins::Operators
         mount V1::Admins::Roles
         mount V1::Admins::Products
+        mount V1::Admins::Tasks
       end
 
       namespace :users do

@@ -30,9 +30,26 @@ module V1
           user = User.find_or_initialize_by login: params[:login]
           if user.valid?
             user.send_code_sms
+            present user, with: V1::Entities::User
           else
             {error_code: '20002', error_message: '手机号码有误'}
           end
+        end
+
+        before do
+          authenticate!
+        end
+
+        desc '个人详情', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        get 'me' do
+          present @current_user, with: V1::Entities::User
         end
 
 

@@ -21,8 +21,8 @@ module V1
           optional 'page', type: String, desc: '页码', default: 1
         end
         get '/' do
-          categories = Category.order('updated_at desc').page(params[:page]).per(Settings.per_page)
-          present categories, with: V1::Entities::Category
+          categories = Category.roots.order('updated_at desc').page(params[:page]).per(Settings.per_page)
+          present categories, with: V1::Entities::CategoryTree
         end
 
 

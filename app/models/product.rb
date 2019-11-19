@@ -23,12 +23,14 @@ class Product < ApplicationRecord
   belongs_to :company
   has_many :norms
   belongs_to :category
-  has_many :images, -> { where(model_type: 'Product') }, foreign_key: :model_id
+  has_many :images, -> {where(model_type: 'Product')}, foreign_key: :model_id
   validates_presence_of :name, :stock, :images, :category_id
+  has_many :specs
+  validates_uniqueness_of :name, scope: :company_id
 
   before_create :set_no
 
-  STATUS = { wait: '新商品', check: '审核中', down: '已下架', up: '已上架', failed: '审核失败'}
+  STATUS = {wait: '新商品', check: '审核中', down: '已下架', up: '已上架', failed: '审核失败'}
 
   aasm :status do
     state :wait, :initial => true
@@ -55,52 +57,74 @@ class Product < ApplicationRecord
     end
   end
 
-
-  def new_for_api params, company
-    product = self.new name: params[:name], desc: params[:desc], company: company, category_id: params[:category_id]
-    if params[:type] == 'CoinProduct'
-      product.stock = params[:stock]
-      product.price = params[:price]
-    else
-      product.coin = params[:coin]
-      norms = []
-      params[:norms].each do |norm|
-        p norm, norm['price']
-        norms << Norm.new(name: norm['name'], stock: norm['stock'], price: norm['price'])
-      end
-      product.norms = norms
-    end
-
-    images = []
-    params[:images].each do |image|
-      images << Image.new(file_path: image, model_type: 'Product')
-    end
-    product.images = images
-    product
+  def spec_values
+    SpecValue.joins(:spec).where('specs.product_id = ?', self.id)
   end
 
-  def edit_for_api params
-    self.attributes = {name: params[:name], desc: params[:desc], category_id: params[:category_id]}
-    if params[:type] == 'CoinProduct'
-      self.stock = params[:stock]
-      self.price = params[:price]
-    else
-      self.coin = params[:coin]
-      norms = []
-      params[:norms].each do |norm|
-        n = self.find_by id: norm['id']
-        n = self.norms.new if n.blank?
-        n.attributes = {name: norm['name'], stock: norm['stock'], price: norm['price']}
-        norms << n
-      end
-      self.norms = norms
-    end
 
-    images = []
-    params[:images].each do |image|
-      images << Image.new(file_path: image, model_type: 'Product')
+  def fetch_for_api params, company = nil
+    self.attributes = {name: params[:name], desc: params[:desc], category_id: params[:category_id]}
+    self.company = company if company.present?
+    if params[:images].present?
+      images = []
+      params[:images].each do |image|
+        images << Image.new(file_path: image, model_type: 'Product')
+      end
+      self.images = images
     end
-    self.images = images
+    Product.transaction do
+      if params[:type] == 'CoinProduct'
+        self.stock = params[:stock]
+        self.price = params[:price]
+      else
+        self.coin = params[:coin]
+        params_specs = params[:specs]
+        params_norms = params[:norms]
+        params_specs ||= [{name: '颜色', values: ['红色', '黑色']}, {name: '尺码', values: ['xl', 'xxl']}]
+        params_norms ||= [{name: ['红色', 'xl'], price: 1000, stock: 1000}, {name: ['黑色', 'xl'], price: 1000, stock: 1000}, {name: ['红色', 'xxl'], price: 1000, stock: 1000}, {name: ['黑色', 'xxl'], price: 1000, stock: 1000}]
+        has_norms = {
+            specs: {'颜色' => ['红色', '黑色'], '尺码' => ['xl', 'xxl']},
+            norms: {
+                ['红色', 'xl'] => {price: 1000, stock: 1000},
+                ['黑色', 'xl'] => {price: 1000, stock: 1000},
+                ['红色', 'xxl'] => {price: 1000, stock: 1000},
+                ['黑色', 'xxl'] => {price: 1000, stock: 1000}
+            }
+        }
+        params_specs.each do |params_spec|
+          spec = self.specs.find_or_initialize_by(name: params_spec[:name])
+          params_spec[:values].each do |value|
+            spec_value = spec.spec_values.find_or_initialize_by(name: value)
+            spec.spec_values << spec_value
+          end
+          self.specs << spec
+        end
+        if self.save
+          params_norms.each do |params_norm|
+            ids = []
+            p params_norm[:name], 1111111
+            params_norm[:name].each do |spec_value_name|
+              spec_value = self.spec_values.find_by(name: spec_value_name)
+              ids << spec_value.id
+            end
+            spec_attrs = ids.sort.join('/')
+            norm = self.norms.find_or_initialize_by spec_attrs: spec_attrs
+            norm.price = params_norm[:price]
+            norm.stock = params_norm[:stock]
+            self.norms << norm
+          end
+          self.save
+        end
+        # has_norms[:specs].each do |spec_key, values|
+        #   spec = self.specs.find_or_initialize_by(name: spec_key)
+        #   values.each do |value|
+        #     spec_value = spec.spec_values.find_or_initialize_by(name: value)
+        #     spec.spec_values << spec_value
+        #   end
+        #   self.specs << spec
+        # end
+      end
+    end
     self
   end
 

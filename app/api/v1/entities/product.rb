@@ -21,6 +21,7 @@ module V1
       expose :category, using: V1::Entities::Category
       expose :norms, using: V1::Entities::Norm
       expose :images, using: V1::Entities::Image
+      expose :specs, using: V1::Entities::Spec
 
       with_options(format_with: :timestamp) do
         expose :created_at

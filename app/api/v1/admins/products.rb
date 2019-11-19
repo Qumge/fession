@@ -39,18 +39,18 @@ module V1
         params do
           requires 'name', type: String, desc: '商品名'
           requires 'category_id', type: Integer, desc: '分类'
-          optional 'coin', type: Integer, desc: '返金币'
+          requires 'coin', type: Integer, desc: '返金币'
           requires 'images', type: Array[String], desc: '图片路径["www.baidu.com/aa.png", "www.baidu.com/aa.png"]'
-          requires 'stock', type: Integer, desc: '库存'
-          #optional 'norms', type: Array[Hash] , desc: '规格你个: [{name: '', stock: '', price: ''}, {name: '', stock: '', price: ''}] 传递的价格统一以分为单位', default: []
-          optional :norms, type: Array[Hash], desc: "规格: 这里测试时候不要填(bug)，默认数据:[{id: null, name: '规格1', price: 1000, stock: 100}]", default: [{name: '规格1', price: 1000, stock: 100}]
+          optional 'stock', type: Integer, desc: '库存'
+          optional 'specs', type: Array[Hash], desc: "规格 [{name: '颜色', values: ['红色', '黑色']}, {name: '尺码', values: ['xl', 'xxl']}]", default:  [{name: '颜色', values: ['红色', '黑色']}, {name: '尺码', values: ['xl', 'xxl']}]
+          optional 'norms', type: Array[Hash], desc: "规格详细 [{name: ['红色', 'xl'], price: 1000, stock: 1000}, {name: ['黑色', 'xl'], price: 1000, stock: 1000}, {name: ['红色', 'xxl'], price: 1000, stock: 1000}, {name: ['黑色', 'xxl'], price: 1000, stock: 1000}]", default: [{name: ['红色', 'xl'], price: 1000, stock: 1000}, {name: ['黑色', 'xl'], price: 1000, stock: 1000}, {name: ['红色', 'xxl'], price: 1000, stock: 1000}, {name: ['黑色', 'xxl'], price: 1000, stock: 1000}]
           optional 'type', type: String, desc: '类型 CoinProduct MoneyProduct', default: 'MoneyProduct'
           optional 'price', type: Integer, desc: '价格 type是CoinProduct的时候必填'
           optional 'desc', type: String, desc: '备注'
         end
         post '/' do
-          product = Product.new_for_api params, @company
-          if product.save
+          product = @product_model.new.fetch_for_api params, @company
+          if product.valid?
             present product, with: V1::Entities::Product
           else
             {error_code: '10002', error_message: product.errors.messages}
@@ -77,16 +77,17 @@ module V1
             requires 'category_id', type: Integer, desc: '分类'
             optional 'coin', type: Integer, desc: '返金币'
             optional 'images', type: Array[String], desc: '图片路径["www.baidu.com/aa.png", "www.baidu.com/aa.png"]'
-            requires 'stock', type: Integer, desc: '库存'
+            optional 'stock', type: Integer, desc: '库存'
             #optional 'norms', type: Array[Hash] , desc: '规格你个: [{name: '', stock: '', price: ''}, {name: '', stock: '', price: ''}] 传递的价格统一以分为单位', default: []
-            optional 'norms', type: Array[Hash], desc: "规格: 这里测试时候不要填(bug)，默认数据:[{id: null, name: '规格1', price: 1000, stock: 100}]", default: [{name: '规格1', price: 1000, stock: 100}]
+            optional 'specs', type: Array[Hash], desc: "规格", default:  [{name: '颜色', values: ['红色', '黑色']}, {name: '尺码', values: ['xl', 'xxl']}]
+            optional 'norms', type: Array[Hash], desc: "规格详细", default: [{name: ['红色', 'xl'], price: 1000, stock: 1000}, {name: ['黑色', 'xl'], price: 1000, stock: 1000}, {name: ['红色', 'xxl'], price: 1000, stock: 1000}, {name: ['黑色', 'xxl'], price: 1000, stock: 1000}]
             optional 'type', type: String, desc: '类型 CoinProduct MoneyProduct', default: 'MoneyProduct'
             optional 'price', type: Integer, desc: '价格 type是CoinProduct的时候必填'
             optional 'desc', type: String, desc: '备注'
           end
           patch '/' do
-            product = @product.edit_for_api params
-            if product.save
+            product = @product.fetch_for_api params
+            if product.valid?
               present product, with: V1::Entities::Product
             else
               {error_code: '10002', error_message: product.errors.messages}
@@ -107,7 +108,6 @@ module V1
           end
 
         end
-
 
 
       end

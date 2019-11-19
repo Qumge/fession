@@ -51,6 +51,9 @@ module V1
 
 
         route_param :id do
+          before do
+            @company = Company.find_by id: params[:id]
+          end
           desc '商户变更', {
               headers: {
                   "X-Auth-Token" => {
@@ -64,16 +67,16 @@ module V1
             requires 'login', type: String, desc: '商户账号'
           end
           patch '/' do
-            company = Company.find_by id: params[:id]
-            company.name = params[:name]
-            customer = company.customer
+
+            @company.name = params[:name]
+            customer = @company.customer
             customer.login = params[:login]
-            if customer.valid? && company.valid?
+            if customer.valid? && @company.valid?
               customer.save
-              company.save
-              present company, with: V1::Entities::Company
+              @company.save
+              present @company, with: V1::Entities::Company
             else
-              {error_code: '10001', error_message: customer.errors.messages.merge(company.errors.messages)}
+              {error_code: '10001', error_message: customer.errors.messages.merge(@company.errors.messages)}
             end
           end
 
@@ -87,8 +90,20 @@ module V1
               }
           }
           get '/' do
-            company = Company.find_by id: params[:id]
-            present company, with: V1::Entities::Company
+            present @company, with: V1::Entities::Company
+          end
+
+          desc '商户冻结', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          get 'lock' do
+            @company.do_lock!
+            present @company, with: V1::Entities::Company
           end
 
         end

@@ -1,14 +1,10 @@
 module V1
   module Entities
-    class Norm < Grape::Entity
+    class Spec < Grape::Entity
       format_with(:timestamp) { |dt| dt.try :strftime, '%Y-%m-%d %H:%M:%S' }
       expose :id
       expose :name
-      expose :stock
-      expose :sale
-      expose :price
-      expose :spec_attrs
-      expose :spec_attr_names
+      expose :spec_values, using: V1::Entities::SpecValue
       with_options(format_with: :timestamp) do
         expose :created_at
         expose :updated_at

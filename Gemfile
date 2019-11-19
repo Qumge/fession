@@ -75,4 +75,5 @@ group :development do
   gem 'annotate'
   gem 'grape-swagger', '>= 0.32.1'
   gem 'grape-swagger-rails'
+  gem 'mina',                           '0.3.8'
 end
