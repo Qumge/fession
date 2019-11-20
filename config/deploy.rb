@@ -5,7 +5,7 @@ require 'mina/rvm' #服务器上使用的是rvm
 
 set :app_name, 'liebian'
 #服务器地址,是使用ssh的方式登录服务器
-set :domain, 'root@180.157.254.219' #在服务器~/.ssh/authorized_keys 里面写入你的id_rsa.pub就不用密码登录
+set :domain, 'root@106.15.57.136' #在服务器~/.ssh/authorized_keys 里面写入你的id_rsa.pub就不用密码登录
 #服务器中项目部署位置
 set :deploy_to, '/opt/rails-app/liebian'
 #git代码仓库
@@ -13,7 +13,7 @@ set :repository, 'git@github.com:Qumge/fession.git'
 #git分支
 set :branch, 'master'
 #配置rvm位置
-# set :rvm_path, '/usr/local/rvm/bin/rvm'
+set :rvm_path, '/usr/local/rvm/bin/rvm'
 set :term_mode, :system
 #set :whenever_name, "longsheng_#{rails_env}"
 
@@ -24,7 +24,7 @@ task :environment do
 # Be sure to commit your .ruby-version or .rbenv-version to your repository.
 # invoke :'rbenv:load'
 # For those using RVM, use this to load an RVM version@gemset.
-  invoke :'rvm:use[ruby-2.5.1]' #设置rvm ruby版本
+  invoke :'rvm:use[ruby-2.3.1]' #设置rvm ruby版本
 end
 
 # 中括号里的文件 会出现在服务器项目附录的shared文件夹中，这里加入了secrets.yml，环境密钥无需跟开发计算机一样
@@ -80,7 +80,7 @@ task :deploy => :environment do
     #重新设定shared_path位置
     invoke :'deploy:link_shared_paths'
     invoke :'bundle:install'
-    # invoke :'rails:db_create'
+    # ls invoke :'rails:db_create'
     invoke :'rails:db_migrate' #首次执行可能会报错 需要我们手动先创建数据库 db:create
     # invoke :'rails:db_seed'
     invoke :'rails:assets_precompile'
