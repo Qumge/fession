@@ -38,6 +38,7 @@ class Admin < ApplicationRecord
   ROLE_TYPE = {admin: '超管', normal: '后端运营', admin_customer: '商户管理'}
 
   belongs_to :company
+  belongs_to :role
 
   def ensure_authentication_token
     self.authentication_token ||= generate_authentication_token
