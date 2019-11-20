@@ -78,3 +78,4 @@ group :development do
 end
 gem 'grape-swagger', '>= 0.32.1'
 gem 'grape-swagger-rails'
+gem 'grape-swagger-ui'

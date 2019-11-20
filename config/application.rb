@@ -17,5 +17,6 @@ module Fission
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
     config.active_record.belongs_to_required_by_default = false
+    config.assets.precompile += %w(swagger_ui.js swagger_ui.css swagger_ui_print.css swagger_ui_screen.css)
   end
 end
