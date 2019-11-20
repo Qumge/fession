@@ -8,7 +8,11 @@ module V1
         mount V1::Admins::Operators
         mount V1::Admins::Roles
         mount V1::Admins::Products
-        mount V1::Admins::Tasks
+        mount V1::Admins::TaskProducts
+        mount V1::Admins::TaskArticles
+        mount V1::Admins::TaskQuestionnaires
+        mount V1::Admins::Game
+        mount V1::Admins::TaskGameWheels
       end
 
       namespace :users do

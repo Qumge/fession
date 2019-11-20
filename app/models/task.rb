@@ -20,7 +20,8 @@ class Task < ApplicationRecord
   include AASM
   before_create :set_residue
   belongs_to :company
-
+  belongs_to :game, foreign_key: :model_id
+  STATUS = {wait: '待审核', failed: '审核失败', done: '审核成功'}
   def set_residue
     self.residue_coin = self.coin
   end

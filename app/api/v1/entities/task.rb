@@ -10,6 +10,7 @@ module V1
       expose :product, using: V1::Entities::Product, if: proc{|instance| instance.type == 'Task::Product'}
       expose :article, using: V1::Entities::Article, if: proc{|instance| instance.type == 'Task::Article'}
       expose :questionnaire, using: V1::Entities::Questionnaire, if: proc{|instance| instance.type == 'Task::Questionnaire'}
+      expose :status
 
       # product_category 是在rails的model中定义的关联，在这里可以直接用
       with_options(format_with: :timestamp) do
