@@ -30,8 +30,8 @@ class Company < ApplicationRecord
   has_many :money_products
 
   def set_no
-    login = self.customer.login
-    "#{login[(login.size-4)..(login.size-1)]}#{Time.now.to_i}"
+      #login = self.customer&.login
+      #"#{login[(login.size-4)..(login.size-1)]}#{Time.now.to_i}"
   end
 
   include AASM
