@@ -1,6 +1,6 @@
 module V1
   module Admins
-    class TaskArticles < Grape::API
+    class Games < Grape::API
       helpers V1::Admins::AdminLoginHelper
       before do
         authenticate!

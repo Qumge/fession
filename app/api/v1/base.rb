@@ -11,8 +11,8 @@ module V1
         mount V1::Admins::TaskProducts
         mount V1::Admins::TaskArticles
         mount V1::Admins::TaskQuestionnaires
-        mount V1::Admins::Game
-        mount V1::Admins::TaskGameWheels
+        mount V1::Admins::Games
+        mount V1::Admins::TaskGames
       end
 
       namespace :users do
