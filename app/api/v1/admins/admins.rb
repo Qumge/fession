@@ -15,8 +15,8 @@ module V1
           elsif @admin && !@admin[:locked] && @admin.valid_password?(params[:password])
             #sign_in @admin
             @admin.ensure_authentication_token!
-            present @admin, with: V1::Entities::Admin
-            #{login: @admin.login, id: @admin.id, authentication_token: @admin.authentication_token, type: @admin.type, role_name: @admin.role&.name}
+            #present @admin, with: V1::Entities::Admin
+            {login: @admin.login, id: @admin.id, authentication_token: @admin.authentication_token, type: @admin.type, role_name: @admin.role&.name}
           else
             {error_code: '20001', error_message: '账号或密码错误'}
           end
