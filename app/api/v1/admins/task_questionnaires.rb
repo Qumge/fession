@@ -17,7 +17,7 @@ module V1
             }
         }
         get '/' do
-          tasks = Task::Questionnaire.where(company: @company)
+          tasks = Task::QuestionnaireTask.where(company: @company)
           present tasks, with: V1::Entities::Task
         end
 
@@ -40,7 +40,7 @@ module V1
         post '/' do
           questionnaire = ::Questionnaire.new name: params[:name], desc: params[:desc]
           questionnaire = questionnaire.fetch_questions params[:questions]
-          task = Task.new type: 'Task::Questionnaire', coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company, questionnaire: questionnaire
+          task = Task::QuestionnaireTask.new  coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company, questionnaire: questionnaire
 
           if questionnaire.valid?
             if task.save
@@ -55,8 +55,8 @@ module V1
 
         route_param :id do
           before do
-            p Task::Questionnaire.name
-            @task = Task::Questionnaire.find_by id: params[:id]
+            p Task::QuestionnaireTask.name
+            @task = Task::QuestionnaireTask.find_by id: params[:id]
           end
           desc '问卷任务变更', {
               headers: {

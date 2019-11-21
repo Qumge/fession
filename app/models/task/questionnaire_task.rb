@@ -16,6 +16,6 @@
 #  model_id     :integer
 #
 
-class Task::Questionnaire < Task
+class Task::QuestionnaireTask < Task
   belongs_to :questionnaire, foreign_key: :model_id, class_name: "::Questionnaire"
 end

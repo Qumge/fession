@@ -37,7 +37,7 @@ module V1
           game = @game_model.new name: params[:name], game_coin: params[:game_coin], company: @company
           game = game.fetch_prizes params[:prizes]
           if game.valid?
-            task = Task::Game.create coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], game: game, company: @company
+            task = Task::GameTask.create coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], game: game, company: @company
             present task, with: V1::Entities::Task
           else
             {error_code: '10001', error_messages: game.errors.messages}

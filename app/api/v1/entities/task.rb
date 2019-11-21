@@ -7,9 +7,9 @@ module V1
       expose :id
       expose :name
       expose :company, using: V1::Entities::Company
-      expose :product, using: V1::Entities::Product, if: proc{|instance| instance.type == 'Task::Product'}
-      expose :article, using: V1::Entities::Article, if: proc{|instance| instance.type == 'Task::Article'}
-      expose :questionnaire, using: V1::Entities::Questionnaire, if: proc{|instance| instance.type == 'Task::Questionnaire'}
+      expose :product, using: V1::Entities::Product, if: proc{|instance| instance.type == 'Task::ProductTask'}
+      expose :article, using: V1::Entities::Article, if: proc{|instance| instance.type == 'Task::ArticleTask'}
+      expose :questionnaire, using: V1::Entities::Questionnaire, if: proc{|instance| instance.type == 'Task::QuestionnaireTask'}
       expose :status
 
       # product_category 是在rails的model中定义的关联，在这里可以直接用

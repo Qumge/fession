@@ -22,6 +22,7 @@ class Company < ApplicationRecord
   include AASM
   validates_uniqueness_of :name
   validates_presence_of :name
+  has_many :articles
 
   before_create :set_no
   has_many :customers

@@ -13,4 +13,6 @@
 
 class Article < ApplicationRecord
   belongs_to :article
+  belongs_to :company
+  belongs_to :product
 end

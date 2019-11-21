@@ -16,7 +16,7 @@ module V1
             }
         }
         get '/' do
-          tasks = Task::Product.where(company: @company)
+          tasks = Task::ProductTask.where(company: @company)
           present tasks, with: V1::Entities::Task
         end
 
@@ -35,7 +35,7 @@ module V1
           requires :valid_to, type: DateTime, desc: '有效至'
         end
         post '/' do
-          task = Task::Product.new model_id: params[:product_id], coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company
+          task = Task::ProductTask.new model_id: params[:product_id], coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company
           if task.save
             present task, with: V1::Entities::Task
           end
@@ -43,7 +43,7 @@ module V1
 
         route_param :id do
           before do
-            @task = Task::Product.find_by id: params[:id]
+            @task = Task::ProductTask.find_by id: params[:id]
           end
 
           desc '商品任务变更', {

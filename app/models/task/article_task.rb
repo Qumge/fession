@@ -16,6 +16,6 @@
 #  model_id     :integer
 #
 
-class Task::Game < Task
-  belongs_to :game, foreign_key: :model_id
+class Task::ArticleTask < Task
+  belongs_to :article, foreign_key: :model_id
 end
