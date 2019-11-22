@@ -1,15 +1,11 @@
 module V1
   module Entities
-    class Company < Grape::Entity
+    class Prize < Grape::Entity
       format_with(:timestamp) { |dt| dt.try :strftime, '%Y-%m-%d %H:%M:%S' }
       expose :id
-      expose :name
-      expose :no
-      expose :status
-
-      # product_category 是在rails的model中定义的关联，在这里可以直接用
-      expose :customer, using: V1::Entities::Customer
-
+      expose :coin
+      expose :number
+      expose :product, using: V1::Entities::Product
       with_options(format_with: :timestamp) do
         expose :created_at, documentation: { type: 'Timestamp' }
         expose :updated_at, documentation: { type: 'Timestamp' }

@@ -2,10 +2,11 @@ module V1
   module Admins
     class Operators < Grape::API
       helpers V1::Admins::AdminLoginHelper
-      resources 'operators', message: '11' do
+      resources 'operators' do
 
         before do
           authenticate!
+          operator_auth!
         end
 
 

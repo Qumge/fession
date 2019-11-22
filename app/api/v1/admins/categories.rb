@@ -39,6 +39,7 @@ module V1
           optional 'root_id', type: Integer, desc: '上级分类id'
         end
         post '/' do
+          operator_auth!
           category = Category.new name: params[:name]
           if params[:root_id].present?
             root = Category.find_by id: params[:root_id]
@@ -74,6 +75,7 @@ module V1
             optional 'root_id', type: Integer, desc: '上级分类id'
           end
           patch '/' do
+            operator_auth!
             @category.name = params[:name]
             if params[:root_id].present?
               root = Category.find_by id: params[:root_id]

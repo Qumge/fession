@@ -26,13 +26,8 @@ class Company < ApplicationRecord
 
   before_create :set_no
   has_many :customers
-  has_one :customer, -> { where(role_type: 'admin_customer') }
+  has_one :customer, -> {where(role_type: 'admin_customer')}
   has_many :money_products
-
-  def set_no
-      #login = self.customer&.login
-      #"#{login[(login.size-4)..(login.size-1)]}#{Time.now.to_i}"
-  end
 
   include AASM
   aasm :status do
@@ -46,7 +41,26 @@ class Company < ApplicationRecord
 
     #解冻
     event :do_active do
-      transitions :from => :wait, :to => :done
+      transitions :from => :locked, :to => :active
     end
   end
+
+  class << self
+    def search_conn params
+      companies = self.all
+      if params[:status].present?
+        companies = companies.where(status: params[:status])
+      end
+      if params[:search].present?
+        companies = companies.where('companies.no like ? or companies.name like ?', "%#{params[:search]}%", "%#{params[:search]}%")
+      end
+      companies
+    end
+  end
+
+  def set_no
+    self.no = "#{Time.now.to_i}#{rand(1000..9999).to_s}"
+  end
+
+
 end

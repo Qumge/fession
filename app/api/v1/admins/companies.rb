@@ -6,6 +6,7 @@ module V1
 
         before do
           authenticate!
+          operator_auth!
         end
 
 
@@ -19,9 +20,11 @@ module V1
         }
         params do
           optional 'page', type: String, desc: '页码', default: 1
+          optional 'status', type: String, desc: '商户状态 locked / active'
+          optional 'search', type: String, desc: '商户名或编号检索'
         end
         get '/' do
-          companies = Company.order('updated_at desc').page(params[:page]).per(Settings.per_page)
+          companies = Company.search_conn(params).order('updated_at desc').page(params[:page]).per(Settings.per_page)
           present companies, with: V1::Entities::Company
         end
 
@@ -45,8 +48,31 @@ module V1
             customer.save
             present company, with: V1::Entities::Company
           else
-            {error_code: '00000', error_message: customer.errors.messages.merge(company.errors.messages)}
+            {error_code: '10001', error_message: customer.errors.messages.merge(company.errors.messages)}
           end
+        end
+
+
+        desc '商户状态变更', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :ids, type: Array[Integer], desc: '商户id数组'
+          requires :status, type: String, desc: '状态'
+        end
+        post 'change_status' do
+          companies = Company.where(id: params[:ids])
+          if params[:status] == 'active'
+            companies.update_all status: 'active', active_at: DateTime.now
+          elsif params[:status] == 'locked'
+            companies.update_all status: 'locked', locked_at: DateTime.now
+          end
+          present companies, with: V1::Entities::Company
         end
 
 
@@ -93,21 +119,7 @@ module V1
             present @company, with: V1::Entities::Company
           end
 
-          desc '商户冻结', {
-              headers: {
-                  "X-Auth-Token" => {
-                      description: "登录token",
-                      required: false
-                  }
-              }
-          }
-          get 'lock' do
-            @company.do_lock!
-            present @company, with: V1::Entities::Company
-          end
-
         end
-
 
 
       end

@@ -7,7 +7,17 @@ module V1
       end
 
       resources 'task_questionnaires' do
+        before do
+          @game_model = case params[:type]
+                        when 'Game::Wheel'
+                          Game::Wheel
+                        when 'Game::Tiger'
+                          Game::Tiger
+                        when 'Game::Scratch'
+                          Game::Scratch
 
+                        end
+          end
         desc '调查任务列表', {
             headers: {
                 "X-Auth-Token" => {

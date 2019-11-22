@@ -6,6 +6,7 @@ module V1
       expose :name
       expose :cost
       expose :coin
+      expose :prizes, using: V1::Entities::Prize
       with_options(format_with: :timestamp) do
         expose :created_at
         expose :updated_at

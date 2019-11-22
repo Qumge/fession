@@ -6,6 +6,7 @@ module V1
 
         before do
           authenticate!
+          operator_auth!
         end
 
 

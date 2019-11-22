@@ -14,22 +14,25 @@
 #
 
 class Game < ApplicationRecord
-  validates_presence_of :cost, if: proc{|game| game.company.present?}
-  validates_presence_of :coin
-  validates_presence_of :company_id, if: proc{|game| game.cost.present?}
+  validates_presence_of :cost, if: proc{|game| game.company.blank?}
+  validates_presence_of :coin, if: proc{|game| game.company.present?}
+ # validates_presence_of :company_id, if: proc{|game| game.cost.present?}
   has_many :prizes
+  belongs_to :company
 
 
   def fetch_prizes params_prizes
-    params_prizes = [{product_id: 1, probability: 0.01}, {product_id: 1, coin: 200, probability: 0.01}]
+    params_prizes = [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}]
     prizes = []
     params_prizes.each do |params_prize|
       if params_prize[:product_id].present?
-        prize = self.prizes.find_or_initialize_by product_id: product_id
+        prize = self.prizes.find_or_initialize_by product_id: params_prize[:product_id]
       else
-        prize = self.prizes.find_or_initialize_by coin: coin
+        prize = self.prizes.find_or_initialize_by coin: params_prize[:coin]
       end
       prize.probability = params_prize[:probability]
+      prize.number = params_prize[:number]
+      p prize.valid? ,1222222
       prizes << prize
     end
     self.prizes = prizes

@@ -8,6 +8,7 @@ module V1
       expose :name
       expose :company, using: V1::Entities::Company
       expose :product, using: V1::Entities::Product, if: proc{|instance| instance.type == 'Task::ProductTask'}
+      expose :game, using: V1::Entities::Game, if: proc{|instance| instance.type == 'Task::GameTask'}
       expose :article, using: V1::Entities::Article, if: proc{|instance| instance.type == 'Task::ArticleTask'}
       expose :questionnaire, using: V1::Entities::Questionnaire, if: proc{|instance| instance.type == 'Task::QuestionnaireTask'}
       expose :status

@@ -57,6 +57,19 @@ class Product < ApplicationRecord
     end
   end
 
+  class << self
+    def search_conn params
+      products = self.all
+      if params[:search].present?
+        products = products.where('name like ?', "%#{params[:search]}%")
+      end
+      if params[:company_id].present?
+        products = products.where(company_id: params[:company_id])
+      end
+      products
+    end
+  end
+
   def spec_values
     SpecValue.joins(:spec).where('specs.product_id = ?', self.id)
   end
@@ -131,9 +144,9 @@ class Product < ApplicationRecord
   ### 规则 商家商品 1 + id4位(不足补0) + 时间戳; 金币商品： 20 + 时间戳
   def set_no
     if company_id.present?
-      self.no = "10#{(4 - company_id.to_s.size).times.collect {|s| '0'}.join ''}#{company_id}#{Time.now.to_i}"
+      self.no = "10#{(4 - company_id.to_s.size).times.collect {|s| '0'}.join ''}#{company_id}#{Time.now.to_i}#{rand(1000..9999).to_s}"
     else
-      self.no = "20#{self.company_id}#{Time.now.to_i}"
+      self.no = "20#{Time.now.to_i}#{rand(1000..9999).to_s}"
     end
 
   end

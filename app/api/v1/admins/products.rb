@@ -20,10 +20,12 @@ module V1
         }
         params do
           optional 'page', type: String, desc: '页码', default: 1
-          optional 'type', type: String, desc: '页码', default: 'MoneyProduct'
+          optional 'type', type: String, desc: '类型', default: 'MoneyProduct CoinProduct'
+          optional 'search', type: String, desc: '名称检索'
+          optional 'company_id', type: String, desc: '商户id'
         end
         get '/' do
-          products = @product_model.order('updated_at desc').page(params[:page]).per(Settings.per_page)
+          products = @product_model.search_conn(params).order('updated_at desc').page(params[:page]).per(Settings.per_page)
           present products, with: V1::Entities::Product
         end
 
@@ -78,7 +80,7 @@ module V1
             optional 'coin', type: Integer, desc: '返金币'
             optional 'images', type: Array[String], desc: '图片路径["www.baidu.com/aa.png", "www.baidu.com/aa.png"]'
             optional 'stock', type: Integer, desc: '库存'
-            #optional 'norms', type: Array[Hash] , desc: '规格你个: [{name: '', stock: '', price: ''}, {name: '', stock: '', price: ''}] 传递的价格统一以分为单位', default: []
+            optional 'norms', type: Array[Hash], desc: "规格详细 [{name: ['红色', 'xl'], price: 1000, stock: 1000}, {name: ['黑色', 'xl'], price: 1000, stock: 1000}, {name: ['红色', 'xxl'], price: 1000, stock: 1000}, {name: ['黑色', 'xxl'], price: 1000, stock: 1000}]", default: [{name: ['红色', 'xl'], price: 1000, stock: 1000}, {name: ['黑色', 'xl'], price: 1000, stock: 1000}, {name: ['红色', 'xxl'], price: 1000, stock: 1000}, {name: ['黑色', 'xxl'], price: 1000, stock: 1000}]
             optional 'specs', type: Array[Hash], desc: "规格", default:  [{name: '颜色', values: ['红色', '黑色']}, {name: '尺码', values: ['xl', 'xxl']}]
             optional 'norms', type: Array[Hash], desc: "规格详细", default: [{name: ['红色', 'xl'], price: 1000, stock: 1000}, {name: ['黑色', 'xl'], price: 1000, stock: 1000}, {name: ['红色', 'xxl'], price: 1000, stock: 1000}, {name: ['黑色', 'xxl'], price: 1000, stock: 1000}]
             optional 'type', type: String, desc: '类型 CoinProduct MoneyProduct', default: 'MoneyProduct'
