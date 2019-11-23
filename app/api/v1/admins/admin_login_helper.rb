@@ -5,7 +5,9 @@ module V1
       def current_admin
         #p env["HTTP_X_USER_ACCESS_TOKEN"], 1111111
         p params, 111
+        p request.headers['X-Auth-Token']
         @current_admin ||= request.headers['X-Auth-Token'].nil? ? nil : Admin.find_by_authentication_token(request.headers['X-Auth-Token'])
+        p @current_admin
       end
 
       def authenticate!
