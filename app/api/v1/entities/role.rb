@@ -4,9 +4,11 @@ module V1
       format_with(:timestamp) { |dt| dt.try :strftime, '%Y-%m-%d %H:%M:%S' }
       expose :id
       expose :name
+      expose :operator_amount
 
       # product_category 是在rails的model中定义的关联，在这里可以直接用
       expose :resources, using: V1::Entities::Resource
+
 
       with_options(format_with: :timestamp) do
         expose :created_at, documentation: { type: 'Timestamp' }

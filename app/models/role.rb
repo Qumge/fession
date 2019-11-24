@@ -13,4 +13,9 @@ class Role < ApplicationRecord
   has_many :resources
   validates_presence_of :name
   validates_uniqueness_of :name
+
+  def operator_amount
+    operators.size
+  end
+
 end
