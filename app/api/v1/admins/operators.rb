@@ -2,6 +2,8 @@ module V1
   module Admins
     class Operators < Grape::API
       helpers V1::Admins::AdminLoginHelper
+      include Grape::Kaminari
+      paginate per_page:  Settings.per_page, max_per_page: 30, offset: 0
       resources 'operators' do
 
         before do
@@ -22,8 +24,8 @@ module V1
           optional 'page', type: String, desc: '页码', default: 1
         end
         get '/' do
-          operators = Operator.order('updated_at desc').page(params[:page]).per(Settings.per_page)
-          present operators, with: V1::Entities::Admin
+          operators = Operator.order('updated_at desc')
+          present paginate(operators), with: V1::Entities::Admin
         end
 
 

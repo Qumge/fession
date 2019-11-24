@@ -67,6 +67,7 @@ gem 'grape'
 gem 'mysql2'
 gem 'aasm'
 gem 'kaminari'   #分页
+gem 'grape-kaminari'
 gem 'config'
 gem 'ancestry'
 gem 'grape-entity'

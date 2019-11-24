@@ -2,7 +2,10 @@ module V1
   module Admins
     class Roles < Grape::API
       helpers V1::Admins::AdminLoginHelper
+      include Grape::Kaminari
+      paginate per_page:  Settings.per_page, max_per_page: 30, offset: 0
       resources 'roles' do
+
 
         before do
           authenticate!
@@ -18,12 +21,16 @@ module V1
                 }
             }
         }
+
         params do
           optional 'page', type: String, desc: '页码', default: 1
         end
         get '/' do
-          roles = Role.order('updated_at desc').page(params[:page]).per(Settings.per_page)
-          present roles, with: V1::Entities::Role
+          roles = Role.order('updated_at desc')
+          present paginate(roles), with: V1::Entities::Role
+         # present paginate(roles), with: V1::Entities::Role
+          #present roles
+          #present roles, with: V1::Entities::Role
         end
 
 

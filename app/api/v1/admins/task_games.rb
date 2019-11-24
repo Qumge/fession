@@ -2,6 +2,8 @@ module V1
   module Admins
     class TaskGames < Grape::API
       helpers V1::Admins::AdminLoginHelper
+      include Grape::Kaminari
+      paginate per_page:  Settings.per_page, max_per_page: 30, offset: 0
       before do
         authenticate!
       end
@@ -17,6 +19,9 @@ module V1
                           Game::Scratch
                         end
         end
+
+
+
         desc '商户创建游戏任务', {
             headers: {
                 "X-Auth-Token" => {

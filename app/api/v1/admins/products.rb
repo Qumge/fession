@@ -2,6 +2,8 @@ module V1
   module Admins
     class Products < Grape::API
       helpers V1::Admins::AdminLoginHelper
+      include Grape::Kaminari
+      paginate per_page:  Settings.per_page, max_per_page: 30, offset: 0
       resources 'products' do
 
         before do
@@ -25,8 +27,8 @@ module V1
           optional 'company_id', type: String, desc: '商户id'
         end
         get '/' do
-          products = @product_model.search_conn(params).order('updated_at desc').page(params[:page]).per(Settings.per_page)
-          present products, with: V1::Entities::Product
+          products = @product_model.search_conn(params).order('updated_at desc')
+          present paginate(products), with: V1::Entities::Product
         end
 
 

@@ -2,6 +2,8 @@ module V1
   module Admins
     class Categories < Grape::API
       helpers V1::Admins::AdminLoginHelper
+      include Grape::Kaminari
+      paginate per_page:  Settings.per_page, max_per_page: 30, offset: 0
       resources 'categories' do
 
         before do
@@ -21,8 +23,8 @@ module V1
           optional 'page', type: String, desc: '页码', default: 1
         end
         get '/' do
-          categories = Category.roots.order('updated_at desc').page(params[:page]).per(Settings.per_page)
-          present categories, with: V1::Entities::CategoryTree
+          categories = Category.roots.order('updated_at desc')
+          present paginate(categories), with: V1::Entities::CategoryTree
         end
 
 

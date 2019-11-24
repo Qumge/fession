@@ -2,6 +2,8 @@ module V1
   module Admins
     class Companies < Grape::API
       helpers V1::Admins::AdminLoginHelper
+      include Grape::Kaminari
+      paginate per_page:  Settings.per_page, max_per_page: 30, offset: 0
       resources 'companies' do
 
         before do
@@ -24,8 +26,8 @@ module V1
           optional 'search', type: String, desc: '商户名或编号检索'
         end
         get '/' do
-          companies = Company.search_conn(params).order('updated_at desc').page(params[:page]).per(Settings.per_page)
-          present companies, with: V1::Entities::Company
+          companies = Company.search_conn(params).order('updated_at desc')
+          present paginate(companies), with: V1::Entities::Company
         end
 
 

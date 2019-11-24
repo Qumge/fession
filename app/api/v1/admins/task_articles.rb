@@ -2,6 +2,8 @@ module V1
   module Admins
     class TaskArticles < Grape::API
       helpers V1::Admins::AdminLoginHelper
+      include Grape::Kaminari
+      paginate per_page:  Settings.per_page, max_per_page: 30, offset: 0
       before do
         authenticate!
       end
@@ -17,9 +19,12 @@ module V1
                 }
             }
         }
+        params do
+          optional 'page', type: String, desc: '页码', default: 1
+        end
         get '/' do
           tasks = Task::ArticleTask.where(company: @company)
-          present tasks, with: V1::Entities::Task
+          present paginate(tasks), with: V1::Entities::Task
         end
 
         desc '创建推文任务', {
