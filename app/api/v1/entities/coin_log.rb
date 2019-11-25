@@ -1,19 +1,9 @@
 module V1
   module Entities
-    class User < Grape::Entity
+    class CoinLog < Grape::Entity
       format_with(:timestamp) { |dt| dt.try :strftime, '%Y-%m-%d %H:%M:%S' }
       expose :id
-      expose :login
-      expose :coin
-      expose :country
-      expose :province
-      expose :city
-      expose :avatar_url
-      expose :nick_name
-      expose :gender
-      expose :view_num
-
-
+      expose :channel
       # product_category 是在rails的model中定义的关联，在这里可以直接用
       #expose :role, using: V1::Entities::Role
 

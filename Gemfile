@@ -81,3 +81,4 @@ gem 'grape-swagger', '>= 0.32.1'
 gem 'grape-swagger-rails'
 gem 'grape-swagger-ui'
 gem "paranoia", "~> 2.2"
+gem 'qiniu', '~> 6.8.1'  #七牛云存储

@@ -23,7 +23,7 @@ class Company < ApplicationRecord
   validates_uniqueness_of :name
   validates_presence_of :name
   has_many :articles
-
+  has_and_belongs_to_many :followers , join_table: 'company_follows', foreign_key: :follow_id, class_name: "User"
   acts_as_paranoid
 
   before_create :set_no

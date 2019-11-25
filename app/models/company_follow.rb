@@ -1,0 +1,2 @@
+class CompanyFollow < ApplicationRecord
+end

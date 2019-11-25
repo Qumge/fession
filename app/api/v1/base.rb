@@ -14,10 +14,12 @@ module V1
         mount V1::Admins::TaskQuestionnaires
         mount V1::Admins::Games
         mount V1::Admins::TaskGames
+        mount V1::Admins::Qiniu
       end
 
       namespace :users do
         mount V1::Users::Users
+        mount V1::Users::Qiniu
       end
 
       add_swagger_documentation(

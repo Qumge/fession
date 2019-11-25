@@ -1,0 +1,2 @@
+class CoinLog < ApplicationRecord
+end

@@ -2,6 +2,7 @@ module V1
   module Admins
     class Admins < Grape::API
       helpers AdminLoginHelper
+      helpers QiniuHelper
       resources 'admins' do
         desc '登录 登录成功将返回的authentication_token  之后请求时将 authentication_token写入header的 X-Auth-Token 里面'
         params do

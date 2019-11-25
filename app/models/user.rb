@@ -44,6 +44,23 @@ class User < ApplicationRecord
   validates_uniqueness_of :login, if: proc{|user| user.login.present?}
   validates_format_of :login, with: /\A1[3|4|5|8][0-9]\d{4,8}\z/, if: proc{|user| user.login.present?}
   before_save :ensure_authentication_token
+  has_and_belongs_to_many :follow_companies, join_table: 'company_follows',  association_foreign_key: :follow_id, class_name: 'Company'
+  has_and_belongs_to_many :follow_users, join_table: 'user_follows',  association_foreign_key: :follow_id, class_name: "User"
+
+  has_and_belongs_to_many :followers , join_table: 'user_follows', foreign_key: :follow_id, class_name: "User"
+  has_many :coin_logs
+
+
+
+  class << self
+    def search_conn params
+      users = self.all
+      if params[:search].present?
+        users = users.where('nick_name like ? or login like ?', "%#{params[:search]}%", "%#{params[:search]}%")
+      end
+      users
+    end
+  end
 
 
   def ensure_authentication_token
@@ -73,11 +90,18 @@ class User < ApplicationRecord
     SmsRecord.create params
   end
 
-  class << self
-    def send_code phone
-      user = User.find_or_initialize_by phone
-    end
+  def fetch_params params
+    self.nick_name = params[:nick_name] if params[:nick_name].present?
+    self.desc = params[:desc] if params[:desc].present?
+    self.avatar_url = params[:avatar_url] if params[:avatar_url].present?
+    self.login = params[:login] if params[:login].present?
   end
+
+  # class << self
+  #   def send_code phone
+  #     user = User.find_or_initialize_by phone
+  #   end
+  # end
 
 
 
