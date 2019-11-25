@@ -7,6 +7,8 @@ module V1
       expose :type
       expose :role_type
       expose :name
+      expose :status
+      expose :get_status
       # product_category 是在rails的model中定义的关联，在这里可以直接用
       expose :role, using: V1::Entities::Role
       expose :company, using: V1::Entities::Company

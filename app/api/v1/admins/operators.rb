@@ -3,7 +3,6 @@ module V1
     class Operators < Grape::API
       helpers V1::Admins::AdminLoginHelper
       include Grape::Kaminari
-      paginate per_page:  Settings.per_page, max_per_page: 30, offset: 0
       resources 'operators' do
 
         before do
@@ -21,13 +20,16 @@ module V1
             }
         }
         params do
-          optional 'page', type: String, desc: '页码', default: 1
+          optional :page,     type: Integer, default: 1, desc: '页码'
+          optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+          optional :status, type: String, desc: "状态 传active/locked {active: '正常', locked: '已冻结'}"
+          optional :role_id, type: Integer, desc: "角色 角色 角色列表从roles api 获取 per_page传最大值9999"
+          optional :search, type: String, desc: '检索'
         end
         get '/' do
-          operators = Operator.order('updated_at desc')
+          operators = Operator.search_conn(params).where('id !=?', @current_admin.id).order('updated_at desc')
           present paginate(operators), with: V1::Entities::Admin
         end
-
 
         desc '创建运营账号', {
             headers: {
@@ -43,8 +45,8 @@ module V1
           requires 'role_id', type: Integer, desc: '角色'
         end
         post '/' do
-          role = Role.find_by id: params[:role_id]
-          operator = Operator.new  role_type: 'normal', name: params[:name], login: params[:login], role: role
+          operator = Operator.new role_type: 'normal'
+          operator = operator.fetch_params params
           if operator.save
             present operator, with: V1::Entities::Admin
           else
@@ -67,13 +69,14 @@ module V1
               }
           }
           params do
-            requires 'name', type: String, desc: '姓名'
-            requires 'login', type: String, desc: '登录账号'
-            requires 'role_id', type: Integer, desc: '角色'
+            optional 'name', type: String, desc: '姓名'
+            optional 'login', type: String, desc: '登录账号'
+            optional 'role_id', type: Integer, desc: '角色'
+            optional :status, type: String, desc: '状态  locked active'
           end
           patch '/' do
-            role = Role.find_by id: params[:role_id]
-            if @operator.update name: params[:name], login: params[:login], role: role
+            @operator = @operator.fetch_params params
+            if @operator.save
               present @operator, with: V1::Entities::Admin
             else
               {error_code: '00000', error_message: @operator.errors.messages}

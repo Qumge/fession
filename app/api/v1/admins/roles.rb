@@ -3,7 +3,6 @@ module V1
     class Roles < Grape::API
       helpers V1::Admins::AdminLoginHelper
       include Grape::Kaminari
-      paginate per_page:  Settings.per_page, max_per_page: 30, offset: 0
       resources 'roles' do
 
 
@@ -23,14 +22,13 @@ module V1
         }
 
         params do
-          optional 'page', type: String, desc: '页码', default: 1
+          optional :page,     type: Integer, default: 1, desc: '页码'
+          optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+          optional :search, type: String, desc: '搜索内容'
         end
         get '/' do
-          roles = Role.order('updated_at desc')
+          roles = Role.search_conn(params).order('updated_at desc')
           present paginate(roles), with: V1::Entities::Role
-         # present paginate(roles), with: V1::Entities::Role
-          #present roles
-          #present roles, with: V1::Entities::Role
         end
 
 
@@ -44,12 +42,12 @@ module V1
         }
         params do
           requires 'name', type: String, desc: '角色名'
-          optional 'resource_names', type: Array[String] , desc: '权限名集合转成json: ["商品管理", "商家商品", ..]', default: []
+          optional 'resource_names', type: String , desc: '权限名集合转成json: ["商品管理", "商家商品", ..]', default: []
         end
         post '/' do
           role = Role.new name: params[:name]
           resources = []
-          params[:resource_names].each do |name|
+          JSON.parse(params[:resource_names]).each do |name|
             resources << Resource.find_or_initialize_by(name: name)
           end
           role.resources = resources
@@ -76,15 +74,16 @@ module V1
               }
           }
           params do
-            requires 'name', type: String, desc: '角色名'
-            optional 'resource_names', type: Array[String] , desc: '权限名集合: ["商品管理", "商家商品", ..]', default: []
+            optional 'name', type: String, desc: '角色名'
+            optional 'resource_names', type: String , desc: '权限名集合: ["商品管理", "商家商品", ..]', default: []
           end
           patch '/' do
             resources = []
-            params[:resource_names].each do |name|
+            JSON.parse(params[:resource_names]).each do |name|
               resources << Resource.find_or_initialize_by(name: name)
             end
             @role.resources = resources
+            @role.name = params[:name] if params[:name].present?
             if @role.save
               present @role, with: V1::Entities::Role
             else

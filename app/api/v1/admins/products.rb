@@ -3,7 +3,6 @@ module V1
     class Products < Grape::API
       helpers V1::Admins::AdminLoginHelper
       include Grape::Kaminari
-      paginate per_page:  Settings.per_page, max_per_page: 30, offset: 0
       resources 'products' do
 
         before do
@@ -21,10 +20,11 @@ module V1
             }
         }
         params do
-          optional 'page', type: String, desc: '页码', default: 1
           optional 'type', type: String, desc: '类型', default: 'MoneyProduct CoinProduct'
           optional 'search', type: String, desc: '名称检索'
           optional 'company_id', type: String, desc: '商户id'
+          optional :page,     type: Integer, default: 1, desc: '页码'
+          optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
         end
         get '/' do
           products = @product_model.search_conn(params).order('updated_at desc')

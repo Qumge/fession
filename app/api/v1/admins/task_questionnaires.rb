@@ -3,7 +3,6 @@ module V1
     class TaskQuestionnaires < Grape::API
       helpers V1::Admins::AdminLoginHelper
       include Grape::Kaminari
-      paginate per_page:  Settings.per_page, max_per_page: 30, offset: 0
       before do
         authenticate!
       end
@@ -29,7 +28,8 @@ module V1
             }
         }
         params do
-          optional 'page', type: String, desc: '页码', default: 1
+          optional :page,     type: Integer, default: 1, desc: '页码'
+          optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
         end
         get '/' do
           tasks = Task::QuestionnaireTask.where(company: @company)

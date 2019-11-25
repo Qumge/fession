@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_20_085111) do
+ActiveRecord::Schema.define(version: 2019_11_25_015157) do
 
   create_table "admins", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 2019_11_20_085111) do
     t.string "name"
     t.integer "role_id"
     t.string "role_type"
+    t.string "status", default: "active"
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
   end
 

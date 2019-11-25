@@ -36,9 +36,51 @@ class Admin < ApplicationRecord
   after_create :set_password
 
   ROLE_TYPE = {admin: '超管', normal: '后端运营', admin_customer: '商户管理'}
-
+  STATUS = {active: '正常', locked: '已冻结'}
   belongs_to :company
   belongs_to :role
+
+  include AASM
+  aasm :status do
+    state :active, :initial => true
+    state :locked
+
+    #冻结
+    event :do_lock do
+      transitions :from => :active, :to => :locked
+    end
+
+    #解冻
+    event :do_active do
+      transitions :from => :locked, :to => :active
+    end
+  end
+
+  class << self
+    def search_conn params
+      admins = self.all
+      if params[:search].present?
+        admins = admins.where('name like ? or login like ?', "%#{params[:search]}%", "%#{params[:search]}%")
+      end
+      if params[:role_id].present?
+        admins = admins.where(role_id: params[:role_id])
+      end
+      if params[:status].present?
+        admins = admins.where(status: params[:status])
+      end
+      admins
+    end
+  end
+
+  def fetch_params params
+    self.role = Role.find_by id:(params[:role_id]) if params[:role_id].present?
+    self.name = params[:name] if params[:name].present?
+    self.login = params[:login] if params[:login].present?
+    self.status =  params[:status] if params[:status].present? && ['locked', 'active'].include?(params[:status])
+    self
+  end
+
+
 
   def ensure_authentication_token
     self.authentication_token ||= generate_authentication_token
@@ -50,6 +92,10 @@ class Admin < ApplicationRecord
     #记录登录时间TODO
     self.save validate: false
     p self.errors
+  end
+
+  def get_status
+    STATUS[self.status.to_sym] if self.status.present?
   end
 
   def email_required?

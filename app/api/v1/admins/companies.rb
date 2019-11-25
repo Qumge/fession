@@ -3,7 +3,6 @@ module V1
     class Companies < Grape::API
       helpers V1::Admins::AdminLoginHelper
       include Grape::Kaminari
-      paginate per_page:  Settings.per_page, max_per_page: 30, offset: 0
       resources 'companies' do
 
         before do
@@ -21,9 +20,10 @@ module V1
             }
         }
         params do
-          optional 'page', type: String, desc: '页码', default: 1
           optional 'status', type: String, desc: '商户状态 locked / active'
           optional 'search', type: String, desc: '商户名或编号检索'
+          optional :page,     type: Integer, default: 1, desc: '页码'
+          optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
         end
         get '/' do
           companies = Company.search_conn(params).order('updated_at desc')
@@ -55,28 +55,6 @@ module V1
         end
 
 
-        desc '商户状态变更', {
-            headers: {
-                "X-Auth-Token" => {
-                    description: "登录token",
-                    required: false
-                }
-            }
-        }
-        params do
-          requires :ids, type: Array[Integer], desc: '商户id数组'
-          requires :status, type: String, desc: '状态'
-        end
-        post 'change_status' do
-          companies = Company.where(id: params[:ids])
-          if params[:status] == 'active'
-            companies.update_all status: 'active', active_at: DateTime.now
-          elsif params[:status] == 'locked'
-            companies.update_all status: 'locked', locked_at: DateTime.now
-          end
-          present companies, with: V1::Entities::Company
-        end
-
 
         route_param :id do
           before do
@@ -91,14 +69,15 @@ module V1
               }
           }
           params do
-            requires 'name', type: String, desc: '商户名'
-            requires 'login', type: String, desc: '商户账号'
+            optional 'name', type: String, desc: '商户名'
+            optional 'login', type: String, desc: '商户账号'
+            optional 'status', type: String, desc: '状态 active locked'
           end
           patch '/' do
-
-            @company.name = params[:name]
+            @company.name = params[:name] if params[:name].present?
             customer = @company.customer
-            customer.login = params[:login]
+            customer.login = params[:login] if params[:login].present?
+            @company.status = params[:status] if params[:status].present? && ['active', 'locked'].include?(params[:status])
             if customer.valid? && @company.valid?
               customer.save
               @company.save

@@ -10,6 +10,7 @@ set :domain, 'root@106.15.57.136' #在服务器~/.ssh/authorized_keys 里面写�
 set :deploy_to, '/opt/rails-app/liebian'
 #git代码仓库
 set :repository, 'git@github.com:Qumge/fession.git'
+#set :repository, 'https://github.com/aasm/aasm.git'
 #git分支
 set :branch, 'master'
 #配置rvm位置

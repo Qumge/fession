@@ -29,6 +29,8 @@ class Company < ApplicationRecord
   has_one :customer, -> {where(role_type: 'admin_customer')}
   has_many :money_products
 
+  STATUS = {active: '正常', locked: '冻结'}
+
   include AASM
   aasm :status do
     state :active, :initial => true
@@ -58,9 +60,14 @@ class Company < ApplicationRecord
     end
   end
 
+  def get_status
+    STATUS[self.status.to_sym] if self.status.present?
+  end
+
   def set_no
     self.no = "#{Time.now.to_i}#{rand(1000..9999).to_s}"
   end
+
 
 
 end
