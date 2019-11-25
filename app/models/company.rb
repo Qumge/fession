@@ -24,6 +24,8 @@ class Company < ApplicationRecord
   validates_presence_of :name
   has_many :articles
 
+  acts_as_paranoid
+
   before_create :set_no
   has_many :customers
   has_one :customer, -> {where(role_type: 'admin_customer')}

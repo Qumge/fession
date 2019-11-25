@@ -35,6 +35,8 @@ class Admin < ApplicationRecord
   before_save :ensure_authentication_token
   after_create :set_password
 
+  acts_as_paranoid
+
   ROLE_TYPE = {admin: '超管', normal: '后端运营', admin_customer: '商户管理'}
   STATUS = {active: '正常', locked: '已冻结'}
   belongs_to :company

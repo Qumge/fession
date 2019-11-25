@@ -96,6 +96,22 @@ module V1
             present @operator, with: V1::Entities::Admin
           end
 
+          desc '删除账号', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          delete '/' do
+            if @operator.destroy
+              {error_code: '00000', message: '删除成功'}
+            else
+              {error_code: '30001', message: '删除失败'}
+            end
+          end
+
         end
 
 

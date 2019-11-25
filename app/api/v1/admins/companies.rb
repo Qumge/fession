@@ -54,6 +54,51 @@ module V1
           end
         end
 
+        desc '批量冻结  解冻', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires 'ids', type: String, desc: '商户id 数组 json '
+          requires 'status', type: String, desc: '状态'
+        end
+        post 'change_status' do
+          ids = JSON.parse params[:ids]
+          companies = Company.where(id: ids)
+          if ['active', 'locked'].include?(params[:status])
+            if companies.update_all status: params[:status]
+              present companies, with: V1::Entities::Company
+            else
+              error!("变更失败", 200001)
+            end
+          end
+        end
+
+        desc '批量删除 ', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires 'ids', type: String, desc: '商户id 数组 json '
+        end
+        post 'destroy' do
+          ids = JSON.parse params[:ids]
+          companies = Company.where(id: ids)
+          if companies.destroy_all
+            {error_code: '00000', message: 'success'}
+          else
+            {error_code: '30001', message: '删除失败'}
+          end
+        end
+
 
 
         route_param :id do
@@ -88,6 +133,8 @@ module V1
           end
 
 
+
+
           desc '商户详情', {
               headers: {
                   "X-Auth-Token" => {
@@ -98,6 +145,22 @@ module V1
           }
           get '/' do
             present @company, with: V1::Entities::Company
+          end
+
+          desc '删除商户', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          delete '/' do
+            if @company.destroy
+              {error_code: '00000', message: '删除成功'}
+            else
+              {error_code: '30001', message: '删除失败'}
+            end
           end
 
         end

@@ -104,6 +104,22 @@ module V1
             present @role, with: V1::Entities::Role
           end
 
+          desc '删除角色', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          delete '/' do
+            if @role.destroy
+              {error_code: '00000', message: '删除成功'}
+            else
+              {error_code: '30001', message: '删除失败'}
+            end
+          end
+
         end
 
 

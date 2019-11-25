@@ -19,6 +19,7 @@ module V1
         params do
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+          optional :company_id, type: Integer, desc: '商户id'
         end
         get '/' do
           tasks = Task::ProductTask.where(company: @company)

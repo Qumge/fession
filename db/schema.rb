@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_25_015157) do
+ActiveRecord::Schema.define(version: 2019_11_25_080227) do
 
   create_table "admins", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -28,6 +28,8 @@ ActiveRecord::Schema.define(version: 2019_11_25_015157) do
     t.integer "role_id"
     t.string "role_type"
     t.string "status", default: "active"
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_admins_on_deleted_at"
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
   end
 
@@ -48,6 +50,8 @@ ActiveRecord::Schema.define(version: 2019_11_25_015157) do
     t.text "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_articles_on_deleted_at"
   end
 
   create_table "categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -55,6 +59,8 @@ ActiveRecord::Schema.define(version: 2019_11_25_015157) do
     t.string "ancestry"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_categories_on_deleted_at"
   end
 
   create_table "companies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -71,6 +77,8 @@ ActiveRecord::Schema.define(version: 2019_11_25_015157) do
     t.bigint "return_amount", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_companies_on_deleted_at"
   end
 
   create_table "game_logs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -90,6 +98,8 @@ ActiveRecord::Schema.define(version: 2019_11_25_015157) do
     t.datetime "updated_at", null: false
     t.integer "cost"
     t.bigint "residue_coin"
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_games_on_deleted_at"
   end
 
   create_table "images", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -109,6 +119,8 @@ ActiveRecord::Schema.define(version: 2019_11_25_015157) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "spec_attrs"
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_norms_on_deleted_at"
   end
 
   create_table "options", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -137,6 +149,8 @@ ActiveRecord::Schema.define(version: 2019_11_25_015157) do
     t.datetime "updated_at", null: false
     t.integer "product_id"
     t.float "probability"
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_prizes_on_deleted_at"
   end
 
   create_table "products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -153,6 +167,8 @@ ActiveRecord::Schema.define(version: 2019_11_25_015157) do
     t.text "desc"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_products_on_deleted_at"
   end
 
   create_table "questionnaires", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -161,6 +177,8 @@ ActiveRecord::Schema.define(version: 2019_11_25_015157) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_questionnaires_on_deleted_at"
   end
 
   create_table "questions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -176,12 +194,16 @@ ActiveRecord::Schema.define(version: 2019_11_25_015157) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_resources_on_deleted_at"
   end
 
   create_table "roles", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_roles_on_deleted_at"
   end
 
   create_table "sms_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -226,6 +248,8 @@ ActiveRecord::Schema.define(version: 2019_11_25_015157) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_tasks_on_deleted_at"
   end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -254,6 +278,8 @@ ActiveRecord::Schema.define(version: 2019_11_25_015157) do
     t.integer "view_num"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_users_on_deleted_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

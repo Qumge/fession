@@ -13,7 +13,7 @@ class Role < ApplicationRecord
   has_many :resources
   validates_presence_of :name
   validates_uniqueness_of :name
-
+  acts_as_paranoid
   class << self
     def search_conn params
       roles = self.all
