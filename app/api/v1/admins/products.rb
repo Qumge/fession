@@ -44,10 +44,10 @@ module V1
           requires 'name', type: String, desc: '商品名'
           requires 'category_id', type: Integer, desc: '分类'
           requires 'coin', type: Integer, desc: '返金币'
-          requires 'images', type: Array[String], desc: '图片路径["www.baidu.com/aa.png", "www.baidu.com/aa.png"]'
+          requires 'images', type: String, desc: '图片路径["www.baidu.com/aa.png", "www.baidu.com/aa.png"]'
           optional 'stock', type: Integer, desc: '库存'
-          optional 'specs', type: Array[Hash], desc: "规格 [{name: '颜色', values: ['红色', '黑色']}, {name: '尺码', values: ['xl', 'xxl']}]", default:  [{name: '颜色', values: ['红色', '黑色']}, {name: '尺码', values: ['xl', 'xxl']}]
-          optional 'norms', type: Array[Hash], desc: "规格详细 [{name: ['红色', 'xl'], price: 1000, stock: 1000}, {name: ['黑色', 'xl'], price: 1000, stock: 1000}, {name: ['红色', 'xxl'], price: 1000, stock: 1000}, {name: ['黑色', 'xxl'], price: 1000, stock: 1000}]", default: [{name: ['红色', 'xl'], price: 1000, stock: 1000}, {name: ['黑色', 'xl'], price: 1000, stock: 1000}, {name: ['红色', 'xxl'], price: 1000, stock: 1000}, {name: ['黑色', 'xxl'], price: 1000, stock: 1000}]
+          optional 'specs', type: String, desc: "规格 [{name: '颜色', values: ['红色', '黑色']}, {name: '尺码', values: ['xl', 'xxl']}]", default:  [{name: '颜色', values: ['红色', '黑色']}, {name: '尺码', values: ['xl', 'xxl']}].to_json
+          optional 'norms', type: String, desc: "规格详细 [{name: ['红色', 'xl'], price: 1000, stock: 1000}, {name: ['黑色', 'xl'], price: 1000, stock: 1000}, {name: ['红色', 'xxl'], price: 1000, stock: 1000}, {name: ['黑色', 'xxl'], price: 1000, stock: 1000}]", default: [{name: ['红色', 'xl'], price: 1000, stock: 1000}, {name: ['黑色', 'xl'], price: 1000, stock: 1000}, {name: ['红色', 'xxl'], price: 1000, stock: 1000}, {name: ['黑色', 'xxl'], price: 1000, stock: 1000}].to_json
           optional 'type', type: String, desc: '类型 CoinProduct MoneyProduct', default: 'MoneyProduct'
           optional 'price', type: Integer, desc: '价格 type是CoinProduct的时候必填'
           optional 'desc', type: String, desc: '备注'
@@ -55,9 +55,30 @@ module V1
         post '/' do
           product = @product_model.new.fetch_for_api params, @company
           if product.valid?
-            present product, with: V1::Entities::Product
+            present product.reload, with: V1::Entities::Product
           else
             {error_code: '10002', error_message: product.errors.messages}
+          end
+        end
+
+
+        desc '批量删除商品', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :ids, type: String, desc: '需要删除的商品数组'
+        end
+        post 'destroy' do
+          products = @product_model.where(id: JSON.parse(params[:ids]), company: @company)
+          if products.destroy_all
+            {error_code: '00000',  message: '删除成功'}
+          else
+            {error_code: '30001',  message: '删除失败'}
           end
         end
 
@@ -82,9 +103,8 @@ module V1
             optional 'coin', type: Integer, desc: '返金币'
             optional 'images', type: Array[String], desc: '图片路径["www.baidu.com/aa.png", "www.baidu.com/aa.png"]'
             optional 'stock', type: Integer, desc: '库存'
-            optional 'norms', type: Array[Hash], desc: "规格详细 [{name: ['红色', 'xl'], price: 1000, stock: 1000}, {name: ['黑色', 'xl'], price: 1000, stock: 1000}, {name: ['红色', 'xxl'], price: 1000, stock: 1000}, {name: ['黑色', 'xxl'], price: 1000, stock: 1000}]", default: [{name: ['红色', 'xl'], price: 1000, stock: 1000}, {name: ['黑色', 'xl'], price: 1000, stock: 1000}, {name: ['红色', 'xxl'], price: 1000, stock: 1000}, {name: ['黑色', 'xxl'], price: 1000, stock: 1000}]
-            optional 'specs', type: Array[Hash], desc: "规格", default:  [{name: '颜色', values: ['红色', '黑色']}, {name: '尺码', values: ['xl', 'xxl']}]
-            optional 'norms', type: Array[Hash], desc: "规格详细", default: [{name: ['红色', 'xl'], price: 1000, stock: 1000}, {name: ['黑色', 'xl'], price: 1000, stock: 1000}, {name: ['红色', 'xxl'], price: 1000, stock: 1000}, {name: ['黑色', 'xxl'], price: 1000, stock: 1000}]
+            optional 'specs', type: String, desc: "规格", default:  [{name: '颜色', values: ['红色', '黑色']}, {name: '尺码', values: ['xl', 'xxl']}].to_json
+            optional 'norms', type: String, desc: "规格详细", default: [{name: ['红色', 'xl'], price: 1000, stock: 1000}, {name: ['黑色', 'xl'], price: 1000, stock: 1000}, {name: ['红色', 'xxl'], price: 1000, stock: 1000}, {name: ['黑色', 'xxl'], price: 1000, stock: 1000}].to_json
             optional 'type', type: String, desc: '类型 CoinProduct MoneyProduct', default: 'MoneyProduct'
             optional 'price', type: Integer, desc: '价格 type是CoinProduct的时候必填'
             optional 'desc', type: String, desc: '备注'
@@ -110,6 +130,23 @@ module V1
           get '/' do
             present @product, with: V1::Entities::Product
           end
+
+          desc '删除商品', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          delete '/' do
+            if @product.destroy
+              {error_code: '00000',  message: '删除成功'}
+            else
+              {error_code: '30001',  message: '删除失败'}
+            end
+          end
+
 
         end
 

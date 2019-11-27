@@ -22,6 +22,7 @@ class Norm < ApplicationRecord
   end
 
   def spec_attr_names
-    spec_values.pluck(:name).join('/')
+    spec_values.sort{|spec_value| spec_value.spec_id}.pluck(:name).join('/')
+    #spec_values.pluck(:name).join('/')
   end
 end

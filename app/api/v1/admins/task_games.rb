@@ -37,11 +37,11 @@ module V1
           requires :game_coin, type: Integer, desc: '奖池金币总数'
           requires :valid_from, type: DateTime, desc: '有效期始'
           requires :valid_to, type: DateTime, desc: '有效至'
-          optional :prizes, type: Array[Hash], desc: '奖品 大转盘抽奖 默认为5个奖项 请勿多传或少传 [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}]', default:  [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}].to_json
+          optional :prizes, type: String, desc: '奖品 大转盘抽奖 默认为5个奖项 请勿多传或少传 [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}]', default:  [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}].to_json
         end
         post '/' do
           game = @game_model.new name: params[:name], coin: params[:game_coin], company: @company
-          game = game.fetch_prizes params[:prizes]
+          game = game.fetch_prizes JSON.parse(params[:prizes])
           if game.valid?
             task = Task::GameTask.create coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], game: game, company: @company
             present task, with: V1::Entities::Task
@@ -71,12 +71,12 @@ module V1
             requires :game_coin, type: Integer, desc: '奖池金币总数'
             requires :valid_from, type: DateTime, desc: '有效期始'
             requires :valid_to, type: DateTime, desc: '有效至'
-            optional :prizes, type: Array[Hash], desc: '奖品 大转盘抽奖 默认为5个奖项 请勿多传或少传 [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}]', default:  [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}]
+            optional :prizes, type: String, desc: '奖品 大转盘抽奖 默认为5个奖项 请勿多传或少传 [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}]', default:  [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}].to_json
           end
           patch '/' do
             game = @task.game
             game.attributes = {name: params[:name], coin: params[:game_coin], company: @company}
-            game = game.fetch_prizes params[:prizes]
+            game = game.fetch_prizes JSON.parse(params[:prizes])
             if game.valid?
               @task.update coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to],  company: @company
               present @task, with: V1::Entities::Task

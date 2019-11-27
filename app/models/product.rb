@@ -27,6 +27,10 @@ class Product < ApplicationRecord
   validates_presence_of :name, :stock, :images, :category_id
   has_many :specs
   validates_uniqueness_of :name, scope: :company_id
+  validates_presence_of :specs
+
+  acts_as_paranoid
+
 
   before_create :set_no
 
@@ -80,7 +84,7 @@ class Product < ApplicationRecord
     self.company = company if company.present?
     if params[:images].present?
       images = []
-      params[:images].each do |image|
+      JSON.parse(params[:images]).each do |image|
         images << Image.new(file_path: image, model_type: 'Product')
       end
       self.images = images
@@ -91,51 +95,39 @@ class Product < ApplicationRecord
         self.price = params[:price]
       else
         self.coin = params[:coin]
-        params_specs = params[:specs]
-        params_norms = params[:norms]
-        params_specs ||= [{name: '颜色', values: ['红色', '黑色']}, {name: '尺码', values: ['xl', 'xxl']}]
-        params_norms ||= [{name: ['红色', 'xl'], price: 1000, stock: 1000}, {name: ['黑色', 'xl'], price: 1000, stock: 1000}, {name: ['红色', 'xxl'], price: 1000, stock: 1000}, {name: ['黑色', 'xxl'], price: 1000, stock: 1000}]
-        has_norms = {
-            specs: {'颜色' => ['红色', '黑色'], '尺码' => ['xl', 'xxl']},
-            norms: {
-                ['红色', 'xl'] => {price: 1000, stock: 1000},
-                ['黑色', 'xl'] => {price: 1000, stock: 1000},
-                ['红色', 'xxl'] => {price: 1000, stock: 1000},
-                ['黑色', 'xxl'] => {price: 1000, stock: 1000}
-            }
-        }
+        params_specs = JSON.parse(params[:specs])
+        params_norms = JSON.parse(params[:norms])
         params_specs.each do |params_spec|
-          spec = self.specs.find_or_initialize_by(name: params_spec[:name])
-          params_spec[:values].each do |value|
+          spec = self.specs.find_or_initialize_by(name: params_spec['name'])
+          params_spec['values'].each do |value|
             spec_value = spec.spec_values.find_or_initialize_by(name: value)
             spec.spec_values << spec_value
           end
           self.specs << spec
         end
         if self.save
+          arr_norms = []
           params_norms.each do |params_norm|
             ids = []
-            p params_norm[:name], 1111111
-            params_norm[:name].each do |spec_value_name|
+            p params_norm['name'], 1111111
+            spec_values = []
+            params_norm['name'].each do |spec_value_name|
               spec_value = self.spec_values.find_by(name: spec_value_name)
-              ids << spec_value.id
+              spec_values << spec_value
             end
-            spec_attrs = ids.sort.join('/')
+            p spec_values, 22222
+            spec_values.sort_by!{|spec_value| spec_value.spec_id}
+            p spec_values, 11111
+            spec_attrs = spec_values.map(&:id).join('/')
+            p spec_attrs
             norm = self.norms.find_or_initialize_by spec_attrs: spec_attrs
-            norm.price = params_norm[:price]
-            norm.stock = params_norm[:stock]
-            self.norms << norm
+            norm.price = params_norm['price']
+            norm.stock = params_norm['stock']
+            arr_norms << norm
           end
+          self.norms = arr_norms
           self.save
         end
-        # has_norms[:specs].each do |spec_key, values|
-        #   spec = self.specs.find_or_initialize_by(name: spec_key)
-        #   values.each do |value|
-        #     spec_value = spec.spec_values.find_or_initialize_by(name: value)
-        #     spec.spec_values << spec_value
-        #   end
-        #   self.specs << spec
-        # end
       end
     end
     self
