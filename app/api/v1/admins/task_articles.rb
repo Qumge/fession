@@ -44,6 +44,7 @@ module V1
           requires :valid_to, type: DateTime, desc: '有效至'
         end
         post '/' do
+          p @company,111
           article = ::Article.new product_id: params[:product_id], company: @company, subject: params[:subject], content: params[:content]
           task = Task::ArticleTask.new article: article, coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company
           if task.save

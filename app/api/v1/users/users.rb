@@ -144,6 +144,97 @@ module V1
           present paginate(@current_user.coin_logs), with: V1::Entities::CoinLog
         end
 
+        desc '关注用户', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :user_id,     type: Integer,  desc: '关注的人id'
+        end
+        post 'follow_user' do
+          user = User.find_by id: params[:user_id]
+          if user.present?
+            @current_user.follow_users << user
+            {error_code: '00000', message: '关注成功'}
+            #present @current_user.reload, with: V1::Entities::User
+          else
+            {error_code: '20002', message: '错误的用户'}
+          end
+        end
+
+        desc '取消关注用户', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :user_id,     type: Integer,  desc: '关注的人id'
+        end
+        post 'unfollow_user' do
+          user = User.find_by id: params[:user_id]
+          if user.present?
+            @current_user.follow_users.delete user
+            #present @current_user.reload, with: V1::Entities::User
+            {error_code: '00000', message: '取消关注成功'}
+          else
+            {error_code: '20002', message: '错误的用户'}
+          end
+        end
+
+
+        desc '关注商户', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :company_id,     type: Integer,  desc: '关注的商户id'
+        end
+        post 'follow_company' do
+          company = Company.find_by id: params[:company_id]
+          if company.present?
+            @current_user.follow_companies << company
+            {error_code: '00000', message: '关注成功'}
+            #present @current_user.reload, with: V1::Entities::User
+          else
+            {error_code: '20002', message: '错误的商户'}
+          end
+        end
+
+        desc '取消关注用户', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :company_id,     type: Integer,  desc: '关注的商户id'
+        end
+        post 'unfollow_company' do
+          company = Company.find_by id: params[:company_id]
+          if company.present?
+            @current_user.follow_companies.delete company
+            {error_code: '00000', message: '取消关注成功'}
+            #present @current_user.reload, with: V1::Entities::User
+          else
+            {error_code: '20002', message: '错误的商户'}
+          end
+        end
+
+
+
 
       end
     end

@@ -13,7 +13,7 @@ module V1
       def authenticate!
         if current_admin
           #logger.debug "authenticate fail with HTTP_X_USER_ACCESS_TOKEN #{env['HTTP_X_USER_ACCESS_TOKEN']} "
-          @company = @current_admin.company if @current_admin.type != 'Customer'
+          @company = @current_admin.company if @current_admin.type == 'Customer'
           #验证商户权限
         else
           error!("401 Unauthorized", 401)
