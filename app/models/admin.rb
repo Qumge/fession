@@ -31,7 +31,7 @@ class Admin < ApplicationRecord
   #before_save :ensure_authentication_token
   validates_presence_of :login
   validates_uniqueness_of :login
-  validates_format_of :login, with: /\A1[3-9][0-9]\d{4,8}\z/, if: proc{|admin| admin.login.present?}
+  validates_format_of :login, with: /\A1[3|4|5|7|8][0-9]{9}\z/, if: proc{|admin| admin.login.present?}
   before_save :ensure_authentication_token
   after_create :set_password
 

@@ -24,22 +24,27 @@ class SmsRecord < ApplicationRecord
 
 
   def send_sms
-    res = SmsRecord.client.request(
-        action: 'SendSms',
-        params: {
-            "RegionId": region_id,
-            "PhoneNumbers": phone,
-            "SignName": sign,
-            "TemplateCode": code,
-            "TemplateParam": params.to_s,
-            "SmsUpExtendCode": up_extend_code.to_s,
-            "OutId": out_id.to_s
-        },
-        opts: {
-            method: 'POST'
-        }
-    )
-    self.update message: res['Message'], request_id: res['RequestId'], biz_id: res['BizId'], status: res['Code']
+    begin
+      res = SmsRecord.client.request(
+          action: 'SendSms',
+          params: {
+              "RegionId": region_id,
+              "PhoneNumbers": phone,
+              "SignName": sign,
+              "TemplateCode": code,
+              "TemplateParam": params.to_s,
+              "SmsUpExtendCode": up_extend_code.to_s,
+              "OutId": out_id.to_s
+          },
+          opts: {
+              method: 'POST'
+          }
+      )
+      self.update message: res['Message'], request_id: res['RequestId'], biz_id: res['BizId'], status: res['Code']
+    rescue => e
+      p e.messages
+    end
+
   end
 
   class << self

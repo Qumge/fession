@@ -42,7 +42,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable#, :validatable
 
   validates_uniqueness_of :login, if: proc{|user| user.login.present?}
-  validates_format_of :login, with: /\A1[3|4|5|8][0-9]\d{4,8}\z/, if: proc{|user| user.login.present?}
+  validates_format_of :login, with: /\A1[3|4|5|7|8][0-9]{9}\z/, if: proc{|user| user.login.present?}
   before_save :ensure_authentication_token
   has_and_belongs_to_many :follow_companies, join_table: 'company_follows',  association_foreign_key: :follow_id, class_name: 'Company'
   has_and_belongs_to_many :follow_users, join_table: 'user_follows',  association_foreign_key: :follow_id, class_name: "User"
