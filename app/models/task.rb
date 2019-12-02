@@ -22,16 +22,16 @@ class Task < ApplicationRecord
   belongs_to :game, foreign_key: :model_id
   validates_presence_of :company_id
 
-  STATUS = {new: '新任务', wait: '待审核', failed: '已拒绝', success: '审核成功', active: '进行中', overtime: '已结束'}
+  STATUS = { wait: '待审核', failed: '已拒绝', success: '审核成功', active: '进行中', overtime: '已结束'}
 
   aasm :status do
-    state :new, :initial => true
-    state :wait, :failed, :success
+    state :wait, :initial => true
+    state :failed, :success
 
-    # 申请审核
-    event :do_wait do
-      transitions :from => :new, :to => :wait
-    end
+    # # 申请审核
+    # event :do_wait do
+    #   transitions :from => :new, :to => :wait
+    # end
 
     # 审核成功
     event :do_success do
@@ -44,8 +44,8 @@ class Task < ApplicationRecord
     end
 
     #重新审核
-    event :do_new do
-      transitions :from => [:failed], :to => :new
+    event :do_wait do
+      transitions :from => [:failed], :to => :wait
     end
   end
   class << self
@@ -69,7 +69,7 @@ class Task < ApplicationRecord
     case self.status
     when 'success'
       tasks = tasks.where(status: 'success').where('valid_to < ?', DateTime.now)
-      self.valid_to >= DateTime.now ? '进行中' : '已经=结束'
+      self.valid_to >= DateTime.now ? '进行中' : '已结束'
     else
       STATUS[self.status.to_sym] if self.status.present?
     end

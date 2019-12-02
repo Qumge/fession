@@ -26,7 +26,7 @@ module V1
           optional 'type', type: String, desc: '类型', default: 'MoneyProduct CoinProduct'
           optional 'search', type: String, desc: '名称检索'
           optional 'company_id', type: String, desc: '商户id'
-          optional 'status', type: String, desc: "状态  {new: '新商品', wait: '审核中', down: '已下架', up: '已上架', failed: '审核失败'}"
+          optional 'status', type: String, desc: "状态  { wait: '审核中', success: '审核成功', down: '已下架', up: '已上架', failed: '审核失败'}"
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
         end

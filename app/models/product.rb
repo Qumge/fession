@@ -34,25 +34,15 @@ class Product < ApplicationRecord
 
   before_create :set_no
 
-  STATUS = {new: '新商品', wait: '审核中', down: '已下架', up: '已上架', failed: '审核失败'}
+  STATUS = { wait: '审核中', success: '审核成功', down: '已下架', up: '已上架', failed: '审核失败'}
 
   aasm :status do
-    state :new, :initial => true
-    state :wait, :down, :up, :failed
+    state :wait, :initial => true
+    state :down, :up, :failed, :success
 
-    #上架 、 审核成功
-    event :do_wait do
-      transitions :from => [:new], :to => :wait
-    end
-
-    #上架 、 审核成功
-    event :do_up do
-      transitions :from => [:wait], :to => :up
-    end
-
-    #下架
-    event :do_down do
-      transitions :from => :up, :to => :down
+    #审核成功
+    event :do_success do
+      transitions :from => [:wait], :to => :success
     end
 
     #审核失败
@@ -60,9 +50,19 @@ class Product < ApplicationRecord
       transitions :from => :wait, :to => :failed
     end
 
+    #上架
+    event :do_up do
+      transitions :from => [:success, :down], :to => :up
+    end
+
+    #下架
+    event :do_down do
+      transitions :from => :up, :to => :down
+    end
+
     #重新编辑
-    event :do_new do
-      transitions :from => [:failed, :wait], :to => :new
+    event :do_wait do
+      transitions :from => [:failed], :to => :wait
     end
   end
 
@@ -139,7 +139,7 @@ class Product < ApplicationRecord
             end
             self.norms = arr_norms
             self.save
-            self.do_new!
+            self.do_wait? if pself.may_do_wait?
           end
         end
       end
