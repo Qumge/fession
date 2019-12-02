@@ -27,6 +27,7 @@ class Product < ApplicationRecord
   validates_presence_of :name, :stock, :images, :category_id
   validates_uniqueness_of :name, scope: :company_id
   has_many :specs
+  has_many :audits, foreign_key: :model_id
 
 
   acts_as_paranoid

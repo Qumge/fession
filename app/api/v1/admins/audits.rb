@@ -27,6 +27,7 @@ module V1
             begin
               Product.transaction do
                 products.each do |product|
+                  Audit::ProductAudit.create product: product, form_status: product.status, to_status: params[:status], admin: @current_admin
                   product.send "do_#{params[:status]}!"
                 end
               end
@@ -53,13 +54,13 @@ module V1
           requires 'status', type: String, desc: '要变更的状态'
         end
         post :audit do
-
           if Task::STATUS[params[:status].to_sym].present?
             tasks = Task.where(id: JSON.parse(params[:ids]))
             tasks = tasks.where(company: @company) if @company.present?
             begin
               Task.transaction do
                 tasks.each do |task|
+                  Audit::TaskAudit.create task: task, form_status: task.status, to_status: params[:status], admin: @current_admin
                   task.send "do_#{params[:status]}!"
                 end
               end

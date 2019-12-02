@@ -21,6 +21,7 @@ class Task < ApplicationRecord
   belongs_to :company
   belongs_to :game, foreign_key: :model_id
   validates_presence_of :company_id
+  has_many :audits, foreign_key: :model_id
 
   STATUS = { wait: '待审核', failed: '已拒绝', success: '审核成功', active: '进行中', overtime: '已结束'}
 
@@ -68,7 +69,7 @@ class Task < ApplicationRecord
   def get_status
     case self.status
     when 'success'
-      tasks = tasks.where(status: 'success').where('valid_to < ?', DateTime.now)
+      #tasks = tasks.where(status: 'success').where('valid_to < ?', DateTime.now)
       self.valid_to >= DateTime.now ? '进行中' : '已结束'
     else
       STATUS[self.status.to_sym] if self.status.present?
