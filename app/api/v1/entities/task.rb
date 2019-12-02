@@ -5,6 +5,7 @@ module V1
       format_with(:timestamp) { |dt| dt.try :strftime, '%Y-%m-%d' }
       #format_with(:parent) { |dt| instance.parent.name }
       expose :id
+      expose :type
       expose :name
       expose :status
       expose :get_status

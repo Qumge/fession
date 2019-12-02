@@ -31,7 +31,7 @@ module V1
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
           optional :company_id, type: Integer, desc: '商户id'
-          optional :status, type: String, desc: "状态 new: 新任务,  wait: '待审核', failed: '已拒绝', done: '审核成功' 数据库中只存储这四种状态 进行中和已经结束（active overtime）由有效时间和done组合而成 检索时使用（wait active overtime failed ）"
+          optional :status, type: String, desc: "状态 new: 新任务,  wait: '待审核', failed: '已拒绝', success: '审核成功' 数据库中只存储这四种状态 进行中和已经结束（active overtime）由有效时间和success组合而成 检索时使用（wait active overtime failed ）"
         end
         get '/' do
           if params[:company_id].present?

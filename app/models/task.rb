@@ -22,11 +22,11 @@ class Task < ApplicationRecord
   belongs_to :game, foreign_key: :model_id
   validates_presence_of :company_id
 
-  STATUS = {new: '新任务', wait: '待审核', failed: '已拒绝', done: '审核成功', active: '进行中', overtime: '已结束'}
+  STATUS = {new: '新任务', wait: '待审核', failed: '已拒绝', success: '审核成功', active: '进行中', overtime: '已结束'}
 
   aasm :status do
     state :new, :initial => true
-    state :failed, :success
+    state :wait, :failed, :success
 
     # 申请审核
     event :do_wait do
@@ -54,9 +54,9 @@ class Task < ApplicationRecord
       if params[:status].present?
         case params[:status]
         when 'active'
-          tasks = tasks.where(status: 'done').where('valid_to > ?', DateTime.now)
+          tasks = tasks.where(status: 'success').where('valid_to > ?', DateTime.now)
         when 'overtime'
-          tasks = tasks.where(status: 'done').where('valid_to < ?', DateTime.now)
+          tasks = tasks.where(status: 'success').where('valid_to < ?', DateTime.now)
         else
           tasks = tasks.where(status: params[:status])
         end
@@ -67,8 +67,8 @@ class Task < ApplicationRecord
 
   def get_status
     case self.status
-    when 'done'
-      tasks = tasks.where(status: 'done').where('valid_to < ?', DateTime.now)
+    when 'success'
+      tasks = tasks.where(status: 'success').where('valid_to < ?', DateTime.now)
       self.valid_to >= DateTime.now ? '进行中' : '已经=结束'
     else
       STATUS[self.status.to_sym] if self.status.present?
