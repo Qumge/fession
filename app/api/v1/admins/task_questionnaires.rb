@@ -30,9 +30,14 @@ module V1
         params do
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+          optional :company_id, type: Integer, desc: '商户id'
+          optional :status, type: String, desc: "状态 wait: '待审核', failed: '已拒绝', done: '审核成功' 数据库中只存储这三种状态 进行中和已经结束（active overtime）由有效时间和done组合而成 检索时使用（wait active overtime failed ）"
         end
         get '/' do
-          tasks = Task::QuestionnaireTask.where(company: @company)
+          if params[:company_id].present?
+            @company ||= Company.find_by id: params[:company_id]
+          end
+          tasks = Task::QuestionnaireTask.search_conn(params).where(company: @company)
           present paginate(tasks), with: V1::Entities::Task
         end
 
@@ -70,8 +75,8 @@ module V1
 
         route_param :id do
           before do
-            p Task::QuestionnaireTask.name
             @task = Task::QuestionnaireTask.find_by id: params[:id]
+            error!("找不到数据", 500) unless @task.present?
           end
           desc '问卷任务变更', {
               headers: {
@@ -94,6 +99,7 @@ module V1
             questionnaire = questionnaire.fetch_questions params[:questions]
             if questionnaire.valid?
               if @task.update coin: params[:coin], valid_form: params[:valid_form], valid_to: params[:valid_to], company: @company
+                @task.do_recheck!
                 present task, with: V1::Entities::Task
               else
                 {code: '100001', error_message: @task.errors}

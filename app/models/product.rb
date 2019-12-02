@@ -67,6 +67,9 @@ class Product < ApplicationRecord
       if params[:search].present?
         products = products.where('name like ?', "%#{params[:search]}%")
       end
+      if params[:status].present?
+        products = products.where(status: params[:status])
+      end
       if params[:company_id].present?
         products = products.where(company_id: params[:company_id])
       end

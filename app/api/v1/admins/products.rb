@@ -26,6 +26,7 @@ module V1
           optional 'type', type: String, desc: '类型', default: 'MoneyProduct CoinProduct'
           optional 'search', type: String, desc: '名称检索'
           optional 'company_id', type: String, desc: '商户id'
+          optional 'status', type: String, desc: '状态'
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
         end

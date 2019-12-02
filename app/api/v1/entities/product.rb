@@ -5,10 +5,8 @@ module V1
       expose :id
       expose :name
       expose :type
-      expose :status do |instance, options|
-        # examine available environment keys with `p options[:env].keys`
-        instance.get_status
-      end
+      expose :status
+      expose :get_status
       expose :price do |instance, options|
         instance.type == 'CoinProduct' ? instance.price : (instance.price.to_f / 100)
       end

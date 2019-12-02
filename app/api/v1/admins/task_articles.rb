@@ -21,9 +21,14 @@ module V1
         params do
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+          optional :company_id, type: Integer, desc: '商户id'
+          optional :status, type: String, desc: "状态 wait: '待审核', failed: '已拒绝', done: '审核成功' 数据库中只存储这三种状态 进行中和已经结束（active overtime）由有效时间和done组合而成 检索时使用（wait active overtime failed ）"
         end
         get '/' do
-          tasks = Task::ArticleTask.where(company: @company)
+          if params[:company_id].present?
+            @company ||= Company.find_by id: params[:company_id]
+          end
+          tasks = Task::ArticleTask.search_conn(params).where(company: @company)
           present paginate(tasks), with: V1::Entities::Task
         end
 
@@ -55,6 +60,7 @@ module V1
         route_param :id do
           before do
             @task = ::Task::ArticleTask.find_by id: params[:id]
+            error!("找不到数据", 500) unless @task.present?
           end
 
           desc '推文任务变更', {
@@ -73,15 +79,16 @@ module V1
           end
           patch '/' do
             article = @task.article
-            article.attributes = {prodcut_id: params[:product_id], company: @company, subject: params[:subject], content: params[:content]}
+            article.attributes = {product_id: params[:product_id], company: @company, subject: params[:subject], content: params[:content]}
             if @task.update article: article, coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company
+              @task.do_recheck!
               present @task, with: V1::Entities::Task
             else
               {code: '100001', error_message: @task.errors}
             end
           end
 
-          desc '商品任务详情', {
+          desc '推文任务详情', {
               headers: {
                   "X-Auth-Token" => {
                       description: "登录token",

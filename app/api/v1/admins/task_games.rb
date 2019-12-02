@@ -55,6 +55,7 @@ module V1
         route_param :id do
           before do
             @task = Task.find_by company: @company, id: params[:id]
+            error!("找不到数据", 500) unless @task.present?
           end
 
           desc '游戏任务变更', {
@@ -79,6 +80,7 @@ module V1
             game = game.fetch_prizes JSON.parse(params[:prizes])
             if game.valid?
               @task.update coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to],  company: @company
+              @task.do_recheck!
               present @task, with: V1::Entities::Task
             else
               {error_code: '10001', error_messages: game.errors.messages}
