@@ -16,7 +16,7 @@ class Questionnaire < ApplicationRecord
   belongs_to :company
   def fetch_questions params_questions
     # params_questions = params[:questions]
-    params_questions = [{name: '玩过的游戏', type: 'Question::Multiple', options: ['dnf', 'dota', 'lol']}, {name: '性别', type: 'Question::Single', options: ['男', '女']}, {name: '建议', type: 'Question::Completion'}]
+    #params_questions = [{name: '玩过的游戏', type: 'Question::Multiple', options: ['dnf', 'dota', 'lol']}, {name: '性别', type: 'Question::Single', options: ['男', '女']}, {name: '建议', type: 'Question::Completion'}]
     questions = []
     params_questions.each do |params_question|
       question = self.questions.find_or_initialize_by name: params_question[:name]

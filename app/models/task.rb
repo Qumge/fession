@@ -22,11 +22,16 @@ class Task < ApplicationRecord
   belongs_to :game, foreign_key: :model_id
   validates_presence_of :company_id
 
-  STATUS = {wait: '待审核', failed: '已拒绝', done: '审核成功', active: '进行中', overtime: '已结束'}
+  STATUS = {new: '新任务', wait: '待审核', failed: '已拒绝', done: '审核成功', active: '进行中', overtime: '已结束'}
 
   aasm :status do
-    state :wait, :initial => true
+    state :new, :initial => true
     state :failed, :success
+
+    # 申请审核
+    event :do_wait do
+      transitions :from => :new, :to => :wait
+    end
 
     # 审核成功
     event :do_success do
@@ -35,12 +40,12 @@ class Task < ApplicationRecord
 
     #审核失败
     event :do_failed do
-      transitions :from => :wait, :to => :failed, after: Proc.new {set_edit}
+      transitions :from => :wait, :to => :failed
     end
 
     #重新审核
-    event :do_recheck do
-      transitions :from => [:failed, :wait], :to => :wait
+    event :do_new do
+      transitions :from => [:failed], :to => :new
     end
   end
   class << self
@@ -74,9 +79,6 @@ class Task < ApplicationRecord
     self.update residue_coin: self.coin
   end
 
-  def set_edit
-    self.do_recheck
-  end
 
 
 end

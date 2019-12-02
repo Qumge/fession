@@ -103,7 +103,7 @@ module V1
           }
           params do
             requires 'name', type: String, desc: '商品名'
-            requires 'category_id', type: Integer, desc: '分类'
+            optional 'category_id', type: Integer, desc: '分类'
             optional 'coin', type: Integer, desc: '返金币'
             optional 'images', type: Array[String], desc: '图片路径["www.baidu.com/aa.png", "www.baidu.com/aa.png"]'
             optional 'stock', type: Integer, desc: '库存'
@@ -112,6 +112,7 @@ module V1
             optional 'type', type: String, desc: '类型 CoinProduct MoneyProduct', default: 'MoneyProduct'
             optional 'price', type: Integer, desc: '价格 type是CoinProduct的时候必填'
             optional 'desc', type: String, desc: '备注'
+            #optional 'status', type: String, desc: "商户上架传'check' 需要先审核 {wait: '新商品', check: '审核中', down: '已下架', up: '已上架', failed: '审核失败'}"
           end
           patch '/' do
             product = @product.fetch_for_api params

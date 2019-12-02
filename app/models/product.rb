@@ -57,7 +57,7 @@ class Product < ApplicationRecord
 
     #重新编辑
     event :do_wait do
-      transitions :from => :failed, :to => :wait
+      transitions :from => [:failed, :wait], :to => :new
     end
   end
 
@@ -83,7 +83,10 @@ class Product < ApplicationRecord
 
 
   def fetch_for_api params, company = nil
-    self.attributes = {name: params[:name], desc: params[:desc], category_id: params[:category_id]}
+    self.name = params[:name] if params[:name].present?
+    self.desc = params[:desc] if params[:desc].present?
+    self.status = params[:status] if params[:status].present?
+    self.category_id = params[:category_id] if params[:category_id].present?
     self.company = company if company.present?
     if params[:images].present?
       images = []
@@ -94,42 +97,45 @@ class Product < ApplicationRecord
     end
     Product.transaction do
       if params[:type] == 'CoinProduct'
-        self.stock = params[:stock]
-        self.price = params[:price]
+        self.stock = params[:stock] if params[:stock].present?
+        self.price = params[:price] if params[:price].present?
       else
-        self.coin = params[:coin]
-        params_specs = JSON.parse(params[:specs])
-        params_norms = JSON.parse(params[:norms])
-        params_specs.each do |params_spec|
-          spec = self.specs.find_or_initialize_by(name: params_spec['name'])
-          params_spec['values'].each do |value|
-            spec_value = spec.spec_values.find_or_initialize_by(name: value)
-            spec.spec_values << spec_value
-          end
-          self.specs << spec
-        end
-        if self.save
-          arr_norms = []
-          params_norms.each do |params_norm|
-            ids = []
-            p params_norm['name'], 1111111
-            spec_values = []
-            params_norm['name'].each do |spec_value_name|
-              spec_value = self.spec_values.find_by(name: spec_value_name)
-              spec_values << spec_value
+        self.coin = params[:coin] if params[:coin].present?
+        if params[:specs].present? && params[:norms].present?
+          params_specs = JSON.parse(params[:specs])
+          params_norms = JSON.parse(params[:norms])
+          params_specs.each do |params_spec|
+            spec = self.specs.find_or_initialize_by(name: params_spec['name'])
+            params_spec['values'].each do |value|
+              spec_value = spec.spec_values.find_or_initialize_by(name: value)
+              spec.spec_values << spec_value
             end
-            p spec_values, 22222
-            spec_values.sort_by!{|spec_value| spec_value.spec_id}
-            p spec_values, 11111
-            spec_attrs = spec_values.map(&:id).join('/')
-            p spec_attrs
-            norm = self.norms.find_or_initialize_by spec_attrs: spec_attrs
-            norm.price = params_norm['price'].to_i * 100
-            norm.stock = params_norm['stock']
-            arr_norms << norm
+            self.specs << spec
           end
-          self.norms = arr_norms
-          self.save
+          if self.save
+            arr_norms = []
+            params_norms.each do |params_norm|
+              ids = []
+              p params_norm['name'], 1111111
+              spec_values = []
+              params_norm['name'].each do |spec_value_name|
+                spec_value = self.spec_values.find_by(name: spec_value_name)
+                spec_values << spec_value
+              end
+              p spec_values, 22222
+              spec_values.sort_by!{|spec_value| spec_value.spec_id}
+              p spec_values, 11111
+              spec_attrs = spec_values.map(&:id).join('/')
+              p spec_attrs
+              norm = self.norms.find_or_initialize_by spec_attrs: spec_attrs
+              norm.price = params_norm['price'].to_i * 100
+              norm.stock = params_norm['stock']
+              arr_norms << norm
+            end
+            self.norms = arr_norms
+            self.save
+            self.do_wait!
+          end
         end
       end
     end

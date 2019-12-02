@@ -1,0 +1,3 @@
+class ProductAudit < Audit
+
+end

@@ -15,6 +15,7 @@ module V1
         mount V1::Admins::Games
         mount V1::Admins::TaskGames
         mount V1::Admins::Qiniu
+        mount V1::Admins::Audits
       end
 
       namespace :users do

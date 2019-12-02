@@ -1,0 +1,3 @@
+class TaskAudit < Audit
+
+end
