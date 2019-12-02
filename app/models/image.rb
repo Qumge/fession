@@ -11,4 +11,7 @@
 #
 
 class Image < ApplicationRecord
+  def image_path
+
+  end
 end

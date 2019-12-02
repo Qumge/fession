@@ -11,6 +11,8 @@
 
 class Category < ApplicationRecord
   has_ancestry
+  acts_as_paranoid
+  has_many :products
 
   validates_presence_of :name
   validates_uniqueness_of :name

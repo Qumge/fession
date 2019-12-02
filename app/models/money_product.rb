@@ -19,6 +19,7 @@
 #
 
 class MoneyProduct < Product
+  validates_presence_of :company_id
   #validates_presence_of :norms
   #
 

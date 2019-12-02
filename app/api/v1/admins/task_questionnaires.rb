@@ -47,14 +47,14 @@ module V1
         params do
           requires :name, type: String, desc: '标题'
           optional :desc, type: String, desc: '备注 描述'
-          optional :questions, type: Array[Hash], desc: "问题 [{name: '玩过的游戏', type: 'Question::Multiple', options: ['dnf', 'dota', 'lol']}, {name: '性别', type: 'Question::Single', options: ['男', '女']}, {name: '建议', type: 'Question::Completion'}]", default: [{name: '玩过的游戏', type: 'Question::Multiple', options: ['dnf', 'dota', 'lol']}, {name: '性别', type: 'Option::Single', options: ['男', '女']}, {name: '建议', type: 'Question::Completion'}]
+          optional :questions, type: String, desc: "问题 [{name: '玩过的游戏', type: 'Question::Multiple', options: ['dnf', 'dota', 'lol']}, {name: '性别', type: 'Question::Single', options: ['男', '女']}, {name: '建议', type: 'Question::Completion'}]", default: [{name: '玩过的游戏', type: 'Question::Multiple', options: ['dnf', 'dota', 'lol']}, {name: '性别', type: 'Option::Single', options: ['男', '女']}, {name: '建议', type: 'Question::Completion'}]
           requires :coin, type: Integer, desc: '金币总数'
           requires :valid_from, type: DateTime, desc: '有效期始'
           requires :valid_to, type: DateTime, desc: '有效至'
         end
         post '/' do
           questionnaire = ::Questionnaire.new name: params[:name], desc: params[:desc]
-          questionnaire = questionnaire.fetch_questions params[:questions]
+          questionnaire = questionnaire.fetch_questions JSON.parse(params[:questions])
           task = Task::QuestionnaireTask.new  coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company, questionnaire: questionnaire
 
           if questionnaire.valid?

@@ -121,7 +121,7 @@ class Product < ApplicationRecord
             spec_attrs = spec_values.map(&:id).join('/')
             p spec_attrs
             norm = self.norms.find_or_initialize_by spec_attrs: spec_attrs
-            norm.price = params_norm['price']
+            norm.price = params_norm['price'].to_i * 100
             norm.stock = params_norm['stock']
             arr_norms << norm
           end

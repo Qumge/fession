@@ -23,6 +23,16 @@ module V1
           end
         end
 
+        desc '公众号登录'
+        params do
+          requires :code, type: String, desc: '微信code'
+        end
+        post "/wx_login" do
+          #Todo
+          @user = User.first
+          {login: @user.login, id: @user.id, authentication_token: @user.authentication_token}
+        end
+
 
         desc '通过手机号注册、登录'
         params do

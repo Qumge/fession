@@ -9,7 +9,9 @@ module V1
         # examine available environment keys with `p options[:env].keys`
         instance.get_status
       end
-      expose :price
+      expose :price do |instance, options|
+        instance.type == 'CoinProduct' ? instance.price : (instance.price.to_f / 100)
+      end
       expose :no
       expose :stock
       expose :sale

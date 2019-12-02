@@ -6,7 +6,9 @@ module V1
       expose :name
       expose :stock
       expose :sale
-      expose :price
+      expose :price do |instance, options|
+        instance.price.to_f / 100
+      end
       expose :spec_attrs
       expose :spec_attr_names
       with_options(format_with: :timestamp) do

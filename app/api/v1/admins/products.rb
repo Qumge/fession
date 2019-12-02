@@ -8,6 +8,9 @@ module V1
         before do
           authenticate!
           @product_model = params[:type] == 'CoinProduct' ? CoinProduct : MoneyProduct
+          if params[:type] == 'CoinProduct'
+            operator_auth!
+          end
         end
 
 
