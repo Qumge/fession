@@ -19,6 +19,7 @@ class Game < ApplicationRecord
  # validates_presence_of :company_id, if: proc{|game| game.cost.present?}
   has_many :prizes
   belongs_to :company
+  has_one :image, -> {where(model_type: 'Game')}, foreign_key: :model_id
 
 
   def fetch_prizes params_prizes

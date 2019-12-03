@@ -26,7 +26,10 @@ module V1
           if params[:company_id].present?
             @company ||= Company.find_by id: params[:company_id]
           end
-          tasks = Task::ProductTask.search_conn(params).where(company: @company)
+          tasks = Task::ArticleTask.search_conn(params)
+          if @company.present?
+            tasks =  tasks.where(company: @company)
+          end
           present paginate(tasks), with: V1::Entities::Task
         end
 

@@ -4,6 +4,7 @@ module V1
       format_with(:timestamp) { |dt| dt.try :strftime, '%Y-%m-%d %H:%M:%S' }
       expose :id
       expose :file_path
+      expose :image_path
 
 
       with_options(format_with: :timestamp) do

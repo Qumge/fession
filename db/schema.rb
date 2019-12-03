@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_02_104222) do
+ActiveRecord::Schema.define(version: 2019_12_03_091553) do
 
   create_table "admins", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -141,6 +141,7 @@ ActiveRecord::Schema.define(version: 2019_12_02_104222) do
     t.integer "cost"
     t.bigint "residue_coin"
     t.datetime "deleted_at"
+    t.text "desc"
     t.index ["deleted_at"], name: "index_games_on_deleted_at"
   end
 

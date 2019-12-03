@@ -65,6 +65,25 @@ class Task < ApplicationRecord
       end
       tasks
     end
+
+    def search_game_conn params
+      tasks = self.all.order('valid_from desc')
+      if params[:status].present?
+        case params[:status]
+        when 'active'
+          tasks = tasks.where(status: 'success').where('valid_to > ?', DateTime.now)
+        when 'overtime'
+          tasks = tasks.where(status: 'success').where('valid_to < ?', DateTime.now)
+        else
+          tasks = tasks.where(status: params[:status])
+        end
+      end
+
+      if params[:type].present?
+        tasks = tasks.where('games.type = ?', params[:type])
+      end
+      tasks
+    end
   end
 
   def get_status

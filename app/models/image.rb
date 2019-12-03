@@ -11,7 +11,10 @@
 #
 
 class Image < ApplicationRecord
-  def image_path
+  validates_presence_of :file_path
 
+  def image_path
+    Rails.application.config.qiniu_domain + file_path
   end
+
 end
