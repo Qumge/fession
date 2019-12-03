@@ -20,7 +20,7 @@ module V1
                         end
         end
 
-        desc '商户创建游戏任务', {
+        desc '商户游戏列表', {
             headers: {
                 "X-Auth-Token" => {
                     description: "登录token",
@@ -29,16 +29,16 @@ module V1
             }
         }
         params do
-          requires :type, type: String, desc: '游戏类型 Game::Wheel Game::Tiger Game::Scratch'
-          requires :name, type: String, desc: '游戏名'
-          requires :coin, type: Integer, desc: '金币总数 用于转发任务'
-          requires :game_coin, type: Integer, desc: '奖池金币总数'
-          requires :valid_from, type: DateTime, desc: '有效期始'
-          requires :valid_to, type: DateTime, desc: '有效至'
-          optional :prizes, type: String, desc: '奖品 大转盘抽奖 默认为5个奖项 请勿多传或少传 [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}]', default:  [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}].to_json
+          optional :type, type: String, desc: '游戏类型 Game::Wheel Game::Tiger Game::Scratch'
+          optional :company_id, type: Integer, desc: '商户'
         end
         get '/' do
-
+          company_id = @company.present? ? @company.id : params[:company_id]
+          tasks = Task.joins(:game).where('tasks.company_id = ?', company_id)
+          if params[:type].present?
+            tasks = tasks.where('games.type = ?', params[:type])
+          end
+          present tasks, with: V1::Entities::Task
         end
 
 

@@ -21,6 +21,7 @@ module V1
       namespace :users do
         mount V1::Users::Users
         mount V1::Users::Qiniu
+        mount V1::Users::Fissions
       end
 
       add_swagger_documentation(

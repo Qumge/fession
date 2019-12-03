@@ -22,6 +22,7 @@ class Task < ApplicationRecord
   belongs_to :game, foreign_key: :model_id
   validates_presence_of :company_id
   has_many :audits, foreign_key: :model_id
+  has_many :fission_logs
 
   STATUS = { wait: '待审核', failed: '已拒绝', success: '审核成功', active: '进行中', overtime: '已结束'}
 

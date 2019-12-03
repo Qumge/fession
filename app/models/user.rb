@@ -49,6 +49,7 @@ class User < ApplicationRecord
 
   has_and_belongs_to_many :followers , join_table: 'user_follows', foreign_key: :follow_id, class_name: "User"
   has_many :coin_logs
+  has_many :fission_logs
 
 
 
@@ -75,6 +76,10 @@ class User < ApplicationRecord
 
   def email_required?
     false
+  end
+
+  def fission_log task
+    fission_logs.find_by(user: task)
   end
 
   #

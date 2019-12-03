@@ -1,11 +1,17 @@
 class FissionLog < ApplicationRecord
+  has_ancestry
+
   belongs_to :user
   belongs_to :task
 
+
   has_many :audits, foreign_key: :model_id
 
-  class << self
 
+  class << self
+    def assign_coin
+
+    end
   end
 
 end
