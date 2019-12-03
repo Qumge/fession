@@ -3,7 +3,7 @@ module V1
     class TaskGames < Grape::API
       helpers V1::Admins::AdminLoginHelper
       include Grape::Kaminari
-      paginate per_page:  Settings.per_page, max_per_page: 9999, offset: 0
+      #paginate per_page:  Settings.per_page, max_per_page: 9999, offset: 0
       before do
         authenticate!
       end
@@ -20,6 +20,26 @@ module V1
                         end
         end
 
+        desc '商户创建游戏任务', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :type, type: String, desc: '游戏类型 Game::Wheel Game::Tiger Game::Scratch'
+          requires :name, type: String, desc: '游戏名'
+          requires :coin, type: Integer, desc: '金币总数 用于转发任务'
+          requires :game_coin, type: Integer, desc: '奖池金币总数'
+          requires :valid_from, type: DateTime, desc: '有效期始'
+          requires :valid_to, type: DateTime, desc: '有效至'
+          optional :prizes, type: String, desc: '奖品 大转盘抽奖 默认为5个奖项 请勿多传或少传 [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}]', default:  [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}].to_json
+        end
+        get '/' do
+
+        end
 
 
         desc '商户创建游戏任务', {
@@ -54,7 +74,7 @@ module V1
 
         route_param :id do
           before do
-            @task = Task.find_by company: @company, id: params[:id]
+            @task = Task.find_by company: @company, id: params[:id], company: @company
             error!("找不到数据", 500) unless @task.present?
           end
 
@@ -84,6 +104,22 @@ module V1
               present @task, with: V1::Entities::Task
             else
               {error_code: '10001', error_messages: game.errors.messages}
+            end
+          end
+
+          desc '删除游戏任务', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          delete '/' do
+            if @task.failed? && @task.destroy
+              {error_code: '20001', error_message: '删除失败'}
+            else
+              {error_code: '00000', error_message: '删除成功'}
             end
           end
 

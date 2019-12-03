@@ -5,12 +5,6 @@ module V1
       include Grape::Kaminari
       resources 'categories' do
 
-        before do
-          authenticate!
-          operator_auth!
-        end
-
-
         desc '分类列表', {
             headers: {
                 "X-Auth-Token" => {
@@ -24,7 +18,10 @@ module V1
           present categories, with: V1::Entities::CategoryTree
         end
 
-
+        before do
+          authenticate!
+          operator_auth!
+        end
         desc '创建分类', {
             headers: {
                 "X-Auth-Token" => {

@@ -59,7 +59,7 @@ module V1
 
         route_param :id do
           before do
-            @task = ::Task::ArticleTask.find_by id: params[:id]
+            @task = ::Task::ArticleTask.find_by id: params[:id], company: @company
             error!("找不到数据", 500) unless @task.present?
           end
 
@@ -85,6 +85,22 @@ module V1
               present @task, with: V1::Entities::Task
             else
               {code: '100001', error_message: @task.errors}
+            end
+          end
+
+          desc '删除推文任务', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          delete '/' do
+            if @task.failed? && @task.destroy
+              {error_code: '20001', error_message: '删除失败'}
+            else
+              {error_code: '00000', error_message: '删除成功'}
             end
           end
 

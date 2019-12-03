@@ -75,7 +75,7 @@ module V1
 
         route_param :id do
           before do
-            @task = Task::QuestionnaireTask.find_by id: params[:id]
+            @task = Task::QuestionnaireTask.find_by id: params[:id], company: @company
             error!("找不到数据", 500) unless @task.present?
           end
           desc '问卷任务变更', {
@@ -110,7 +110,23 @@ module V1
 
           end
 
-          desc '商品任务详情', {
+          desc '删除调查问卷任务', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          delete '/' do
+            if @task.failed? && @task.destroy
+              {error_code: '20001', error_message: '删除失败'}
+            else
+              {error_code: '00000', error_message: '删除成功'}
+            end
+          end
+
+          desc '调查问卷任务详情', {
               headers: {
                   "X-Auth-Token" => {
                       description: "登录token",
