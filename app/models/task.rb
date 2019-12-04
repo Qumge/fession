@@ -52,7 +52,7 @@ class Task < ApplicationRecord
   end
   class << self
     def search_conn params
-      tasks = self.all.order('valid_from desc')
+      tasks = self.order('valid_from desc')
       if params[:status].present?
         case params[:status]
         when 'active'
