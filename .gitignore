@@ -16,6 +16,7 @@ config/puma.rb
 /.idea/*
 /.idea/
 /config/settings.yml
+/config/wechat.yml
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*

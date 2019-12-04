@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resource :wechat, only: [:show, :create]
   devise_for :users
   devise_for :customers
   devise_for :admins

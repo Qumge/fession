@@ -83,3 +83,4 @@ gem 'grape-swagger-ui'
 gem "paranoia", "~> 2.2"
 gem 'qiniu', '~> 6.8.1'  #七牛云存储
 gem 'rack-cors', :require => 'rack/cors'
+gem 'wechat'
