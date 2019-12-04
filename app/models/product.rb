@@ -140,7 +140,7 @@ class Product < ApplicationRecord
             end
             self.norms = arr_norms
             self.save
-            self.do_wait? if pself.may_do_wait?
+            self.do_wait! if self.may_do_wait?
           end
         end
       end
