@@ -7,6 +7,7 @@ module V1
       expose :type
       expose :status
       expose :get_status
+      expose :failed_reason
       expose :price do |instance, options|
         instance.type == 'CoinProduct' ? instance.price : (instance.price.to_f / 100)
       end

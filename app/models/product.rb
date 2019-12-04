@@ -28,6 +28,7 @@ class Product < ApplicationRecord
   validates_uniqueness_of :name, scope: :company_id
   has_many :specs
   has_many :audits, foreign_key: :model_id
+  has_many :audit_product_audits, :class_name => 'Audit::ProductAudit', foreign_key: :model_id
 
 
   acts_as_paranoid
@@ -80,6 +81,12 @@ class Product < ApplicationRecord
         products = products.where(company_id: params[:company_id])
       end
       products
+    end
+  end
+
+  def failed_reason
+    if self.failed?
+      self.audit_product_audits.where(to_status: 'failed').last&.reason
     end
   end
 

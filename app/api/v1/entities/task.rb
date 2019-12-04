@@ -9,6 +9,7 @@ module V1
       expose :name
       expose :status
       expose :get_status
+      expose :failed_reason
       expose :coin
       expose :residue_coin
       expose :company, using: V1::Entities::Company

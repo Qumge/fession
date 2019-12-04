@@ -20,6 +20,7 @@ module V1
         params do
           requires 'ids', type: String, desc: '商品id [1,2]'
           requires 'status', type: String, desc: "要变更的状态 { wait: '审核中', success: '审核成功', down: '已下架', up: '已上架', failed: '审核失败'}"
+          optional :reason, type: String, desc: '拒绝原因'
         end
         post :audit do
           if Product::STATUS[params[:status].to_sym].present?
@@ -27,8 +28,8 @@ module V1
             begin
               Product.transaction do
                 products.each do |product|
-                  Audit::ProductAudit.create product: product, form_status: product.status, to_status: params[:status], admin: @current_admin
-                  product.send "do_#{params[:status]}!"
+                  Audit::ProductAudit.create product: product, form_status: product.status, to_status: params[:status], admin: @current_admin, reason: params[:reason]
+                  product.send "do_#{params[:status]}!" if product.send "may_do_#{params[:status]}?"
                 end
               end
               present products, with: V1::Entities::Product
@@ -52,6 +53,7 @@ module V1
         params do
           requires 'ids', type: String, desc: '商品id [1,2]'
           requires 'status', type: String, desc: "要变更的状态 { wait: '待审核', failed: '已拒绝', success: '审核成功'}"
+          optional :reason, type: String, desc: '拒绝原因'
         end
         post :audit do
           if Task::STATUS[params[:status].to_sym].present?
@@ -60,8 +62,8 @@ module V1
             begin
               Task.transaction do
                 tasks.each do |task|
-                  Audit::TaskAudit.create task: task, form_status: task.status, to_status: params[:status], admin: @current_admin
-                  task.send "do_#{params[:status]}!"
+                  Audit::TaskAudit.create task: task, form_status: task.status, to_status: params[:status], admin: @current_admin, reason: params[:reason]
+                  task.send "do_#{params[:status]}!" if task.send "may_do_#{params[:status]}?"
                 end
               end
               present tasks, with: V1::Entities::Task

@@ -21,7 +21,7 @@ class Task < ApplicationRecord
   belongs_to :company
   belongs_to :game, foreign_key: :model_id
   validates_presence_of :company_id
-  has_many :audits, foreign_key: :model_id
+  has_many :audit_task_audits, :class_name => 'Audit::TaskAudit', foreign_key: :model_id
   has_many :fission_logs
 
   STATUS = { wait: '待审核', failed: '已拒绝', success: '审核成功', active: '进行中', overtime: '已结束'}
@@ -83,6 +83,12 @@ class Task < ApplicationRecord
         tasks = tasks.where('games.type = ?', params[:type])
       end
       tasks
+    end
+  end
+
+  def failed_reason
+    if self.failed?
+      self.audit_task_audits.where(to_status: 'failed').last&.reason
     end
   end
 
