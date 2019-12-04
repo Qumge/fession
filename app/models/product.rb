@@ -41,9 +41,9 @@ class Product < ApplicationRecord
     state :wait, :initial => true
     state :down, :up, :failed, :success
 
-    #审核成功
+    #审核成功 直接上架
     event :do_success do
-      transitions :from => [:wait], :to => :success
+      transitions :from => [:wait], :to => :up
     end
 
     #审核失败

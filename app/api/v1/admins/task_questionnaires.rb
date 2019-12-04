@@ -78,7 +78,12 @@ module V1
 
         route_param :id do
           before do
-            @task = Task::QuestionnaireTask.find_by id: params[:id], company: @company
+            #@task = Task::QuestionnaireTask.find_by id: params[:id], company: @company
+            if @company.present?
+              @task = Task::QuestionnaireTask.find_by id: params[:id], company: @company
+            else
+              @task = Task::QuestionnaireTask.find_by id: params[:id]
+            end
             error!("找不到数据", 500) unless @task.present?
           end
           desc '问卷任务变更', {

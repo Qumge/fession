@@ -87,9 +87,34 @@ module V1
         end
 
 
+        desc '上下架商品', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires 'ids', type: String, desc: '[1,2]'
+          requires 'status', type: String, desc: '状态 上架：up 下架： down'
+        end
+        post :change_status do
+          products = @product_model.where(id: JSON.parse(params[:ids]), company: @company)
+          products.each do |product|
+            product.send("do_#{params[:status]}!") if product.send("may_do_#{params[:status]}?")
+          end
+          present products, with: V1::Entities::Product
+        end
+
+
         route_param :id do
           before do
-            @product = Product.find_by id: params[:id], company: @company
+            if @company.present?
+              @product = Product.find_by id: params[:id], company: @company
+            else
+              @product = Product.find_by id: params[:id]
+            end
             error!("找不到数据", 500) unless @product.present?
           end
 
@@ -151,11 +176,7 @@ module V1
               {error_code: '30001',  message: '删除失败'}
             end
           end
-
-
         end
-
-
       end
     end
   end

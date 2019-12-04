@@ -12,14 +12,14 @@ module V1
         desc '商品审核-状态变更', {
             headers: {
                 "X-Auth-Token" => {
-                    description: "登录token",
+                    description: "登录token 运营平台账号",
                     required: false
                 }
             }
         }
         params do
           requires 'ids', type: String, desc: '商品id [1,2]'
-          requires 'status', type: String, desc: '要变更的状态'
+          requires 'status', type: String, desc: "要变更的状态 { wait: '审核中', success: '审核成功', down: '已下架', up: '已上架', failed: '审核失败'}"
         end
         post :audit do
           if Product::STATUS[params[:status].to_sym].present?
@@ -41,7 +41,7 @@ module V1
 
 
       resources 'tasks' do
-        desc '商品审核-状态变更', {
+        desc '商品审核-状态变更 运营平台账号', {
             headers: {
                 "X-Auth-Token" => {
                     description: "登录token",
@@ -51,7 +51,7 @@ module V1
         }
         params do
           requires 'ids', type: String, desc: '商品id [1,2]'
-          requires 'status', type: String, desc: '要变更的状态'
+          requires 'status', type: String, desc: "要变更的状态 { wait: '待审核', failed: '已拒绝', success: '审核成功'}"
         end
         post :audit do
           if Task::STATUS[params[:status].to_sym].present?

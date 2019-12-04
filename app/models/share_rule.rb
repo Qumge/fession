@@ -1,0 +1,2 @@
+class ShareRule < ApplicationRecord
+end

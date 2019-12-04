@@ -84,7 +84,11 @@ module V1
 
         route_param :id do
           before do
-            @task = Task::GameTask.find_by company: @company, id: params[:id], company: @company
+            if @company.present?
+              @task = Task::GameTask.find_by id: params[:id], company: @company
+            else
+              @task = Task::GameTask.find_by id: params[:id]
+            end
             error!("找不到数据", 500) unless @task.present?
           end
 

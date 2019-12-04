@@ -1,0 +1,2 @@
+class SignRule < ApplicationRecord
+end
