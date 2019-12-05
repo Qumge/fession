@@ -8,14 +8,24 @@ module V1
       expose :status
       expose :get_status
       expose :failed_reason
+      expose :task_id do |instance, options|
+        instance.task_product_task&.id
+      end
       expose :price do |instance, options|
-        instance.type == 'CoinProduct' ? instance.price : (instance.price.to_f / 100)
+
+        s = instance.type == 'CoinProduct' ? instance.price : (instance.price.to_f / 100)
+        p instance.price
+        p instance.price.to_f / 100
+        p s
+        s
       end
       expose :no
       expose :stock
       expose :sale
       expose :coin
-      expose :desc
+      expose :desc do |instance, options|
+        instance.desc.to_s
+      end
 
       # product_category 是在rails的model中定义的关联，在这里可以直接用
       expose :company, using: V1::Entities::Company

@@ -7,9 +7,6 @@ module V1
         authenticate!
       end
       resources 'qiniu' do
-        before do
-          authenticate!
-        end
         desc '七牛token', {
             headers: {
                 "X-Auth-Token" => {

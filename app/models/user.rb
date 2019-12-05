@@ -74,7 +74,9 @@ class User < ApplicationRecord
     end
 
     def init_by_web_session access_token, openid
+      p Wechat, 21112
       user_info = Wechat.api.web_userinfo access_token, openid
+
       p user_info
       if user_info['unionid']
         user = User.find_or_initialize_by unionid: user_info['unionid']

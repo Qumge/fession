@@ -13,8 +13,8 @@ module V1
           @game_model = case params[:type]
                         when 'Game::Wheel'
                           Game::Wheel
-                        when 'Game::Tiger'
-                          Game::Tiger
+                        when 'Game::Egg'
+                          Game::Egg
                         when 'Game::Scratch'
                           Game::Scratch
                         end
@@ -31,7 +31,7 @@ module V1
         params do
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
-          optional :type, type: String, desc: '游戏类型 Game::Wheel Game::Tiger Game::Scratch'
+          optional :type, type: String, desc: '游戏类型 Game::Wheel Game::Egg Game::Scratch'
           optional :company_id, type: Integer, desc: '商户'
           optional :status, type: String, desc: "状态 wait: '待审核', failed: '已拒绝', success: '审核成功' 数据库中只存储这三种状态 进行中和已经结束（active overtime）由有效时间和success组合而成 检索时使用（wait active overtime failed ）"
         end
@@ -58,7 +58,7 @@ module V1
             }
         }
         params do
-          requires :type, type: String, desc: '游戏类型 Game::Wheel Game::Tiger Game::Scratch'
+          requires :type, type: String, desc: '游戏类型 Game::Wheel Game::Egg Game::Scratch'
           requires :name, type: String, desc: '游戏名'
           requires :coin, type: Integer, desc: '金币总数 用于转发任务'
           requires :game_coin, type: Integer, desc: '奖池金币总数'
@@ -117,7 +117,8 @@ module V1
             game = game.fetch_prizes JSON.parse(params[:prizes])
             if game.valid?
               @task.update coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to],  company: @company
-              @task.do_recheck!
+              #@task.do_recheck!
+              @task.do_wait! if @task.may_do_wait?
               present @task, with: V1::Entities::Task
             else
               {error_code: '10001', error_messages: game.errors.messages}

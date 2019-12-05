@@ -76,6 +76,7 @@ module V1
                 }
             }
         }
+
         params do
           optional :nick_name, type: String, desc: '昵称'
           optional :nick_name, type: String, desc: '昵称'

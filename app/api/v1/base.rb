@@ -16,15 +16,18 @@ module V1
         mount V1::Admins::TaskGames
         mount V1::Admins::Qiniu
         mount V1::Admins::Audits
+        mount V1::Admins::Accounts
       end
 
       namespace :users do
         mount V1::Users::Users
         mount V1::Users::Qiniu
+        mount V1::Users::Weixin
         mount V1::Users::Fissions
         mount V1::Users::TaskArticles
         mount V1::Users::TaskQuestionnaires
         mount V1::Users::Products
+
       end
 
       add_swagger_documentation(
