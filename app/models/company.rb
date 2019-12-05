@@ -6,6 +6,7 @@
 #  active_amount   :bigint           default(0)
 #  active_at       :datetime
 #  coin            :bigint           default(0)
+#  deleted_at      :datetime
 #  invalid_amount  :bigint           default(0)
 #  locked_at       :datetime
 #  name            :string(255)
@@ -16,6 +17,10 @@
 #  withdraw_amount :bigint           default(0)
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#
+# Indexes
+#
+#  index_companies_on_deleted_at  (deleted_at)
 #
 
 class Company < ApplicationRecord

@@ -11,6 +11,8 @@
 #  coin                   :bigint
 #  country                :string(255)
 #  delete_at              :string(255)
+#  deleted_at             :datetime
+#  desc                   :string(255)
 #  email                  :string(255)      default(""), not null
 #  encrypted_password     :string(255)      default(""), not null
 #  gender                 :integer
@@ -31,6 +33,7 @@
 #
 # Indexes
 #
+#  index_users_on_deleted_at            (deleted_at)
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #

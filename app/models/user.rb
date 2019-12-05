@@ -11,6 +11,8 @@
 #  coin                   :bigint
 #  country                :string(255)
 #  delete_at              :string(255)
+#  deleted_at             :datetime
+#  desc                   :string(255)
 #  email                  :string(255)      default(""), not null
 #  encrypted_password     :string(255)      default(""), not null
 #  gender                 :integer
@@ -31,6 +33,7 @@
 #
 # Indexes
 #
+#  index_users_on_deleted_at            (deleted_at)
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #
@@ -62,6 +65,31 @@ class User < ApplicationRecord
       end
       users
     end
+
+    def init_by_web_code code
+      res = Wechat.api.web_access_token code
+      if res && res['openid']
+        init_by_web_session res['access_token'], res['openid']
+      end
+    end
+
+    def init_by_web_session access_token, openid
+      user_info = Wechat.api.web_userinfo access_token, openid
+      p user_info
+      if user_info['unionid']
+        user = User.find_or_initialize_by unionid: user_info['unionid']
+        user.web_session_token = access_token
+        user.web_openid = user_info['openid']
+        user.nick_name = user_info['nickname']
+        user.gender = user_info['sex']
+        user.city = user_info['city']
+        user.province = user_info['province']
+        user.country = user_info['country']
+        user.avatar_url = user_info['headimgurl']
+        user.save
+        user
+      end
+    end
   end
 
 
@@ -74,6 +102,7 @@ class User < ApplicationRecord
     #记录登录时间TODO
     self.save
   end
+
 
   def email_required?
     false

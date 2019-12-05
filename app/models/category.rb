@@ -4,9 +4,14 @@
 #
 #  id         :bigint           not null, primary key
 #  ancestry   :string(255)
+#  deleted_at :datetime
 #  name       :string(255)
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_categories_on_deleted_at  (deleted_at)
 #
 
 class Category < ApplicationRecord

@@ -23,14 +23,16 @@ module V1
           end
         end
 
+
         desc '公众号登录'
         params do
           requires :code, type: String, desc: '微信code'
         end
         post "/wx_login" do
-          #Todo
-          @user = User.first
-          {login: @user.login, id: @user.id, authentication_token: @user.authentication_token}
+          user = User.init_by_web_code params[:code]
+          if user.present? && user.is_a?(User)
+            {authentication_token: user.authentication_token}
+          end
         end
 
 
@@ -51,6 +53,7 @@ module V1
         before do
           authenticate!
         end
+
 
         desc '个人详情 follower：关注我的  follow_companies: 我关注的店铺 follow_users: 我关注的用户 coin：金币数', {
             headers: {

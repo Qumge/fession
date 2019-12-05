@@ -4,6 +4,7 @@
 #
 #  id          :bigint           not null, primary key
 #  coin        :integer
+#  deleted_at  :datetime
 #  desc        :text(65535)
 #  name        :string(255)
 #  no          :string(255)
@@ -16,6 +17,10 @@
 #  updated_at  :datetime         not null
 #  category_id :integer
 #  company_id  :integer
+#
+# Indexes
+#
+#  index_products_on_deleted_at  (deleted_at)
 #
 
 class MoneyProduct < Product

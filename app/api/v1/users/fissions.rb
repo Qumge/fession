@@ -41,7 +41,7 @@ module V1
           requires :token, type: String, desc: '本次任务的token'
         end
         post 'share' do
-          fission_log = FissionLog.find_by user: @current_user, token: token
+          fission_log = FissionLog.find_by user: @current_user, token: params[:token]
           if fission_log.present?
             share_log = ShareLog.create user: current_user, fission_log: fission_log
             present share_log, with: V1::Entities::ShareLog

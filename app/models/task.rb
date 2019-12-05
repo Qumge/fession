@@ -4,16 +4,21 @@
 #
 #  id           :bigint           not null, primary key
 #  coin         :bigint
+#  deleted_at   :datetime
 #  name         :string(255)
 #  residue_coin :bigint
 #  status       :string(255)
 #  type         :string(255)
-#  valid_form   :datetime
+#  valid_from   :datetime
 #  valid_to     :datetime
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  company_id   :integer
 #  model_id     :integer
+#
+# Indexes
+#
+#  index_tasks_on_deleted_at  (deleted_at)
 #
 
 class Task < ApplicationRecord
@@ -100,6 +105,10 @@ class Task < ApplicationRecord
     else
       STATUS[self.status.to_sym] if self.status.present?
     end
+  end
+
+  def time_valid?
+    DateTime.now >= self.valid_from && DateTime.now <= self.valid_to
   end
 
   def set_residue

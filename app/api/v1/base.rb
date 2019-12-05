@@ -22,6 +22,9 @@ module V1
         mount V1::Users::Users
         mount V1::Users::Qiniu
         mount V1::Users::Fissions
+        mount V1::Users::TaskArticles
+        mount V1::Users::TaskQuestionnaires
+        mount V1::Users::Products
       end
 
       add_swagger_documentation(

@@ -3,6 +3,7 @@
 # Table name: norms
 #
 #  id         :bigint           not null, primary key
+#  deleted_at :datetime
 #  name       :string(255)
 #  price      :integer
 #  sale       :integer          default(0)
@@ -11,6 +12,10 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  product_id :integer
+#
+# Indexes
+#
+#  index_norms_on_deleted_at  (deleted_at)
 #
 
 class Norm < ApplicationRecord
@@ -22,7 +27,7 @@ class Norm < ApplicationRecord
   end
 
   def spec_attr_names
-    spec_values.sort{|spec_value| spec_value.spec_id}.pluck(:name).join('/')
+    spec_values.sort_by{|spec_value| spec_value.spec_id}.pluck(:name).join('/')
     #spec_values.pluck(:name).join('/')
   end
 end

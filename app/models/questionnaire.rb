@@ -3,11 +3,16 @@
 # Table name: questionnaires
 #
 #  id         :bigint           not null, primary key
+#  deleted_at :datetime
 #  desc       :string(255)
 #  name       :string(255)
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  company_id :integer
+#
+# Indexes
+#
+#  index_questionnaires_on_deleted_at  (deleted_at)
 #
 
 class Questionnaire < ApplicationRecord

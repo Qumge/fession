@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_04_061601) do
+ActiveRecord::Schema.define(version: 2019_12_04_111905) do
 
   create_table "admins", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -80,6 +80,8 @@ ActiveRecord::Schema.define(version: 2019_12_04_061601) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.integer "company_id"
+    t.integer "model_id"
   end
 
   create_table "companies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -267,11 +269,15 @@ ActiveRecord::Schema.define(version: 2019_12_04_061601) do
   create_table "share_rules", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "level"
+    t.integer "coin"
   end
 
   create_table "sign_rules", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "number"
+    t.integer "coin"
   end
 
   create_table "sms_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -345,8 +351,6 @@ ActiveRecord::Schema.define(version: 2019_12_04_061601) do
     t.string "avatar_url"
     t.string "open_id"
     t.string "unionid"
-    t.string "session_key"
-    t.string "session_token"
     t.string "delete_at"
     t.datetime "code_create_at"
     t.bigint "coin"
@@ -355,8 +359,13 @@ ActiveRecord::Schema.define(version: 2019_12_04_061601) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.string "desc"
+    t.string "web_session_token"
+    t.string "web_openid"
+    t.string "ad_session_token"
+    t.string "ad_openid"
+    t.string "ios_session_token"
+    t.string "ios_openid"
     t.index ["deleted_at"], name: "index_users_on_deleted_at"
-    t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
