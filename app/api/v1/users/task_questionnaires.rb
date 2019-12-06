@@ -21,13 +21,13 @@ module V1
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
         end
         get '/' do
-          tasks = Task::QuestionnaireTask.search_conn(params)
+          tasks = Task::QuestionnaireTask.where(status: 'success').search_conn(params)
           present paginate(tasks), with: V1::Entities::Task
         end
 
         route_param :id do
           before do
-            @task = ::Task::QuestionnaireTask.find_by id: params[:id]
+            @task = ::Task::QuestionnaireTask.find_by id: params[:id], status: 'success'
             error!("找不到数据", 500) unless @task.present?
           end
 

@@ -21,16 +21,16 @@ module V1
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
         end
         get '/' do
-          tasks = Task::GameTask.search_conn(params)
+          tasks = Task::GameTask.where(status: 'success').search_conn(params)
           present paginate(tasks), with: V1::Entities::Task
         end
 
         route_param :id do
           before do
-            @task = ::Task::GameTask.find_by id: params[:id]
+            @task = ::Task::GameTask.find_by id: params[:id], status: 'success'
             error!("找不到数据", 500) unless @task.present?
           end
-          desc '推文任务详情', {
+          desc '游戏任务详情', {
               headers: {
                   "X-Auth-Token" => {
                       description: "登录token",

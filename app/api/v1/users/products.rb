@@ -5,6 +5,7 @@ module V1
       include Grape::Kaminari
       before do
         authenticate!
+        @product_model = params[:type] == 'CoinProduct' ? CoinProduct : MoneyProduct
       end
 
       resources 'products' do
@@ -19,15 +20,16 @@ module V1
         params do
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+          optional :type, type: String, desc: '类型', default: 'Money::Product'
         end
         get '/' do
-          products = Product.search_conn(params)
+          products = @product_model.where(status: 'up').search_conn(params)
           present paginate(products), with: V1::Entities::Product
         end
 
         route_param :id do
           before do
-            @product = Product.find_by id: params[:id], status: 'up'
+            @product = @product_model.find_by id: params[:id], status: 'up'
             error!("找不到数据", 500) unless @product.present?
           end
 

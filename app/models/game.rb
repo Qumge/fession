@@ -29,16 +29,18 @@ class Game < ApplicationRecord
 
 
   def fetch_prizes params_prizes
-    params_prizes = [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}]
+    #params_prizes = [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}]
     prizes = []
+    p params_prizes, 1111
     params_prizes.each do |params_prize|
-      if params_prize[:product_id].present?
-        prize = self.prizes.find_or_initialize_by product_id: params_prize[:product_id]
+      if params_prize['product_id'].present?
+        p params_prize['product_id'], 11111
+        prize = self.prizes.find_or_initialize_by product_id: params_prize['product_id']
       else
-        prize = self.prizes.find_or_initialize_by coin: params_prize[:coin]
+        prize = self.prizes.find_or_initialize_by coin: params_prize['coin']
       end
-      prize.probability = params_prize[:probability]
-      prize.number = params_prize[:number]
+      prize.probability = params_prize['probability']
+      prize.number = params_prize['number']
       p prize.valid? ,1222222
       prizes << prize
     end
