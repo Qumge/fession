@@ -130,7 +130,7 @@ module V1
             requires 'name', type: String, desc: '商品名'
             optional 'category_id', type: Integer, desc: '分类'
             optional 'coin', type: Integer, desc: '返金币'
-            optional 'images', type: Array[String], desc: '图片路径["www.baidu.com/aa.png", "www.baidu.com/aa.png"]'
+            optional 'images', type: String, desc: '图片路径["www.baidu.com/aa.png", "www.baidu.com/aa.png"]'
             optional 'stock', type: Integer, desc: '库存'
             optional 'specs', type: String, desc: "规格", default:  [{name: '颜色', values: ['红色', '黑色']}, {name: '尺码', values: ['xl', 'xxl']}].to_json
             optional 'norms', type: String, desc: "规格详细", default: [{name: ['红色', 'xl'], price: 1000, stock: 1000}, {name: ['黑色', 'xl'], price: 1000, stock: 1000}, {name: ['红色', 'xxl'], price: 1000, stock: 1000}, {name: ['黑色', 'xxl'], price: 1000, stock: 1000}].to_json

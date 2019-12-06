@@ -109,6 +109,7 @@ class Product < ApplicationRecord
     self.company = company if company.present?
     if params[:images].present?
       images = []
+      p params[:images], 1111
       JSON.parse(params[:images]).each do |image|
         images << Image.new(file_path: image, model_type: 'Product')
       end
