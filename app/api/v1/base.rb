@@ -30,7 +30,7 @@ module V1
         mount V1::Users::TaskQuestionnaires
         mount V1::Users::TaskGames
         mount V1::Users::Products
-
+        mount V1::Users::TaskLinks
       end
 
       add_swagger_documentation(

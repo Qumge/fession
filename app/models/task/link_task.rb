@@ -23,7 +23,12 @@
 
 class Task::LinkTask < Task
   #belongs_to :article, foreign_key: :model_id
+  after_create_commit :set_success
   def view_name
     self&.name
+  end
+
+  def set_success
+    self.update status: 'success'
   end
 end

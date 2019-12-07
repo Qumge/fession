@@ -7,6 +7,7 @@ module V1
       expose :id
       expose :type
       expose :name
+      expose :link
       expose :status
       expose :get_status
       expose :failed_reason

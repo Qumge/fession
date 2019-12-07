@@ -22,12 +22,12 @@ module V1
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
         end
         get '/' do
-          logs = ::ShareLog.left_joins(:fission_log)
+          logs = ::ShareLog.joins(fission_log: :task).order('share_logs.created_at desc')
           if @company.present?
-            logs = logs.where("fission_los.company_id =?", @company.id)
+            logs = logs.where("tasks.company_id =?", @company.id)
           else
             if params[:company_id].present?
-              logs = logs.where("fission_los.company_id =?", params[:company_id])
+              logs = logs.where("tasks.company_id =?", params[:company_id])
             end
           end
           present paginate(logs), with: V1::Entities::ShareLog
