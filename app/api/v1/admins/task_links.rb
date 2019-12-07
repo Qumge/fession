@@ -60,7 +60,7 @@ module V1
         route_param :id do
           before do
             if @company.present?
-              @task = ::Task::LigggnkTask.find_by id: params[:id], company: @company
+              @task = ::Task::LinkTask.find_by id: params[:id], company: @company
             else
               @task = ::Task::LinkTask.find_by id: params[:id]
             end
