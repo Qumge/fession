@@ -67,7 +67,7 @@ module V1
             error!("找不到数据", 500) unless @task.present?
           end
 
-          desc '推文任务变更', {
+          desc '外链任务变更', {
               headers: {
                   "X-Auth-Token" => {
                       description: "登录token",
@@ -83,15 +83,10 @@ module V1
             requires :valid_to, type: DateTime, desc: '有效至'
           end
           patch '/' do
-            if @task.update article: article, coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company, name: params[:name], link: params[:link]
-              @task.do_wait! if @task.may_do_wait?
-              present @task, with: V1::Entities::Task
-            else
-              {code: '100001', error_message: @task.errors}
-            end
+
           end
 
-          desc '删除推文任务', {
+          desc '删除外链任务', {
               headers: {
                   "X-Auth-Token" => {
                       description: "登录token",
@@ -107,7 +102,7 @@ module V1
             end
           end
 
-          desc '推文任务详情', {
+          desc '外链任务详情', {
               headers: {
                   "X-Auth-Token" => {
                       description: "登录token",

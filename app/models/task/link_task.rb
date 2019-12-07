@@ -29,6 +29,6 @@ class Task::LinkTask < Task
   end
 
   def set_success
-    self.update status: 'success'
+    self.update status: 'success', residue_coin: self.coin
   end
 end
