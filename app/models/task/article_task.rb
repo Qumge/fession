@@ -25,6 +25,6 @@ class Task::ArticleTask < Task
   belongs_to :article, foreign_key: :model_id
 
   def view_name
-    self.article&.subject
+    self.article.do_success if self.article.may_do_success?
   end
 end

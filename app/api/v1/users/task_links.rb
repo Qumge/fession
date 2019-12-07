@@ -27,7 +27,7 @@ module V1
 
         route_param :id do
           before do
-            @task = ::Task::ArticleTask.find_by id: params[:id], status: 'success'
+            @task = ::Task::LinkTask.find_by id: params[:id], status: 'success'
             error!("找不到数据", 500) unless @task.present?
           end
 
