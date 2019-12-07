@@ -21,9 +21,9 @@
 #  index_tasks_on_deleted_at  (deleted_at)
 #
 
-class Task::GameTask < Task
-  belongs_to :game, foreign_key: :model_id
+class Task::LinkTask < Task
+  #belongs_to :article, foreign_key: :model_id
   def view_name
-    self.game&.name
+    self&.name
   end
 end

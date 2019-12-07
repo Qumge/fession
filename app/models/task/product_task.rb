@@ -23,4 +23,7 @@
 
 class Task::ProductTask < Task
   belongs_to :product, foreign_key: :model_id
+  def view_name
+    self.product&.name
+  end
 end

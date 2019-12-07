@@ -20,6 +20,11 @@ module Fission
     config.autoload_paths << "#{Rails.root}/lib"
     config.assets.precompile += %w(swagger_ui.js swagger_ui.css swagger_ui_print.css swagger_ui_screen.css)
 
-
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins '*'
+        resource '*', :headers => :any, :methods => [:get, :post, :options, :patch, :put, :delete]
+      end
+    end
   end
 end

@@ -23,4 +23,7 @@
 
 class Task::QuestionnaireTask < Task
   belongs_to :questionnaire, foreign_key: :model_id, class_name: "::Questionnaire"
+  def view_name
+    self.questionnaire&.name
+  end
 end

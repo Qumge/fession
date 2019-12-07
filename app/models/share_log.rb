@@ -25,4 +25,16 @@ class ShareLog < ApplicationRecord
     end
   end
 
+  def task_name
+    self.fission_log&.task&.view_name
+  end
+
+  def token
+    self.fission_log&.token
+  end
+
+  def user_name
+    self.user&.nick_name
+  end
+
 end

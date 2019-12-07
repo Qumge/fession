@@ -115,6 +115,4 @@ class Task < ApplicationRecord
     self.update residue_coin: self.coin
   end
 
-
-
 end
