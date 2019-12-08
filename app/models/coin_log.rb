@@ -9,12 +9,14 @@
 #  updated_at :datetime         not null
 #  user_id    :integer
 #
+#
 
 class CoinLog < ApplicationRecord
   belongs_to :user
   belongs_to :company
   CHANNEL = {fission: '转发裂变', sign: '签到', game: '游戏抽奖', cash: '提现', prize: '中奖'}
   belongs_to :fission_log, foreign_key: :model_id
+  belongs_to :share_log
   #belongs_to :sign_log, foreign_key: :model_id
 
   after_create :set_coin
@@ -24,11 +26,11 @@ class CoinLog < ApplicationRecord
   end
 
   def user_name
-    'user_name'
+    self.user&.nick_name
   end
 
   def share_name
-    'shre_name'
+    self.share_log&.user&.nick_name
   end
 
   def set_coin

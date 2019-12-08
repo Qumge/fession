@@ -21,7 +21,7 @@ class ShareLog < ApplicationRecord
     p 11111
     if fission_log.parent.present?
       p 22222
-      fission_log.parent.fission_coin 1
+      fission_log.parent.fission_coin 1, self
     end
   end
 

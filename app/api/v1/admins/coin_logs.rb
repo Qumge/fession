@@ -22,8 +22,7 @@ module V1
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
         end
         get '/' do
-          logs = ::CoinLog.all
-
+          logs = ::CoinLog.order('created_at desc')
           present paginate(logs), with: V1::Entities::CoinLog
         end
       end
