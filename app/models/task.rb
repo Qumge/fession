@@ -115,4 +115,8 @@ class Task < ApplicationRecord
     self.update residue_coin: self.coin
   end
 
+  def h5_link
+    'www.baidu.com'
+  end
+
 end

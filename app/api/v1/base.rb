@@ -14,6 +14,7 @@ module V1
         mount V1::Admins::TaskQuestionnaires
         mount V1::Admins::TaskLinks
         mount V1::Admins::ShareLogs
+        mount V1::Admins::CoinLogs
         mount V1::Admins::Games
         mount V1::Admins::TaskGames
         mount V1::Admins::Qiniu

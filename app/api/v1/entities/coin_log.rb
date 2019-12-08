@@ -3,6 +3,9 @@ module V1
     class CoinLog < Grape::Entity
       format_with(:timestamp) { |dt| dt.try :strftime, '%Y-%m-%d %H:%M:%S' }
       expose :id
+      expose :user_name
+      expose :coin
+      expose :share_name
       expose :channel do |instance, options|
         instance.get_channel
       end

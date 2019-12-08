@@ -23,6 +23,14 @@ class CoinLog < ApplicationRecord
     CHANNEL[self.channel.to_sym]
   end
 
+  def user_name
+    'user_name'
+  end
+
+  def share_name
+    'shre_name'
+  end
+
   def set_coin
     case self.channel
     when 'fission'

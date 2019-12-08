@@ -13,6 +13,7 @@ module V1
       expose :failed_reason
       expose :coin
       expose :residue_coin
+      expose :h5_link
       expose :company, using: V1::Entities::Company
       expose :product, using: V1::Entities::Product, if: proc{|instance| instance.type == 'Task::ProductTask'}
       expose :game, using: V1::Entities::Game, if: proc{|instance| instance.type == 'Task::GameTask'}
