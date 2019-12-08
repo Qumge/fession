@@ -45,13 +45,13 @@ module V1
         }
         params do
           requires :name, type: String, desc: '标题'
-          requires :link, type: String, desc: '链接'
+          requires :share_link, type: String, desc: '链接'
           requires :coin, type: Integer, desc: '金币总数'
           requires :valid_from, type: DateTime, desc: '有效期始'
           requires :valid_to, type: DateTime, desc: '有效至'
         end
         post '/' do
-          task = Task::LinkTask.new coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company, name: params[:name], link: params[:link]
+          task = Task::LinkTask.new coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company, name: params[:name], share_link: params[:share_link]
           if task.save
             present task, with: V1::Entities::Task
           end
@@ -77,7 +77,7 @@ module V1
           }
           params do
             requires :name, type: String, desc: '标题'
-            requires :link, type: String, desc: '链接'
+            requires :share_link, type: String, desc: '链接'
             requires :coin, type: Integer, desc: '金币总数'
             requires :valid_from, type: DateTime, desc: '有效期始'
             requires :valid_to, type: DateTime, desc: '有效至'
