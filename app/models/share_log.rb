@@ -17,10 +17,10 @@ class ShareLog < ApplicationRecord
   after_create :fission_coin
 
   def fission_coin
+    task = self.fission_log.task
+    task.update share_num: task.share_num + 1 if task.present?
     fission_log = self.fission_log
-    p 11111
     if fission_log.parent.present?
-      p 22222
       fission_log.parent.fission_coin 1, self
     end
   end

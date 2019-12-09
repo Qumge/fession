@@ -9,14 +9,7 @@ module V1
       end
 
       resources 'products' do
-        desc '推文任务列表', {
-            headers: {
-                "X-Auth-Token" => {
-                    description: "登录token",
-                    required: false
-                }
-            }
-        }
+        desc '商品列表'
         params do
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
@@ -33,14 +26,7 @@ module V1
             error!("找不到数据", 500) unless @product.present?
           end
 
-          desc '推文任务详情', {
-              headers: {
-                  "X-Auth-Token" => {
-                      description: "登录token",
-                      required: false
-                  }
-              }
-          }
+          desc '推文任务详情'
           get '/' do
             present @product, with: V1::Entities::Product
           end
