@@ -4,7 +4,6 @@ module V1
       helpers V1::Users::UserLoginHelper
       include Grape::Kaminari
       before do
-        authenticate!
         @product_model = params[:type] == 'CoinProduct' ? CoinProduct : MoneyProduct
       end
 
