@@ -44,6 +44,8 @@ class Game < ApplicationRecord
       p prize.valid? ,1222222
       prizes << prize
     end
+    image = Image.new file_path: params[:image]
+    self.image = image
     self.prizes = prizes
     self.save
     self

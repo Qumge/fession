@@ -20,6 +20,7 @@ module V1
         mount V1::Admins::Qiniu
         mount V1::Admins::Audits
         mount V1::Admins::Accounts
+        mount V1::Admins::Banners
       end
 
       namespace :users do
@@ -32,6 +33,9 @@ module V1
         mount V1::Users::TaskGames
         mount V1::Users::Products
         mount V1::Users::TaskLinks
+        mount V1::Users::Tasks
+        mount V1::Users::Posts
+        mount V1::Users::MyPosts
       end
 
       add_swagger_documentation(

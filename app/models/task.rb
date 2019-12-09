@@ -33,7 +33,7 @@ class Task < ApplicationRecord
 
   aasm :status do
     state :wait, :initial => true
-    state :failed, :success
+    state :failed, :success, :overtime
 
     # # 申请审核
     # event :do_wait do
