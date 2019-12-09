@@ -116,7 +116,7 @@ class Task < ApplicationRecord
   end
 
   def h5_link
-    "http://fission.natapp1.cc/pages/task/show?id=self.id"
+    "http://fission.natapp1.cc/pages/task/show?id=#{self.id}"
   end
 
 end
