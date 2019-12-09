@@ -50,7 +50,7 @@ module V1
           if operator.save
             present operator, with: V1::Entities::Admin
           else
-            {error_code: '00000', error_message: operator.errors.messages}
+            {error_code: '20001', error_message: operator.errors.messages}
           end
         end
 
@@ -79,7 +79,7 @@ module V1
             if @operator.save
               present @operator, with: V1::Entities::Admin
             else
-              {error_code: '00000', error_message: @operator.errors.messages}
+              {error_code: '20001', error_message: @operator.errors.messages}
             end
           end
 

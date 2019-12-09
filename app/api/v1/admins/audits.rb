@@ -42,7 +42,7 @@ module V1
 
 
       resources 'tasks' do
-        desc '商品审核-状态变更 运营平台账号', {
+        desc '任务审核-状态变更 运营平台账号', {
             headers: {
                 "X-Auth-Token" => {
                     description: "登录token",
@@ -59,6 +59,7 @@ module V1
           if Task::STATUS[params[:status].to_sym].present?
             tasks = Task.where(id: JSON.parse(params[:ids]))
             tasks = tasks.where(company: @company) if @company.present?
+
             begin
               Task.transaction do
                 tasks.each do |task|

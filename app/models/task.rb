@@ -45,6 +45,11 @@ class Task < ApplicationRecord
       transitions :from => :wait, :to => :success, after: Proc.new {set_residue}
     end
 
+    # 已结束
+    event :do_overtime do
+      transitions :from => :success, :to => :overtime, after: Proc.new {set_residue}
+    end
+
     #审核失败
     event :do_failed do
       transitions :from => :wait, :to => :failed
@@ -63,7 +68,8 @@ class Task < ApplicationRecord
         when 'active'
           tasks = tasks.where(status: 'success').where('valid_to > ?', DateTime.now)
         when 'overtime'
-          tasks = tasks.where(status: 'success').where('valid_to < ?', DateTime.now)
+          #tasks = tasks.where(status: 'success').where('valid_to < ?', DateTime.now)
+          tasks = tasks.where("(tasks.status = ? and tasks.valid_to < ？) or tasks.status = ?", 'success', DateTime.now, 'overtime')
         else
           tasks = tasks.where(status: params[:status])
         end

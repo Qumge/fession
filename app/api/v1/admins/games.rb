@@ -60,8 +60,6 @@ module V1
           game = @game_model.find_by company_id: nil
           present game, with: V1::Entities::Game
         end
-
-
       end
     end
   end

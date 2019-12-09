@@ -73,7 +73,7 @@ module V1
             if companies.update_all status: params[:status]
               present companies, with: V1::Entities::Company
             else
-              error!("变更失败", 200001)
+              {error_code: '20001', error_message: '变更失败'}
             end
           end
         end
@@ -93,7 +93,7 @@ module V1
           ids = JSON.parse params[:ids]
           companies = Company.where(id: ids)
           if companies.destroy_all
-            {error_code: '00000', message: 'success'}
+            {error_code: '00000', message: '删除成功'}
           else
             {error_code: '30001', message: '删除失败'}
           end

@@ -49,4 +49,5 @@ class Game < ApplicationRecord
     self
   end
 
+
 end
