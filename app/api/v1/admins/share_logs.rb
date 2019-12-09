@@ -26,9 +26,9 @@ module V1
           if @company.present?
             logs = logs.where("tasks.company_id =?", @company.id)
           else
-            if params[:company_id].present?
-              logs = logs.where("tasks.company_id =?", params[:company_id])
-            end
+            # if params[:company_id].present?
+            #   logs = logs.where("tasks.company_id =?", params[:company_id])
+            # end
           end
           present paginate(logs), with: V1::Entities::ShareLog
         end

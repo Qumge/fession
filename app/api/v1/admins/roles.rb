@@ -12,6 +12,22 @@ module V1
         end
 
 
+        desc '当前角色权限', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        get 'resources' do
+          if @current_admin.role.present?
+            present @current_admin.role, with: V1::Entities::Role
+          else
+            present Role.new, with: V1::Entities::Role
+          end
+        end
+
         desc '角色权限列表', {
             headers: {
                 "X-Auth-Token" => {
