@@ -50,7 +50,7 @@ module V1
             customer.save
             present company, with: V1::Entities::Company
           else
-            {error_code: '10001', error_message: customer.errors.messages.merge(company.errors.messages)}
+            {error: '10001', message: customer.errors.messages.merge(company.errors.messages)}
           end
         end
 
@@ -73,7 +73,7 @@ module V1
             if companies.update_all status: params[:status]
               present companies, with: V1::Entities::Company
             else
-              {error_code: '20001', error_message: '变更失败'}
+              {error: '20001', message: '变更失败'}
             end
           end
         end
@@ -93,9 +93,9 @@ module V1
           ids = JSON.parse params[:ids]
           companies = Company.where(id: ids)
           if companies.destroy_all
-            {error_code: '00000', message: '删除成功'}
+            {error: '', message: '删除成功'}
           else
-            {error_code: '30001', message: '删除失败'}
+            {error: '30001', message: '删除失败'}
           end
         end
 
@@ -128,7 +128,7 @@ module V1
               @company.save
               present @company, with: V1::Entities::Company
             else
-              {error_code: '10001', error_message: customer.errors.messages.merge(@company.errors.messages)}
+              {error: '10001', message: customer.errors.messages.merge(@company.errors.messages)}
             end
           end
 
@@ -157,9 +157,9 @@ module V1
           }
           delete '/' do
             if @company.destroy
-              {error_code: '00000', message: '删除成功'}
+              {error: '', message: '删除成功'}
             else
-              {error_code: '30001', message: '删除失败'}
+              {error: '30001', message: '删除失败'}
             end
           end
 

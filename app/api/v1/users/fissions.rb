@@ -46,7 +46,7 @@ module V1
             share_log = ShareLog.create user: current_user, fission_log: fission_log
             present share_log, with: V1::Entities::ShareLog
           else
-            {error_code: '50001', error_message: '错误的分享吗'}
+            {error: '50001', message: '错误的分享吗'}
           end
         end
       end

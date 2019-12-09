@@ -14,18 +14,18 @@ module V1
 
           if @admin.present?
             if @admin.locked?
-              {error_code: '20002', error_message: '账号已冻结，不能登录，请联系管理员'}
+              {error: '20002', message: '账号已冻结，不能登录，请联系管理员'}
             else
               if @admin.class.name == 'Customer'
                 if @admin.company.present?
                   if @admin.company.locked?
-                    {error_code: '20004', error_message: '商户已被冻结，请联系管理员'}
+                    {error: '20004', message: '商户已被冻结，请联系管理员'}
                   else
                     @admin.ensure_authentication_token!
                     {login: @admin.login, id: @admin.id, authentication_token: @admin.authentication_token, type: @admin.type, role_name: @admin.role&.name}
                   end
                 else
-                  {error_code: '20003', error_message: '错误的商户账号'}
+                  {error: '20003', message: '错误的商户账号'}
                 end
               else
                 @admin.ensure_authentication_token!
@@ -33,7 +33,7 @@ module V1
               end
             end
           else
-            {error_code: '20001', error_message: '账号或密码错误'}
+            {error: '20001', message: '账号或密码错误'}
           end
         end
 

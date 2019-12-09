@@ -34,7 +34,7 @@ module V1
               end
               present products, with: V1::Entities::Product
             rescue => e
-              {error_code: '40001', error_message: "状态异常: #{e.message}"}
+              {error: '40001', message: "状态异常: #{e.message}"}
             end
           end
         end
@@ -69,7 +69,7 @@ module V1
               end
               present tasks, with: V1::Entities::Task
             rescue => e
-              {error_code: '40001', error_message: "状态异常: #{e.message}"}
+              {error: '40001', message: "状态异常: #{e.message}"}
             end
 
           end

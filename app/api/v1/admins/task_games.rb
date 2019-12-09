@@ -76,7 +76,7 @@ module V1
             task = Task::GameTask.create coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], game: game, company: @company
             present task, with: V1::Entities::Task
           else
-            {error_code: '10001', error_messages: game.errors.messages}
+            {error: '10001', messages: game.errors.messages}
           end
         end
 
@@ -121,7 +121,7 @@ module V1
               @task.do_wait! if @task.may_do_wait?
               present @task, with: V1::Entities::Task
             else
-              {error_code: '10001', error_messages: game.errors.messages}
+              {error: '10001', messages: game.errors.messages}
             end
           end
 
@@ -135,9 +135,9 @@ module V1
           }
           delete '/' do
             if @task.failed? && @task.destroy
-              {error_code: '20001', error_message: '删除失败'}
+              {error: '20001', message: '删除失败'}
             else
-              {error_code: '00000', error_message: '删除成功'}
+              {error: '', message: '删除成功'}
             end
           end
 

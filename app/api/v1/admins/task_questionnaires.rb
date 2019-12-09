@@ -69,10 +69,10 @@ module V1
             if task.save
               present task, with: V1::Entities::Task
             else
-              {error_code: '100001', error_message: task.errors}
+              {error: '100001', message: task.errors}
             end
           else
-            {error_code: '100001', error_message: questionnaire.errors}
+            {error: '100001', message: questionnaire.errors}
           end
         end
 
@@ -110,10 +110,10 @@ module V1
                 @task.do_wait! if @task.may_do_wait?
                 present task, with: V1::Entities::Task
               else
-                {code: '100001', error_message: @task.errors}
+                {code: '100001', message: @task.errors}
               end
             else
-              {code: '100001', error_message: questionnaire.errors}
+              {code: '100001', message: questionnaire.errors}
             end
 
           end
@@ -128,9 +128,9 @@ module V1
           }
           delete '/' do
             if @task.failed? && @task.destroy
-              {error_code: '20001', error_message: '删除失败'}
+              {error: '20001', message: '删除失败'}
             else
-              {error_code: '00000', error_message: '删除成功'}
+              {error: '', message: '删除成功'}
             end
           end
 

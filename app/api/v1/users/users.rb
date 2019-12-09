@@ -13,13 +13,13 @@ module V1
         post "/login" do
           @user = User.find_by_login params[:login]
           if @user && @user[:locked]
-            {error_code: '20009', error_message: '账号被锁定'}
+            {error: '20009', message: '账号被锁定'}
           elsif @user && !@user[:locked] && (@user.code_create_at + 5.minutes) > DateTime.now
             #sign_in @admin
             @user.ensure_authentication_token!
             {login: @user.login, id: @user.id, authentication_token: @user.authentication_token}
           else
-            {error_code: '20001', error_message: '验证码错误或超时'}
+            {error: '20001', message: '验证码错误或超时'}
           end
         end
 
@@ -46,7 +46,7 @@ module V1
             user.send_code_sms
             present user, with: V1::Entities::User
           else
-            {error_code: '20002', error_message: '手机号码有误'}
+            {error: '20002', message: '手机号码有误'}
           end
         end
 
@@ -173,10 +173,10 @@ module V1
           user = User.find_by id: params[:user_id]
           if user.present?
             @current_user.follow_users << user
-            {error_code: '00000', message: '关注成功'}
+            {error: '', message: '关注成功'}
             #present @current_user.reload, with: V1::Entities::User
           else
-            {error_code: '20002', message: '错误的用户'}
+            {error: '20002', message: '错误的用户'}
           end
         end
 
@@ -196,9 +196,9 @@ module V1
           if user.present?
             @current_user.follow_users.delete user
             #present @current_user.reload, with: V1::Entities::User
-            {error_code: '00000', message: '取消关注成功'}
+            {error: '', message: '取消关注成功'}
           else
-            {error_code: '20002', message: '错误的用户'}
+            {error: '20002', message: '错误的用户'}
           end
         end
 
@@ -218,10 +218,10 @@ module V1
           company = Company.find_by id: params[:company_id]
           if company.present?
             @current_user.follow_companies << company
-            {error_code: '00000', message: '关注成功'}
+            {error: '', message: '关注成功'}
             #present @current_user.reload, with: V1::Entities::User
           else
-            {error_code: '20002', message: '错误的商户'}
+            {error: '20002', message: '错误的商户'}
           end
         end
 
@@ -240,10 +240,10 @@ module V1
           company = Company.find_by id: params[:company_id]
           if company.present?
             @current_user.follow_companies.delete company
-            {error_code: '00000', message: '取消关注成功'}
+            {error: '', message: '取消关注成功'}
             #present @current_user.reload, with: V1::Entities::User
           else
-            {error_code: '20002', message: '错误的商户'}
+            {error: '20002', message: '错误的商户'}
           end
         end
 

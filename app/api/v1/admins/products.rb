@@ -61,7 +61,7 @@ module V1
           if product.valid?
             present product.reload, with: V1::Entities::Product
           else
-            {error_code: '10002', error_message: product.errors.messages}
+            {error: '10002', message: product.errors.messages}
           end
         end
 
@@ -80,9 +80,9 @@ module V1
         post 'destroy' do
           products = @product_model.where(id: JSON.parse(params[:ids]), company: @company)
           if products.destroy_all
-            {error_code: '00000',  message: '删除成功'}
+            {error: '',  message: '删除成功'}
           else
-            {error_code: '30001',  message: '删除失败'}
+            {error: '30001',  message: '删除失败'}
           end
         end
 
@@ -144,7 +144,7 @@ module V1
             if product.valid?
               present product, with: V1::Entities::Product
             else
-              {error_code: '10002', error_message: product.errors.messages}
+              {error: '10002', message: product.errors.messages}
             end
           end
 
@@ -171,9 +171,9 @@ module V1
           }
           delete '/' do
             if @product.destroy
-              {error_code: '00000',  message: '删除成功'}
+              {error: '',  message: '删除成功'}
             else
-              {error_code: '30001',  message: '删除失败'}
+              {error: '30001',  message: '删除失败'}
             end
           end
         end

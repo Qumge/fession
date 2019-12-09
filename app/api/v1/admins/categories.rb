@@ -42,13 +42,13 @@ module V1
             if root.present? && root.is_root?
               category.parent = root
             else
-              return {error_code: '10002', error_message: '错误的上级分类'}
+              return {error: '10002', message: '错误的上级分类'}
             end
           end
           if category.save
             present category, with: V1::Entities::Category
           else
-            {error_code: '20001', error_message: category.errors.messages}
+            {error: '20001', message: category.errors.messages}
           end
         end
 
@@ -78,7 +78,7 @@ module V1
               if root.present? && root.is_root?
                 @category.parent = root
               else
-                return {error_code: '10002', error_message: '错误的上级分类'}
+                return {error: '10002', message: '错误的上级分类'}
               end
             else
               @category.parent = nil
@@ -86,7 +86,7 @@ module V1
             if @category.save
               present @category, with: V1::Entities::Category
             else
-              {error_code: '20001', error_message: @category.errors.messages}
+              {error: '20001', message: @category.errors.messages}
             end
           end
 
@@ -100,12 +100,12 @@ module V1
           }
           delete '/' do
             if @category.has_children? || @category.products.present?
-              {error_code: '30002', error_message: '删除失败，该分类有子节点或商品'}
+              {error: '30002', message: '删除失败，该分类有子节点或商品'}
             else
               if @category.destroy
-                {error_code: '00000', message: '删除成功'}
+                {error: '', message: '删除成功'}
               else
-                {error_code: '30001', error_message: '删除失败'}
+                {error: '30001', message: '删除失败'}
               end
             end
 

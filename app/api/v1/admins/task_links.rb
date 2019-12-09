@@ -96,9 +96,9 @@ module V1
           }
           delete '/' do
             if @task.failed? && @task.destroy
-              {error_code: '20001', error_message: '删除失败'}
+              {error: '20001', message: '删除失败'}
             else
-              {error_code: '00000', error_message: '删除成功'}
+              {error: '', message: '删除成功'}
             end
           end
 

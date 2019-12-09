@@ -70,7 +70,7 @@ module V1
           if role.save
             present role, with: V1::Entities::Role
           else
-            {error_code: '10002', error_message: role.errors.messages}
+            {error: '10002', message: role.errors.messages}
           end
         end
 
@@ -103,7 +103,7 @@ module V1
             if @role.save
               present @role, with: V1::Entities::Role
             else
-              {error_code: '10002', error_message: role.errors.messages}
+              {error: '10002', message: role.errors.messages}
             end
           end
 
@@ -130,9 +130,9 @@ module V1
           }
           delete '/' do
             if @role.destroy
-              {error_code: '00000', message: '删除成功'}
+              {error: '', message: '删除成功'}
             else
-              {error_code: '30001', message: '删除失败'}
+              {error: '30001', message: '删除失败'}
             end
           end
 

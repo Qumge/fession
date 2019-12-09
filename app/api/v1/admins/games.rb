@@ -41,7 +41,7 @@ module V1
           if game.valid?
             present game, with: V1::Entities::Game
           else
-            {error_code: '10001', error_messages: game.errors.messages}
+            {error: '10001', messages: game.errors.messages}
           end
         end
 
