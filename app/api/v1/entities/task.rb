@@ -6,7 +6,9 @@ module V1
       #format_with(:parent) { |dt| instance.parent.name }
       expose :id
       expose :type
-      expose :name
+      expose :name do |instance, options|
+        instance.view_name
+      end
       expose :share_link
       expose :status
       expose :get_status
