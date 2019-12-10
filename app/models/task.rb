@@ -69,7 +69,7 @@ class Task < ApplicationRecord
           tasks = tasks.where(status: 'success').where('valid_to > ?', DateTime.now)
         when 'overtime'
           #tasks = tasks.where(status: 'success').where('valid_to < ?', DateTime.now)
-          tasks = tasks.where("(tasks.status = ? and tasks.valid_to < ？) or tasks.status = ?", 'success', DateTime.now, 'overtime')
+          tasks = tasks.where("(tasks.status = ? and tasks.valid_to < ?) or tasks.status = ?", 'success', DateTime.now, 'overtime')
         else
           tasks = tasks.where(status: params[:status])
         end
@@ -84,7 +84,7 @@ class Task < ApplicationRecord
         when 'active'
           tasks = tasks.where(status: 'success').where('valid_to > ?', DateTime.now)
         when 'overtime'
-          tasks = tasks.where("(tasks.status = ? and tasks.valid_to < ？) or tasks.status = ?", 'success', DateTime.now, 'overtime')
+          tasks = tasks.where("(tasks.status = ? and tasks.valid_to < ?) or tasks.status = ?", 'success', DateTime.now, 'overtime')
         else
           tasks = tasks.where(status: params[:status])
         end
