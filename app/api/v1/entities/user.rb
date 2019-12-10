@@ -13,6 +13,15 @@ module V1
       expose :gender
       expose :view_num
 
+      expose :follow do |instance, options|
+        user = options[:user]
+        if user.present? && user.follow_users.include?(instance)
+          1
+        else
+          0
+        end
+      end
+
 
       # product_category 是在rails的model中定义的关联，在这里可以直接用
       #expose :role, using: V1::Entities::Role

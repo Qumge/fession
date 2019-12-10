@@ -19,6 +19,8 @@ module Fission
     config.active_record.belongs_to_required_by_default = false
     config.autoload_paths << "#{Rails.root}/lib"
     config.assets.precompile += %w(swagger_ui.js swagger_ui.css swagger_ui_print.css swagger_ui_screen.css)
+    config.time_zone = 'Beijing'
+    config.active_record.default_timezone = :local
 
     # config.middleware.insert_before 0, Rack::Cors do
     #   allow do
@@ -26,5 +28,6 @@ module Fission
     #     resource '*', :headers => :any, :methods => [:get, :post, :options, :patch, :put, :delete]
     #   end
     # end
+    config.eager_load_paths += %W(#{Rails.root.join}/lib)
   end
 end

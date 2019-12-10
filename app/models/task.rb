@@ -28,6 +28,7 @@ class Task < ApplicationRecord
   validates_presence_of :company_id
   has_many :audit_task_audits, :class_name => 'Audit::TaskAudit', foreign_key: :model_id
   has_many :fission_logs
+  has_one :image, -> {where(model_type: 'Task')}, foreign_key: :model_id
 
   STATUS = { wait: '待审核', failed: '已拒绝', success: '审核成功', active: '进行中', overtime: '已结束'}
 

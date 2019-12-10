@@ -139,7 +139,7 @@ module V1
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
         end
         get 'followers' do
-          present paginate(@current_user.followers.search_conn(params)), with: V1::Entities::User
+          present paginate(@current_user.followers.search_conn(params)), with: V1::Entities::User, user: current_user
         end
 
         desc '我的金币流水', {

@@ -29,6 +29,7 @@ class Company < ApplicationRecord
   validates_presence_of :name
   has_many :articles
   has_and_belongs_to_many :followers , join_table: 'company_follows', foreign_key: :follow_id, class_name: "User"
+  has_many :banner_company_banners, :class_name => 'Banner::CompanyBanner'
   acts_as_paranoid
 
   before_create :set_no

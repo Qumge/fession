@@ -55,15 +55,18 @@ module V1
         params do
           requires :name, type: String, desc: '标题'
           optional :desc, type: String, desc: '备注 描述'
-          optional :questions, type: String, desc: "问题 [{name: '玩过的游戏', type: 'Question::Multiple', options: ['dnf', 'dota', 'lol']}, {name: '性别', type: 'Question::Single', options: ['男', '女']}, {name: '建议', type: 'Question::Completion'}]", default: [{name: '玩过的游戏', type: 'Question::Multiple', options: ['dnf', 'dota', 'lol']}, {name: '性别', type: 'Option::Single', options: ['男', '女']}, {name: '建议', type: 'Question::Completion'}]
+          optional :questions, type: String, desc: "问题 [{name: '玩过的游戏', type: 'Question::Multiple', options: ['dnf', 'dota', 'lol']}, {name: '性别', type: 'Question::Single', options: ['男', '女']}, {name: '建议', type: 'Question::Completion'}]", default: [{name: '玩过的游戏', type: 'Question::Multiple', options: ['dnf', 'dota', 'lol']}, {name: '性别', type: 'Option::Single', options: ['男', '女']}, {name: '建议', type: 'Question::Completion'}].to_json
           requires :coin, type: Integer, desc: '金币总数'
           requires :valid_from, type: DateTime, desc: '有效期始'
           requires :valid_to, type: DateTime, desc: '有效至'
+          requires :image, type: String, desc: '展示图'
         end
         post '/' do
+          image = Image.new file_path: params[:image], model_type: 'Task'
           questionnaire = ::Questionnaire.new name: params[:name], desc: params[:desc]
+          questionnaire.company = @company
           questionnaire = questionnaire.fetch_questions JSON.parse(params[:questions])
-          task = Task::QuestionnaireTask.new  coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company, questionnaire: questionnaire
+          task = Task::QuestionnaireTask.new  coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company, questionnaire: questionnaire, image: image
 
           if questionnaire.valid?
             if task.save
@@ -97,18 +100,20 @@ module V1
           params do
             requires :name, type: String, desc: '标题'
             optional :desc, type: String, desc: '备注 描述'
-            optional :questions, type: Array[Hash], desc: "问题 [{name: '玩过的游戏', type: 'Question::Multiple', options: ['dnf', 'dota', 'lol']}, {name: '性别', type: 'Question::Single', options: ['男', '女']}, {name: '建议', type: 'Question::Completion'}]", default: [{name: '玩过的游戏', type: 'Question::Multiple', options: ['dnf', 'dota', 'lol']}, {name: '性别', type: 'Option::Single', options: ['男', '女']}, {name: '建议', type: 'Question::Completion'}]
+            optional :questions, type: String, desc: "问题 [{name: '玩过的游戏', type: 'Question::Multiple', options: ['dnf', 'dota', 'lol']}, {name: '性别', type: 'Question::Single', options: ['男', '女']}, {name: '建议', type: 'Question::Completion'}]", default: [{name: '玩过的游戏', type: 'Question::Multiple', options: ['dnf', 'dota', 'lol']}, {name: '性别', type: 'Option::Single', options: ['男', '女']}, {name: '建议', type: 'Question::Completion'}].to_json
             requires :coin, type: Integer, desc: '金币总数'
             requires :valid_from, type: DateTime, desc: '有效期始'
             requires :valid_to, type: DateTime, desc: '有效至'
+            requires :image, type: String, desc: '展示图'
           end
           patch '/' do
+            image = Image.new file_path: params[:image], model_type: 'Task'
             questionnaire = @task.questionnaire
-            questionnaire = questionnaire.fetch_questions Json.parse(params[:questions]) if params[:questions].present?
+            questionnaire = questionnaire.fetch_questions JSON.parse(params[:questions]) if params[:questions].present?
             if questionnaire.valid?
-              if @task.update coin: params[:coin], valid_form: params[:valid_form], valid_to: params[:valid_to], company: @company
+              if @task.update coin: params[:coin], valid_from: params[:valid_form], valid_to: params[:valid_to], company: @company, image: image
                 @task.do_wait! if @task.may_do_wait?
-                present task, with: V1::Entities::Task
+                present @task, with: V1::Entities::Task
               else
                 {code: '100001', message: @task.errors}
               end

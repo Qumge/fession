@@ -35,6 +35,28 @@ module V1
           present paginate(banners), with: V1::Entities::Banner
         end
 
+        desc '热门广告'
+        params do
+          optional :page,     type: Integer, default: 1, desc: '页码'
+          optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+        end
+        get 'hot_banners' do
+          banners = Banner::HotBanner.order('no')
+          present paginate(banners), with: V1::Entities::Banner
+        end
+
+
+        desc '店铺广告'
+        params do
+          requires :company_id, type: Integer, desc: '店铺id'
+          optional :page,     type: Integer, default: 1, desc: '页码'
+          optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+        end
+        get 'company_banners' do
+          banners = Banner::HotBanner.where(company_id: :company_id).order('no')
+          present paginate(banners), with: V1::Entities::Banner
+        end
+
         route_param :id do
           before do
             @task = ::Task.find_by id: params[:id], status: 'success'

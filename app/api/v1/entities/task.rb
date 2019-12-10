@@ -16,6 +16,7 @@ module V1
       expose :coin
       expose :residue_coin
       expose :h5_link
+      expose :image, using: V1::Entities::Image
       expose :company, using: V1::Entities::Company
       expose :product, using: V1::Entities::Product, if: proc{|instance| instance.type == 'Task::ProductTask'}
       expose :game, using: V1::Entities::Game, if: proc{|instance| instance.type == 'Task::GameTask'}

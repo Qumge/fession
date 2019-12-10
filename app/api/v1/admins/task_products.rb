@@ -50,9 +50,11 @@ module V1
           requires :coin, type: Integer, desc: '金币总数'
           requires :valid_from, type: DateTime, desc: '有效期始'
           requires :valid_to, type: DateTime, desc: '有效至'
+          requires :image, type: String, desc: '展示图'
         end
         post '/' do
-          task = Task::ProductTask.new model_id: params[:product_id], coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company
+          image = Image.new file_path: params[:image], model_type: 'Task'
+          task = Task::ProductTask.new model_id: params[:product_id], coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company, image: image
           if task.save
             present task, with: V1::Entities::Task
           end
@@ -81,9 +83,11 @@ module V1
             requires :coin, type: Integer, desc: '金币总数'
             requires :valid_from, type: DateTime, desc: '有效期始'
             requires :valid_to, type: DateTime, desc: '有效至'
+            requires :image, type: String, desc: '展示图'
           end
           patch '/' do
-            if @task.update model_id: params[:product_id], coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company
+            image = Image.new file_path: params[:image], model_type: 'Task'
+            if @task.update model_id: params[:product_id], coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company, image: image
               @task.do_wait! if @task.may_do_wait?
               present @task, with: V1::Entities::Task
             else

@@ -1,4 +1,5 @@
 class Post < ApplicationRecord
+  has_many :images, -> {where(model_type: 'Post')}, foreign_key: :model_id
   include AASM
   belongs_to :user
 
@@ -31,6 +32,13 @@ class Post < ApplicationRecord
   end
 
   def fetch_params params
+    images = []
+    if params[:images].present?
+      JSON.parse(params[:images]).each do |image|
+        images << Image.new(file_path: image, model_type: 'Post')
+      end
+    end
+    self.images = images
     self.update title: params[:title], content: params[:content]
     self
   end

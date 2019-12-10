@@ -65,15 +65,17 @@ module V1
           requires :valid_from, type: DateTime, desc: '有效期始'
           requires :valid_to, type: DateTime, desc: '有效至'
           requires :image, type: String, desc: '背景图'
+          requires :task_image, type: String, desc: '任务展示图'
           optional :desc, type: String, desc: '游戏说明'
           requires :prizes, type: String, desc: '奖品 大转盘抽奖 默认为5个奖项 请勿多传或少传 [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}]', default:  [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}].to_json
         end
         post '/' do
-          image = Image.find_or_initialize_by file_path: params[:image], model_type: 'Game'
+          image = Image.new file_path: params[:image], model_type: 'Game'
+          task_image = Image.new file_path: params[:task_image], model_type: 'Task'
           game = @game_model.new name: params[:name], coin: params[:game_coin], company: @company, image: image, desc: params[:desc]
           game = game.fetch_prizes JSON.parse(params[:prizes])
           if game.valid?
-            task = Task::GameTask.create coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], game: game, company: @company
+            task = Task::GameTask.create coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], game: game, company: @company, image: task_image
             present task, with: V1::Entities::Task
           else
             {error: '10001', messages: game.errors.messages}
@@ -107,16 +109,18 @@ module V1
             requires :valid_from, type: DateTime, desc: '有效期始'
             requires :valid_to, type: DateTime, desc: '有效至'
             requires :image, type: String, desc: '背景图'
+            requires :task_image, type: String, desc: '任务展示图'
             optional :desc, type: String, desc: '游戏说明'
             optional :prizes, type: String, desc: '奖品 大转盘抽奖 默认为5个奖项 请勿多传或少传 [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}]', default:  [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}].to_json
           end
           patch '/' do
-            image = Image.find_or_initialize_by file_path: params[:image], model_type: 'Game'
+            image = Image.new file_path: params[:image], model_type: 'Game'
+            task_image = Image.new file_path: params[:task_image], model_type: 'Task'
             game = @task.game
             game.attributes = {name: params[:name], coin: params[:game_coin], company: @company, image: image, desc: params[:desc]}
             game = game.fetch_prizes JSON.parse(params[:prizes])
             if game.valid?
-              @task.update coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to],  company: @company
+              @task.update coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to],  company: @company, image: task_image
               #@task.do_recheck!
               @task.do_wait! if @task.may_do_wait?
               present @task, with: V1::Entities::Task

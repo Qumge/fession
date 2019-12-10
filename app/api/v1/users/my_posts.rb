@@ -37,6 +37,7 @@ module V1
         params do
           requires :title, type: String, desc: '标题'
           requires :content, type: String, desc: '内容'
+          optional :images, type: String, desc: '图片 ["2.png", "4.png"]'
         end
         post '/' do
           post = @current_user.posts.new
