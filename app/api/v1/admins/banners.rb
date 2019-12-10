@@ -72,7 +72,7 @@ module V1
             if @company.present?
               @banner = @banner_model.find_by id: params[:id], company: @company
             else
-              @banner = @banner_model.find_by id: params[:id], company: @company
+              @banner = @banner_model.find_by id: params[:id]
             end
             error!("找不到数据", 500) unless @banner.present?
           end
