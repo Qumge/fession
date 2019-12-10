@@ -117,6 +117,7 @@ module V1
             image = Image.new file_path: params[:image], model_type: 'Game'
             task_image = Image.new file_path: params[:task_image], model_type: 'Task'
             game = @task.game
+            game.image = image
             game.attributes = {name: params[:name], coin: params[:game_coin], company: @company, image: image, desc: params[:desc]}
             game = game.fetch_prizes JSON.parse(params[:prizes])
             if game.valid?
