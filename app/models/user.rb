@@ -101,10 +101,6 @@ class User < ApplicationRecord
     end
   end
 
-  # @all
-  # 1.任务添加显示图
-  # 2. banner添加商户banner
-  # 3. app登录
 
 
   def ensure_authentication_token

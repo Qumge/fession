@@ -125,6 +125,22 @@ module V1
           present paginate(@current_user.follow_users.search_conn(params)), with: V1::Entities::User
         end
 
+        desc '我的任务', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          optional :page,     type: Integer, default: 1, desc: '页码'
+          optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+        end
+        get 'tasks' do
+          present paginate(@current_user.fission_logs), with: V1::Entities::FissionLog
+        end
+
 
         desc '关注我的人', {
             headers: {

@@ -13,6 +13,7 @@ module V1
       expose :gender
       expose :view_num
       expose :coin
+      expose :total_coin
       expose :follow_companies do |instance, option|
         instance.follow_companies.size
       end
