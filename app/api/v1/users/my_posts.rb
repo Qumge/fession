@@ -96,7 +96,7 @@ module V1
           # end
 
 
-          desc '帖子详情', {
+          desc '我的帖子详情', {
               headers: {
                   "X-Auth-Token" => {
                       description: "登录token 运营平台账号",
