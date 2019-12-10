@@ -35,7 +35,10 @@ module V1
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
         end
         get '/' do
-          banners = @banner_model.where(company: @company).order('no')
+          banners = @banner_model.order('no')
+          if @company.present?
+            banners = banners.where(company: @company)
+          end
           present paginate(banners), with: V1::Entities::Banner
         end
 
