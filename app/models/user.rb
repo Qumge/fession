@@ -67,22 +67,28 @@ class User < ApplicationRecord
       users
     end
 
-    def init_by_web_code code
-      res = Wechat.api.web_access_token code
+    def init_by_web_code code, type
+      res = Wechat.api(type).web_access_token code
       if res && res['openid']
-        init_by_web_session res['access_token'], res['openid']
+        init_by_web_session res['access_token'], res['openid'], type
       end
     end
 
-    def init_by_web_session access_token, openid
-      p Wechat, 21112
-      user_info = Wechat.api.web_userinfo access_token, openid
-
+    def init_by_web_session access_token, openid, type
+      user_info = Wechat.api(type).web_userinfo access_token, openid
       p user_info
       if user_info['unionid']
         user = User.find_or_initialize_by unionid: user_info['unionid']
-        user.web_session_token = access_token
-        user.web_openid = user_info['openid']
+        if type.to_s == 'default'
+          user.web_session_token = access_token
+          user.web_openid = user_info['openid']
+        end
+
+        if type.to_s == 'app'
+          user.app_session_token = access_token
+          user.app_openid = user_info['openid']
+        end
+
         user.nick_name = user_info['nickname']
         user.gender = user_info['sex']
         user.city = user_info['city']

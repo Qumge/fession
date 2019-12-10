@@ -27,9 +27,10 @@ module V1
         desc '公众号登录'
         params do
           requires :code, type: String, desc: '微信code'
+          optional :type, type: String, desc: '公众号：default， 安卓ios： app ', default: 'default'
         end
         post "/wx_login" do
-          user = User.init_by_web_code params[:code]
+          user = User.init_by_web_code params[:code], params[:type]
           if user.present? && user.is_a?(User)
             {authentication_token: user.authentication_token}
           end
