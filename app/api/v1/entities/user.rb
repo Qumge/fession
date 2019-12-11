@@ -12,10 +12,9 @@ module V1
       expose :nick_name
       expose :gender
       expose :view_num
-
       expose :follow do |instance, options|
         user = options[:user]
-        if user.present? && user.follow_users.include?(instance)
+        if user.present? && user.follow_users.where(id: instance.id).present?
           1
         else
           0

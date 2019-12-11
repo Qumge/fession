@@ -28,6 +28,7 @@ module V1
             }
         }
         params do
+          optional 'sorts', type: String, desc: "排序[{column: 'coin', sort: 'desc'}, {column: 'number', sort: 'desc'}]", default: [{column: 'coin', sort: 'desc'}, {column: 'number', sort: 'desc'}].to_json
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
           optional :company_id, type: Integer, desc: '商户id'

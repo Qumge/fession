@@ -10,7 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_10_102055) do
+ActiveRecord::Schema.define(version: 2019_12_11_105642) do
+
+  create_table "addresses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.string "phone"
+    t.string "content"
+    t.string "tag"
+    t.integer "user_id"
+    t.integer "company_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "admins", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -345,6 +356,7 @@ ActiveRecord::Schema.define(version: 2019_12_10_102055) do
     t.datetime "deleted_at"
     t.string "share_link"
     t.integer "share_num", default: 0
+    t.integer "number", default: 0
     t.index ["deleted_at"], name: "index_tasks_on_deleted_at"
   end
 

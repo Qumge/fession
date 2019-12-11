@@ -63,7 +63,13 @@ class Task < ApplicationRecord
   end
   class << self
     def search_conn params
-      tasks = self.order('valid_from desc')
+      tasks = self.all
+      if params[:sorts].present?
+        sorts = JSON.parse params[:sorts]
+        s = sorts.collect{|sort| "#{sort['column']} #{sort['sort']}"}.join ','
+        tasks = tasks.order(s)
+      end
+      tasks = tasks.order('valid_from desc')
       if params[:status].present?
         case params[:status]
         when 'active'
@@ -79,7 +85,13 @@ class Task < ApplicationRecord
     end
 
     def search_game_conn params
-      tasks = self.all.order('valid_from desc')
+      tasks = self.all
+      if params[:sorts].present?
+        sorts = JSON.parse params[:sorts]
+        s = sorts.collect{|sort| "#{sort['column']} #{sort['sort']}"}.join ','
+        tasks = tasks.order(s)
+      end
+      tasks = tasks.order('valid_from desc')
       if params[:status].present?
         case params[:status]
         when 'active'

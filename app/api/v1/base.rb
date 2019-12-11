@@ -3,6 +3,7 @@ module V1
     class Base < Grape::API
       version 'v1', using: :path
       namespace :admins do
+        mount V1::Admins::ShareRules
         mount V1::Admins::Admins
         mount V1::Admins::Companies
         mount V1::Admins::Categories
@@ -21,6 +22,8 @@ module V1
         mount V1::Admins::Audits
         mount V1::Admins::Accounts
         mount V1::Admins::Banners
+        mount V1::Admins::Posts
+        mount V1::Admins::Addresses
       end
 
       namespace :users do

@@ -17,6 +17,7 @@ class FissionLog < ApplicationRecord
   belongs_to :user
   belongs_to :task
   has_many :share_logs
+  after_create_commit :set_task_num
 
   validates_presence_of :task_id
   validates_presence_of :user_id
@@ -39,6 +40,10 @@ class FissionLog < ApplicationRecord
       user.coin_logs.create company: task.company, channel: 'fission', coin: rule.coin, model_id: self.id, share_log: share_log
       self.parent.fission_coin(level+1, share_log) if self.parent.present?
     end
+  end
+
+  def set_task_num
+    self.task.update number: self.task.number + 1
   end
 
 end

@@ -55,6 +55,7 @@ class User < ApplicationRecord
   has_many :fission_logs
   has_many :share_logs
   has_many :posts
+  has_many :addresses
 
 
 

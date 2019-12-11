@@ -77,6 +77,12 @@ class Product < ApplicationRecord
   class << self
     def search_conn params
       products = self.all
+      if params[:sorts].present?
+        sorts = JSON.parse params[:sorts]
+        s = sorts.collect{|sort| "#{sort['column']} #{sort['sort']}"}.join ','
+        products = products.order(s)
+      end
+      products = products.order('created_at desc')
       if params[:search].present?
         products = products.where('name like ?', "%#{params[:search]}%")
       end

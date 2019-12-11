@@ -29,6 +29,7 @@ module V1
             }
         }
         params do
+          optional 'sorts', type: String, desc: "排序[{column: 'coin', sort: 'desc'}, {column: 'number', sort: 'desc'}]", default: [{column: 'coin', sort: 'desc'}, {column: 'number', sort: 'desc'}].to_json
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
           optional :type, type: String, desc: '游戏类型 Game::Wheel Game::Egg Game::Scratch'

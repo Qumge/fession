@@ -14,7 +14,7 @@ module V1
 
         get '/' do
           posts = Post.where(status: 'success').order('created_at desc')
-          present paginate(posts), with: V1::Entities::Post
+          present paginate(posts), with: V1::Entities::Post, user: @current_user
         end
 
         route_param :id do
@@ -33,7 +33,7 @@ module V1
               }
           }
           get '/' do
-            present @post, with: V1::Entities::Post
+            present @post, with: V1::Entities::Post, user: @current_user
           end
 
         end

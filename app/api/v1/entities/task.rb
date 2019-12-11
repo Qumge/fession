@@ -9,6 +9,7 @@ module V1
       expose :name do |instance, options|
         instance.view_name
       end
+      expose :number
       expose :share_link
       expose :status
       expose :get_status

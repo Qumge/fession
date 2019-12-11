@@ -189,7 +189,7 @@ module V1
         post 'follow_user' do
           user = User.find_by id: params[:user_id]
           if user.present?
-            @current_user.follow_users << user
+            @current_user.follow_users << user unless @current_user.follow_users.include?(user)
             {error: '', message: '关注成功'}
             #present @current_user.reload, with: V1::Entities::User
           else
@@ -234,7 +234,7 @@ module V1
         post 'follow_company' do
           company = Company.find_by id: params[:company_id]
           if company.present?
-            @current_user.follow_companies << company
+            @current_user.follow_companies << company unless @current_user.follow_companies.include?(company)
             {error: '', message: '关注成功'}
             #present @current_user.reload, with: V1::Entities::User
           else
