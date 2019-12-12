@@ -242,7 +242,7 @@ module V1
           end
         end
 
-        desc '取消关注用户', {
+        desc '取消关注商户', {
             headers: {
                 "X-Auth-Token" => {
                     description: "登录token",

@@ -53,6 +53,8 @@ class Cash < ApplicationRecord
       else
         self.errors.add :amount, '不符合提现规则'
       end
+    else
+      self.errors.add :amount, '不符合提现规则'
     end
     self
 

@@ -3,9 +3,19 @@ module V1
     class Posts < Grape::API
       helpers V1::Users::UserLoginHelper
       include Grape::Kaminari
+      before do
+        authenticate!
+      end
 
       resources 'posts' do
-        desc '帖子'
+        desc '帖子', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token 运营平台账号",
+                    required: false
+                }
+            }
+        }
         params do
           optional :user_id, type: Integer, desc: '用户id 用来查询该用户的帖子'
           optional :page,     type: Integer, default: 1, desc: '页码'
