@@ -285,6 +285,26 @@ module V1
           end
         end
 
+        desc '玩游戏', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :id,     type: Integer,  desc: '游戏id'
+        end
+        post 'play_game' do
+          game = Game.find_by params[:id]
+          if game.present?
+            game.play @current_user
+          else
+            error!('找不到数据', 500)
+          end
+        end
+
 
       end
     end

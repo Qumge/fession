@@ -49,5 +49,22 @@ class Game < ApplicationRecord
     self
   end
 
+  def play user
+    if can_play? user
+
+    end
+  end
+
+  def can_play user
+    #
+    if self.coin.present?
+      user.coin > self.coin
+    else
+      GameLog.find_by(game: game, user: user).blank?
+    end
+  end
+
+
+
 
 end
