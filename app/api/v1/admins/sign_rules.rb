@@ -1,6 +1,6 @@
 module V1
   module Admins
-    class ShareRules < Grape::API
+    class SignRules < Grape::API
       helpers V1::Admins::AdminLoginHelper
       include Grape::Kaminari
       before do
@@ -8,8 +8,8 @@ module V1
         operator_auth!
       end
 
-      resources 'share_rules' do
-        desc '奖励规则', {
+      resources 'sign_rules' do
+        desc '签到规则', {
             headers: {
                 "X-Auth-Token" => {
                     description: "登录token 运营平台账号",
@@ -18,11 +18,11 @@ module V1
             }
         }
         get '/' do
-          share_rules = ShareRule.order('level')
-          present paginate(share_rules), with: V1::Entities::ShareRule
+          sign_rules = ::SignRule.order('number asc')
+          present sign_rules, with: V1::Entities::SignRule
         end
 
-        desc '创建、变更奖励规则', {
+        desc '创建变更签到规则', {
             headers: {
                 "X-Auth-Token" => {
                     description: "登录token 运营平台账号",
@@ -31,11 +31,11 @@ module V1
             }
         }
         params do
-          requires :rules, type: String, desc: '规则[{"level": 1, coin: 10}, {"level": 2, coin: 5}]', default: [{level: '1', coin: '10'}, {level: 2, coin: 5}, {level: 3, coin: 3}, {level: 4, coin: 1}].to_json
+          requires :rules, type: String, desc: "签到规则[{number: 1, coin: 1}, {number: 5, coin: 10}]", default: [{number: 1, coin: 1}, {number: 5, coin: 10}].to_json
         end
         post '/' do
-          share_rules = ::ShareRule.fetch_params JSON.parse(params[:rules])
-          present paginate(share_rules), with: V1::Entities::ShareRule
+          sign_rules = ::SignRule.fetch_params params
+          present sign_rules, with: V1::Entities::SignRule
         end
       end
 

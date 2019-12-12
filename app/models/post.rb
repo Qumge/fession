@@ -2,6 +2,7 @@ class Post < ApplicationRecord
   has_many :images, -> {where(model_type: 'Post')}, foreign_key: :model_id
   include AASM
   belongs_to :user
+  has_many :audit_post_audits, :class_name => 'Audit::PostAudit', foreign_key: :model_id
 
   STATUS = { wait: '待审核', failed: '已拒绝', success: '已发布'}
 

@@ -24,6 +24,8 @@ module V1
         mount V1::Admins::Banners
         mount V1::Admins::Posts
         mount V1::Admins::Addresses
+        mount V1::Admins::CashRules
+        mount V1::Admins::SignRules
       end
 
       namespace :users do

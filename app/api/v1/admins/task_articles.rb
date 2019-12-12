@@ -24,14 +24,18 @@ module V1
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
           optional :company_id, type: Integer, desc: '商户id'
           optional :status, type: String, desc: "状态 wait: '待审核', failed: '已拒绝', success: '审核成功' 数据库中只存储这三种状态 进行中和已经结束（active overtime）由有效时间和success组合而成 检索时使用（wait active overtime failed ）"
+          optional :search, type: String, desc: '名称检索'
         end
         get '/' do
           if params[:company_id].present?
             @company ||= Company.find_by id: params[:company_id]
           end
-          tasks = Task::ArticleTask.search_conn(params)
+          tasks = Task::ArticleTask.joins(:article).search_conn(params)
           if @company.present?
             tasks =  tasks.where(company: @company)
+          end
+          if params[:search].present?
+            tasks = tasks.where('articles.subject like ?', "%#{params[:search]}%")
           end
           present paginate(tasks), with: V1::Entities::Task
         end

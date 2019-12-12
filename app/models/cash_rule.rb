@@ -1,0 +1,2 @@
+class CashRule < ApplicationRecord
+end

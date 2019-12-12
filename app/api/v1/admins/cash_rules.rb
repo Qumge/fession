@@ -1,6 +1,6 @@
 module V1
   module Admins
-    class ShareRules < Grape::API
+    class CashRules < Grape::API
       helpers V1::Admins::AdminLoginHelper
       include Grape::Kaminari
       before do
@@ -8,8 +8,8 @@ module V1
         operator_auth!
       end
 
-      resources 'share_rules' do
-        desc '奖励规则', {
+      resources 'cash_rules' do
+        desc '提现规则', {
             headers: {
                 "X-Auth-Token" => {
                     description: "登录token 运营平台账号",
@@ -18,11 +18,11 @@ module V1
             }
         }
         get '/' do
-          share_rules = ShareRule.order('level')
-          present paginate(share_rules), with: V1::Entities::ShareRule
+          cash_rule = ::CashRule.first
+          present cash_rule, with: V1::Entities::CashRule
         end
 
-        desc '创建、变更奖励规则', {
+        desc '创建、变更提现规则', {
             headers: {
                 "X-Auth-Token" => {
                     description: "登录token 运营平台账号",
@@ -31,11 +31,14 @@ module V1
             }
         }
         params do
-          requires :rules, type: String, desc: '规则[{"level": 1, coin: 10}, {"level": 2, coin: 5}]', default: [{level: '1', coin: '10'}, {level: 2, coin: 5}, {level: 3, coin: 3}, {level: 4, coin: 1}].to_json
+          requires :coin, type: Integer, desc: '规则1元钱金币数量'
+          requires :floor, type: Integer, desc: '金币兑换门槛 单位rmb： 10rmb； 默认兑换最小单位 1rmb'
         end
         post '/' do
-          share_rules = ::ShareRule.fetch_params JSON.parse(params[:rules])
-          present paginate(share_rules), with: V1::Entities::ShareRule
+          cash_rule = ::CashRule.first
+          cash_rule = CashRule.new unless cash_rule.present?
+          cash_rule.update coin: params[:coin], floor: params[:floor]
+          present cash_rule, with: V1::Entities::CashRule
         end
       end
 

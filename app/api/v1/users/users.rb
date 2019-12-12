@@ -80,9 +80,9 @@ module V1
 
         params do
           optional :nick_name, type: String, desc: '昵称'
-          optional :nick_name, type: String, desc: '昵称'
           optional :login, type: String, desc: '手机号  登录账号'
           optional :desc, type: String, desc: '个性签名'
+          optional :avatar_url, type: String, desc: '头像'
         end
         post 'profile' do
           @current_user.fetch_params params
@@ -264,7 +264,26 @@ module V1
           end
         end
 
-
+        desc '提现', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :amount,     type: Integer,  desc: '金钱单位（元） 需要大于提现规则'
+        end
+        post 'cash' do
+          cash = @current_user.cashes.new
+          cash = cash.fetch_params params
+          if cash.errors.present?
+            {error: '30001', message: cash.errors.messages}
+          else
+            present cash, with: V1::Entities::Cash
+          end
+        end
 
 
       end
