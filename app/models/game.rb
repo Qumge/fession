@@ -26,6 +26,7 @@ class Game < ApplicationRecord
   has_many :prizes
   belongs_to :company
   has_one :image, -> {where(model_type: 'Game')}, foreign_key: :model_id
+  has_one :task_game_task, :class_name => 'Task::GameTask', foreign_key: :model_id
 
 
   def fetch_prizes params_prizes
@@ -50,18 +51,28 @@ class Game < ApplicationRecord
   end
 
   def play user
-    if can_play? user
-
+    if self.can_play? user
+      GameLog.create user: user, game: self, coin: self.cost
+    else
+      raise '金币不足或者次数已用完'
     end
   end
 
-  def can_play user
-    #
-    if self.coin.present?
-      user.coin > self.coin
+  def can_play? user
+    if time_valid?
+      if self.cost.present?
+        user.coin > self.cost
+      else
+        GameLog.find_by(game: self, user: user).blank?
+      end
     else
-      GameLog.find_by(game: game, user: user).blank?
+      false
     end
+
+  end
+
+  def time_valid?
+    (self.cost.present? && self.company.blank?) || (self.cost.blank? && self.task_game_task.success? && self.task_game_task.time_valid?)
   end
 
 

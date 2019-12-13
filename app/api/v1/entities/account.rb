@@ -14,6 +14,9 @@ module V1
       expose :view_num
       expose :coin
       expose :total_coin
+      expose :feature_coin do |instance, options|
+        0
+      end
       expose :follow_companies do |instance, option|
         instance.follow_companies.size
       end

@@ -8,7 +8,15 @@ module V1
       expose :country
       expose :province
       expose :city
-      expose :avatar_url
+      expose :avatar_url do |instance, options|
+        if self.avatar_url.present?
+          if self.avatar_url.include? 'http'
+            self.avatar_url
+          else
+            Rails.application.config.qiniu_domain + self.avatar_url
+          end
+        end
+      end
       expose :nick_name
       expose :gender
       expose :view_num

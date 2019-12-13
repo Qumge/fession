@@ -73,7 +73,7 @@ module V1
         post '/' do
           image = Image.new file_path: params[:image], model_type: 'Game'
           task_image = Image.new file_path: params[:task_image], model_type: 'Task'
-          game = @game_model.new name: params[:name], coin: params[:game_coin], company: @company, image: image, desc: params[:desc]
+          game = @game_model.new name: params[:name], coin: params[:game_coin], company: @company, image: image, desc: params[:desc], residue_coin: params[:game_coin]
           game = game.fetch_prizes JSON.parse(params[:prizes])
           if game.valid?
             task = Task::GameTask.create coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], game: game, company: @company, image: task_image
@@ -119,7 +119,7 @@ module V1
             task_image = Image.new file_path: params[:task_image], model_type: 'Task'
             game = @task.game
             game.image = image
-            game.attributes = {name: params[:name], coin: params[:game_coin], company: @company, image: image, desc: params[:desc]}
+            game.attributes = {name: params[:name], coin: params[:game_coin], company: @company, image: image, desc: params[:desc], residue_coin: params[:game_coin]}
             game = game.fetch_prizes JSON.parse(params[:prizes])
             if game.valid?
               @task.update coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to],  company: @company, image: task_image
