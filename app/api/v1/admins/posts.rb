@@ -46,7 +46,7 @@ module V1
               }
           }
           get '/' do
-            present paginate(@post), with: V1::Entities::Post
+            present @post, with: V1::Entities::Post
           end
         end
       end
