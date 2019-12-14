@@ -9,11 +9,11 @@ module V1
       expose :province
       expose :city
       expose :avatar_url do |instance, options|
-        if self.avatar_url.present?
-          if self.avatar_url.include? 'http'
-            self.avatar_url
+        if instance.avatar_url.present?
+          if instance.avatar_url.include? 'http'
+            instance.avatar_url
           else
-            Rails.application.config.qiniu_domain + self.avatar_url
+            Rails.application.config.qiniu_domain + instance.avatar_url
           end
         end
       end
