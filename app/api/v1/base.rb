@@ -39,6 +39,7 @@ module V1
         mount V1::Users::Products
         mount V1::Users::TaskLinks
         mount V1::Users::TaskProducts
+        mount V1::Users::ShareRules
         mount V1::Users::Tasks
         mount V1::Users::Posts
         mount V1::Users::MyPosts
