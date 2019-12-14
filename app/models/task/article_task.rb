@@ -27,4 +27,8 @@ class Task::ArticleTask < Task
   def view_name
     self&.article&.subject
   end
+
+  def h5_link
+    "#{Settings.h5_url}/pages/task/article?id=#{self.id}"
+  end
 end

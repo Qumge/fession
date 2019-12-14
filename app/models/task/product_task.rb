@@ -26,4 +26,9 @@ class Task::ProductTask < Task
   def view_name
     self.product&.name
   end
+
+  def h5_link
+    "#{Settings.h5_url}/pages/product/show?id=#{self.model_id}"
+  end
+
 end

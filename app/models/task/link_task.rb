@@ -31,4 +31,9 @@ class Task::LinkTask < Task
   def set_success
     self.update status: 'success', residue_coin: self.coin
   end
+
+  def h5_link
+    "#{Settings.h5_url}/pages/task/share_link?id=#{self.id}"
+  end
+
 end

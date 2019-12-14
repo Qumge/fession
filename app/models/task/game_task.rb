@@ -23,7 +23,24 @@
 
 class Task::GameTask < Task
   belongs_to :game, foreign_key: :model_id
+
   def view_name
     self.game&.name
   end
+
+
+  def h5_link
+    path = case game.type
+           when 'Game::Egg'
+             'golden'
+           when 'Game::Wheel'
+             'luck_wheel'
+           when 'Game::Scratch'
+             'scratch_card'
+           when 'Game::Tiger'
+             'tiger'
+           end
+    "#{Settings.h5_url}/pages/game/#{path}?id=#{self.id}"
+  end
+
 end
