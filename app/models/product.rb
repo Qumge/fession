@@ -178,6 +178,10 @@ class Product < ApplicationRecord
 
   end
 
+  def h5_link
+    "#{Settings.h5_url}/pages/product/show?id=#{self.id}"
+  end
+
   def get_status
     STATUS[self.status.to_sym]
   end

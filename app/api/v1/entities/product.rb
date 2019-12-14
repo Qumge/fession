@@ -11,6 +11,7 @@ module V1
       expose :task_id do |instance, options|
         instance.task_product_task&.id
       end
+      expose :h5_link
       expose :price do |instance, options|
 
         s = instance.type == 'CoinProduct' ? instance.price : (instance.price.to_f / 100)

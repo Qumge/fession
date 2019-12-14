@@ -24,13 +24,9 @@ module V1
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
         end
         get '/' do
-          posts = Post.order('created_at desc')
+          posts = Post.search_conn(params).order('created_at desc')
           present paginate(posts), with: V1::Entities::Post
         end
-
-
-
-
 
         route_param :id do
           before do

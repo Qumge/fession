@@ -49,6 +49,17 @@ class Post < ApplicationRecord
       self.all
     end
 
+    def search_conn params
+      posts = self.all
+      if params[:search].present?
+        posts = posts.where('prosts.name like ?', "%#{params[:search]}%")
+      end
+      if params[:status].present?
+        posts = posts.where status: params[:status]
+      end
+      posts
+    end
+
   end
 
 end
