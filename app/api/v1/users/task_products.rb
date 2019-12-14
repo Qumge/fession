@@ -8,6 +8,7 @@ module V1
       # end
 
       resources 'task_products' do
+        desc '商品任务列表'
         params do
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
@@ -24,7 +25,7 @@ module V1
             error!("找不到数据", 500) unless @task.present?
           end
 
-          desc '推文任务详情'
+          desc '商品任务详情'
           get '/' do
             present @task, with: V1::Entities::Task
           end

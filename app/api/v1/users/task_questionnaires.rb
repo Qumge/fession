@@ -5,7 +5,7 @@ module V1
       include Grape::Kaminari
 
       resources 'task_questionnaires' do
-        desc '推文任务列表'
+        desc '问卷任务列表'
         params do
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
@@ -22,7 +22,7 @@ module V1
             error!("找不到数据", 500) unless @task.present?
           end
 
-          desc '推文任务详情', {
+          desc '问卷任务详情', {
               headers: {
                   "X-Auth-Token" => {
                       description: "登录token",
