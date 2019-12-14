@@ -22,7 +22,7 @@ module V1
 
         route_param :id do
           before do
-            @task = ::Task::GameTask.find_by id: params[:id], status: 'success'
+            @task = ::Task::GameTask.find_by id: params[:id]
             error!("找不到数据", 500) unless @task.present?
           end
           desc '游戏任务详情'

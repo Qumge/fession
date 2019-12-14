@@ -59,7 +59,7 @@ module V1
 
         route_param :id do
           before do
-            @task = ::Task.find_by id: params[:id], status: 'success'
+            @task = ::Task.find_by id: params[:id]
             error!("找不到数据", 500) unless @task.present?
           end
           desc '任务详情'
