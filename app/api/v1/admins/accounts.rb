@@ -27,6 +27,52 @@ module V1
           present @company, with: V1::Entities::Company
         end
 
+        before do
+          error!('错误的商户账号', 500) unless @company.present?
+        end
+
+        desc '商户基本信息', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        get '/' do
+          present @company, with: V1::Entities::Company
+        end
+
+
+        desc '商户基本信息设置', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          optional 'name', type: String, desc: '商户名'
+          optional 'login', type: String, desc: '商户账号'
+          #optional 'status', type: String, desc: '状态 active locked'
+          optional 'image', type: String, desc: '图片'
+          optional 'password', type: String, desc: '密码'
+        end
+        patch '/' do
+          @company.name = params[:name] if params[:name].present?
+          @company.image = Image.new file_path: params[:image] if params[:image].present?
+          @current_admin.login = params[:login] if params[:login].present?
+          @current_admin.password = params[:password] if params[:password].present?
+          if @current_admin.valid? && @company.valid?
+            @current_admin.save
+            @company.save
+            present @company, with: V1::Entities::Company
+          else
+            {error: '10001', message: @current_admin.errors.messages.merge(@company.errors.messages)}
+          end
+        end
+
       end
     end
   end

@@ -15,6 +15,7 @@ module V1
           0
         end
       end
+      expose :image, using: V1::Entities::Image
 
       # product_category 是在rails的model中定义的关联，在这里可以直接用
       expose :customer, using: V1::Entities::Customer

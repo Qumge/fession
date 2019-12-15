@@ -31,6 +31,7 @@ class Company < ApplicationRecord
   has_and_belongs_to_many :followers , join_table: 'company_follows', foreign_key: :follow_id, class_name: "User"
   has_many :banner_company_banners, :class_name => 'Banner::CompanyBanner'
   has_many :addresses
+  has_one :image, -> {where(model_type: 'Company')}, foreign_key: :model_id
   acts_as_paranoid
 
   before_create :set_no
