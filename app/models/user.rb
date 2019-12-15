@@ -110,7 +110,7 @@ class User < ApplicationRecord
   end
 
   def ensure_authentication_token!
-    self.authentication_token = generate_authentication_token
+    self.authentication_token ||= generate_authentication_token
     #记录登录时间TODO
     self.save
   end
