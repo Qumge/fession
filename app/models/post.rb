@@ -17,13 +17,13 @@ class Post < ApplicationRecord
 
     # 审核成功
     event :do_success do
-      transitions :from => :wait, :to => :success
+      transitions :from => [:wait, :failed], :to => :success
     end
 
 
     #审核失败
     event :do_failed do
-      transitions :from => :wait, :to => :failed
+      transitions :from => [:wait, :success], :to => :failed
     end
 
   end
