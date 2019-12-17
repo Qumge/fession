@@ -61,7 +61,7 @@ module V1
         end
         patch '/' do
           @company.name = params[:name] if params[:name].present?
-          @company.image = Image.new file_path: params[:image] if params[:image].present?
+          @company.image = Image.new file_path: params[:image], model_type: 'Company' if params[:image].present?
           @current_admin.login = params[:login] if params[:login].present?
           @current_admin.password = params[:password] if params[:password].present?
           if @current_admin.valid? && @company.valid?
