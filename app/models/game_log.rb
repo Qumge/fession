@@ -29,6 +29,7 @@ class GameLog < ApplicationRecord
       if s <= a * 10000
         p 333333
         PrizeLog.create user: self.user, game: self.game, prize: prize
+        return
       end
     end
   end

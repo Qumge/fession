@@ -51,6 +51,7 @@ class CoinLog < ApplicationRecord
       user.update coin: user.coin.to_i + coin
     when 'prize'
       user.update coin: user.coin + coin
+      prize_log.game.update residue_coin: game.residue_coin.to_i - coin if prize_log.game.present?
       company.update coin: company.coin.to_i - coin if company.present?
     end
   end

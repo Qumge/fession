@@ -52,7 +52,7 @@ class Post < ApplicationRecord
     def search_conn params
       posts = self.all
       if params[:search].present?
-        posts = posts.where('prosts.name like ?', "%#{params[:search]}%")
+        posts = posts.where('prosts.title like ?', "%#{params[:search]}%")
       end
       if params[:status].present?
         posts = posts.where status: params[:status]
