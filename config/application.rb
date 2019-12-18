@@ -21,6 +21,9 @@ module Fission
     config.assets.precompile += %w(swagger_ui.js swagger_ui.css swagger_ui_print.css swagger_ui_screen.css)
     config.time_zone = 'Beijing'
     config.active_record.default_timezone = :local
+    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', 'zh-CN', '*.yml').to_s]
+    config.i18n.available_locales = [:en, 'zh-CN']
+    config.i18n.default_locale = 'zh-CN'
 
     # config.middleware.insert_before 0, Rack::Cors do
     #   allow do

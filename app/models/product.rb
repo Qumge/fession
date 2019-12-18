@@ -189,5 +189,9 @@ class Product < ApplicationRecord
     STATUS[self.status.to_sym]
   end
 
+  def default_image
+    self.images&.first&.image_path
+  end
+
 
 end

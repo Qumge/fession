@@ -10,6 +10,7 @@ module V1
         instance.view_name
       end
       expose :number
+      expose :share_num
       expose :share_link
       expose :status
       expose :get_status

@@ -22,6 +22,7 @@ module V1
       expose :desc do |instance, options|
         instance.desc.to_s
       end
+      expose :default_image
 
       # product_category 是在rails的model中定义的关联，在这里可以直接用
       expose :company, using: V1::Entities::Company
