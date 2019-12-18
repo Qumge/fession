@@ -82,6 +82,15 @@ class Product < ApplicationRecord
         s = sorts.collect{|sort| "#{sort['column']} #{sort['sort']}"}.join ','
         products = products.order(s)
       end
+      if params[:category_id].present?
+        category = Category.find_by id: params[:category_id]
+        if category.present?
+          products = products.where(category_id: category.subtree_ids)
+        end
+      end
+      if params[:sort].present?
+        products = products.order(params[:sort])
+      end
       products = products.order('created_at desc')
       if params[:search].present?
         products = products.where('name like ?', "%#{params[:search]}%")

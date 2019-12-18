@@ -22,6 +22,7 @@ module V1
       expose :view_num
       expose :coin
       expose :total_coin
+      expose :desc
       expose :feature_coin do |instance, options|
         0
       end
