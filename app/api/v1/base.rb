@@ -43,6 +43,7 @@ module V1
         mount V1::Users::Tasks
         mount V1::Users::Posts
         mount V1::Users::MyPosts
+        mount V1::Users::Categories
       end
 
       add_swagger_documentation(
