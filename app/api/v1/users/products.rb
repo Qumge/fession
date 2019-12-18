@@ -12,7 +12,7 @@ module V1
         params do
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
-          optional :type, type: String, desc: '类型', default: 'Money::Product'
+          optional :type, type: String, desc: '类型 MoneyProduct CoinProduct', default: 'MoneyProduct'
         end
         get '/' do
           products = @product_model.where(status: 'up').search_conn(params)
@@ -26,6 +26,9 @@ module V1
           end
 
           desc '推文任务详情'
+          params do
+            optional :type, type: String, desc: '类型MoneyProduct CoinProduct', default: 'MoneyProduct'
+          end
           get '/' do
             present @product, with: V1::Entities::Product
           end
