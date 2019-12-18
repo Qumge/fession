@@ -1,7 +1,6 @@
 module V1
-  module Admins
+  module Users
     class Categories < Grape::API
-      helpers V1::Users::AdminLoginHelper
       include Grape::Kaminari
       resources 'categories' do
 
