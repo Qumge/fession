@@ -22,7 +22,7 @@ module V1
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
         end
         get '/' do
-          posts = Post.show_sort
+          posts = @current_user.posts.show_sort
           present paginate(posts), with: V1::Entities::Post
         end
 
