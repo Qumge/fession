@@ -13,6 +13,9 @@ module V1
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
           optional :type, type: String, desc: '类型 MoneyProduct CoinProduct', default: 'MoneyProduct'
+          optional :category_id, type: Integer, desc: '分类'
+          optional :sort, type: String, desc: '排序'
+          optional :search, type: String, desc: '检索'
         end
         get '/' do
           products = @product_model.where(status: 'up').search_conn(params)
