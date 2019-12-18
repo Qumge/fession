@@ -170,9 +170,10 @@ module V1
         params do
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+          optional :type, type: String, desc: '流水流入流出 in out'
         end
         get 'coin_logs' do
-          present paginate(@current_user.coin_logs), with: V1::Entities::CoinLog
+          present paginate(@current_user.coin_logs.search_conn params), with: V1::Entities::CoinLog
         end
 
         desc '关注用户', {

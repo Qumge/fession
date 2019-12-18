@@ -14,7 +14,7 @@
 class CoinLog < ApplicationRecord
   belongs_to :user
   belongs_to :company
-  CHANNEL = {fission: '转发裂变', sign: '签到', game: '游戏抽奖', cash: '提现', prize: '中奖', failed_cash: '提现拒绝返还', product: '购买返金币'}
+  CHANNEL = {fission: '转发裂变', sign: '签到', game: '游戏抽奖', cash: '提现', prize: '中奖', failed_cash: '提现拒绝返还', product: '购买返金币', order: '金币商城消费'}
   belongs_to :fission_log, foreign_key: :model_id
   belongs_to :share_log, foreign_key: :model_id
   belongs_to :prize_log, foreign_key: :model_id
@@ -22,6 +22,23 @@ class CoinLog < ApplicationRecord
   #belongs_to :sign_log, foreign_key: :model_id
 
   after_create :set_coin
+
+  class << self
+    def search_conn params
+      logs = self.all
+      if params[:type].present?
+        channels = []
+        case params[:type]
+        when 'in'
+          channels = ['sign', 'fission', 'prize', 'failed_cash', 'product']
+        when 'out'
+          channels = ['game', 'order', 'cash']
+        end
+        logs = logs.where(channel: channels)
+      end
+      logs
+    end
+  end
 
   def get_channel
     CHANNEL[self.channel.to_sym]
