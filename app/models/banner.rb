@@ -1,6 +1,7 @@
 class Banner < ApplicationRecord
   has_one :image, -> {where(model_type: 'Banner')}, foreign_key: :model_id
-  belongs_to :task
+  belongs_to :task, foreign_key: :task_id
+  belongs_to :post, foreign_key: :task_id
 
   def fetch_params params
     image = Image.new file_path: params[:image], model_type: 'Banner'

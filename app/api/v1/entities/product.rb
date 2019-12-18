@@ -13,12 +13,7 @@ module V1
       end
       expose :h5_link
       expose :price do |instance, options|
-
-        s = instance.type == 'CoinProduct' ? instance.price : (instance.price.to_f / 100)
-        p instance.price
-        p instance.price.to_f / 100
-        p s
-        s
+        instance.view_price
       end
       expose :no
       expose :stock

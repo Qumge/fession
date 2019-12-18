@@ -175,7 +175,10 @@ class Product < ApplicationRecord
     else
       self.no = "20#{Time.now.to_i}#{rand(1000..9999).to_s}"
     end
+  end
 
+  def view_price
+    self.type == 'CoinProduct' ? self.price : (self.price.to_f / 100)
   end
 
   def h5_link

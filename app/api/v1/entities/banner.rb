@@ -5,7 +5,8 @@ module V1
       expose :id
       expose :no
       expose :image, using: V1::Entities::Image
-      expose :task, using: V1::Entities::Task
+      expose :task, using: V1::Entities::Task, if: proc{|instance| instance.type != 'Banner::PostBanner'}
+      expose :post, using: V1::Entities::Post, if: proc{|instance| instance.type == 'Banner::PostBanner'}
       with_options(format_with: :timestamp) do
         expose :created_at, documentation: { type: 'Timestamp' }
         expose :updated_at, documentation: { type: 'Timestamp' }
