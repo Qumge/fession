@@ -4,6 +4,7 @@ module V1
       format_with(:timestamp) { |dt| dt.try :strftime, '%Y-%m-%d %H:%M:%S' }
       expose :id
       expose :coin
+      expose :type
       expose :number
       expose :probability
       expose :product, using: V1::Entities::Product

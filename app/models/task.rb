@@ -29,6 +29,7 @@ class Task < ApplicationRecord
   has_many :audit_task_audits, :class_name => 'Audit::TaskAudit', foreign_key: :model_id
   has_many :fission_logs
   has_one :image, -> {where(model_type: 'Task')}, foreign_key: :model_id
+  has_many :view_logs
 
   STATUS = { wait: '待审核', failed: '已拒绝', success: '审核成功', active: '进行中', overtime: '已结束'}
 
@@ -132,6 +133,21 @@ class Task < ApplicationRecord
 
   def set_residue
     self.update residue_coin: self.coin
+  end
+
+  # 分享消耗金币
+  def cost_coin
+    self.coin.to_i - self.residue_coin.to_i
+  end
+
+  # 获客成本
+  def user_per_coin
+    if view_num.present? && view_num > 0
+      (cost_coin.to_f / view_num).round 2
+    else
+      '-'
+    end
+
   end
 
 

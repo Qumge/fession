@@ -23,6 +23,6 @@
 #  index_products_on_deleted_at  (deleted_at)
 #
 
-class Prize::Coin < Prize
+class Prize::ProductPrize < Prize
 
 end

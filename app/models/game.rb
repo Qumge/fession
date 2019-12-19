@@ -24,6 +24,7 @@ class Game < ApplicationRecord
   validates_presence_of :coin, if: proc{|game| game.company.present?}
  # validates_presence_of :company_id, if: proc{|game| game.cost.present?}
   has_many :prizes
+  has_many :prize_logs
   belongs_to :company
   has_one :image, -> {where(model_type: 'Game')}, foreign_key: :model_id
   has_one :task_game_task, :class_name => 'Task::GameTask', foreign_key: :model_id
@@ -36,9 +37,9 @@ class Game < ApplicationRecord
     params_prizes.each do |params_prize|
       if params_prize['product_id'].present?
         p params_prize['product_id'], 11111
-        prize = self.prizes.find_or_initialize_by product_id: params_prize['product_id']
+        prize = self.prizes.find_or_initialize_by product_id: params_prize['product_id'], type: 'Prize::ProductPrize'
       else
-        prize = self.prizes.find_or_initialize_by coin: params_prize['coin']
+        prize = self.prizes.find_or_initialize_by coin: params_prize['coin'], type: 'Prize::CoinPrize'
       end
       prize.probability = params_prize['probability']
       prize.number = params_prize['number']
@@ -75,7 +76,23 @@ class Game < ApplicationRecord
     (self.cost.present? && self.company.blank?) || (self.cost.blank? && self.task_game_task.success? && self.task_game_task.time_valid?)
   end
 
+  def cost_coin
+    self.coin.to_i - self.residue_coin.to_i
+  end
 
+  #中奖人数
+  def prize_user_num
+    self.prize_logs.size
+  end
 
+  #中奖金币数
+  def prize_coin
+    self.coin.to_i - self.residue_coin.to_i
+  end
+
+  #中奖商品数
+  def prize_product_num
+    self.prize_logs.joins(:prize).where('prizes.type = ?', 'Prize::ProductPrize').size
+  end
 
 end

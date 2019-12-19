@@ -20,13 +20,13 @@ class PrizeLog < ApplicationRecord
 
   def award_prize
     case prize.type
-    when 'Prize::Coin'
+    when 'Prize::CoinPrize'
       CoinLog.create company: game.company, model_id: self.id, user: user, channel: 'prize', coin: prize.coin
       if game.residue_coin.present? && prize.coin.present?
         game.update residue_coin: game.residue_coin - prize.coin
         game.company.update coin: game.company.coin - prize.coin if game.company.present?
       end
-    when 'Prize::Product'
+    when 'Prize::ProductPrize'
       # 生成一个订单
       Order.prize_order user, prize.product
     end

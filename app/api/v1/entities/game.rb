@@ -8,6 +8,9 @@ module V1
       expose :coin
       expose :desc
       expose :type
+      expose :prize_user_num
+      expose :prize_coin
+      expose :prize_product_num
       expose :image, using: V1::Entities::Image
       expose :prizes, using: V1::Entities::Prize
       with_options(format_with: :timestamp) do

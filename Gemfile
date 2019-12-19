@@ -85,3 +85,4 @@ gem 'qiniu', '~> 6.8.1'  #七牛云存储
 gem 'rack-cors', :require => 'rack/cors'
 gem 'wechat'
 gem 'encrypted_id'
+gem 'wx_pay'
