@@ -26,7 +26,7 @@ module V1
 
         route_param :id do
           before do
-             @order= @current_user.orders.find_by id: params[:id], status: 'up'
+             @order= @current_user.orders.find_by id: params[:id]
             error!("找不到数据", 500) unless @order.present?
           end
 
