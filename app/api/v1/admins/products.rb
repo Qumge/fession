@@ -23,7 +23,7 @@ module V1
             }
         }
         params do
-          optional 'type', type: String, desc: '类型', default: 'MoneyProduct CoinProduct'
+          optional 'type', type: String, desc: '类型MoneyProduct CoinProduct', default: 'MoneyProduct'
           optional 'sorts', type: String, desc: "排序[{column: 'price', sort: 'desc'}, {column: 'sale', sort: 'desc'}, {column: 'stock', sort: 'desc'}]", default: [{column: 'price', sort: 'desc'}, {column: 'sale', sort: 'desc'}, {column: 'stock', sort: 'desc'}].to_json
           optional 'search', type: String, desc: '名称检索'
           optional 'company_id', type: String, desc: '商户id'
@@ -32,6 +32,9 @@ module V1
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
         end
         get '/' do
+          if @company.present?
+            params[:company_id] = @company.id
+          end
           products = @product_model.search_conn(params)
           present paginate(products), with: V1::Entities::Product
         end
