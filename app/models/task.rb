@@ -150,5 +150,40 @@ class Task < ApplicationRecord
 
   end
 
+  # 分享数据
+  def share_data from=nil, to=nil
+    share_logs = ShareLog.joins(fission_log: :task).where('tasks.id = ?', self.id)
+    if from.present?
+      share_logs = share_logs.where('share_logs.created_at >= ?', from)
+    end
+    if to.present?
+      share_logs = share_logs.where('share_logs.created_at < ?', to)
+    end
+    share_logs
+  end
+
+  # 浏览数据
+  def view_data from=nil, to=nil
+    view_logs = self.view_logs
+    if from.present?
+      view_logs = view_logs.where('view_logs.created_at >= ?', from)
+    end
+    if to.present?
+      view_logs = view_logs.where('view_logs.created_at < ?', to)
+    end
+    view_logs
+  end
+
+  # 金币消耗数据
+  def coin_data from=nil, to=nil
+    coin_logs = CoinLog.joins(share_log: {fission_log: :task}).where('tasks.id = ?', self.id)
+    if from.present?
+      coin_logs = coin_logs.where('coin_logs.created_at >= ?', from)
+    end
+    if to.present?
+      coin_logs = coin_logs.where('coin_logs.created_at < ?', to)
+    end
+    coin_logs
+  end
 
 end

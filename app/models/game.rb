@@ -80,9 +80,33 @@ class Game < ApplicationRecord
     self.coin.to_i - self.residue_coin.to_i
   end
 
+  # 中奖数据
+  def prize_data from=nil, to=nil
+    prize_logs = self.prize_logs
+    if from.present?
+      prize_logs = prize_logs.where('prize_logs.created_at >= ?', from)
+    end
+    if to.present?
+      prize_logs = prize_logs.where('prize_logs.created_at < ?', to)
+    end
+    prize_logs
+  end
+
+  # 中奖金币数据
+  def coin_data from=nil, to=nil
+    coin_logs = CoinLog.joins(:prize_log).where(channel: 'prize').where('prize_logs.game_id = ?', self.id)
+    if from.present?
+      coin_logs = coin_logs.where('coin_logs.created_at >= ?', from)
+    end
+    if to.present?
+      coin_logs = coin_logs.where('coin_logs.created_at < ?', to)
+    end
+    coin_logs
+  end
+
   #中奖人数
-  def prize_user_num
-    self.prize_logs.size
+  def prize_user_num from=nil, to=nil
+    prize_data.size
   end
 
   #中奖金币数
@@ -94,5 +118,7 @@ class Game < ApplicationRecord
   def prize_product_num
     self.prize_logs.joins(:prize).where('prizes.type = ?', 'Prize::ProductPrize').size
   end
+
+
 
 end
