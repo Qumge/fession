@@ -7,6 +7,7 @@ module V1
       expose :cost
       expose :coin
       expose :desc
+      expose :type
       expose :image, using: V1::Entities::Image
       expose :prizes, using: V1::Entities::Prize
       with_options(format_with: :timestamp) do

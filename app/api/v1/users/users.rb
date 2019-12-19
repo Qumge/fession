@@ -306,7 +306,22 @@ module V1
           end
         end
 
-
+        desc '查看任务', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          optional :token, type: String, desc: '转发token'
+          requires :task_id, type: Integer, desc: '任务id'
+        end
+        post :view do
+          view_log = ViewLog.fetch_params params, @current_user
+          present view_log, with: V1::Entities::ViewLog
+        end
       end
     end
   end

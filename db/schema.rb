@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_16_060416) do
+ActiveRecord::Schema.define(version: 2019_12_19_064219) do
 
   create_table "addresses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -395,6 +395,7 @@ ActiveRecord::Schema.define(version: 2019_12_16_060416) do
     t.string "share_link"
     t.integer "share_num", default: 0
     t.integer "number", default: 0
+    t.integer "view_num", default: 0
     t.index ["deleted_at"], name: "index_tasks_on_deleted_at"
   end
 
@@ -442,6 +443,14 @@ ActiveRecord::Schema.define(version: 2019_12_16_060416) do
     t.string "app_openid"
     t.index ["deleted_at"], name: "index_users_on_deleted_at"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  create_table "view_logs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "fission_log_id"
+    t.integer "task_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end
