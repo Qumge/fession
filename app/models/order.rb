@@ -7,6 +7,7 @@ class Order < ApplicationRecord
   # 下单
   class << self
     def apply_order user, product_norms
+
       product_norms ||= JSON.parse [{id: 1, number: 2}, {id: 2, number: 2}, {id: 13, norm: {id: 13, number: 1}}, {id: 12, norm: {id: 11, number: 1}}].to_json
       begin
         company_orders = {}
