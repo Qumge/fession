@@ -24,6 +24,24 @@ module V1
           present orders, with: V1::Entities::Order
         end
 
+        desc '我的订单' , {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          optional :status, type: String, desc: "类型 { wait: '代付款', pay: '代发货', send: '待收货', receive: '已收货'}"
+        end
+        get 'my' do
+          orders = @current_user.orders
+          orders = orders.where(status: params[:status]) if params[:status].present?
+          present paginate(orders), with: V1::Entities::Order
+        end
+
+
         route_param :id do
           before do
              @order= @current_user.orders.find_by id: params[:id]

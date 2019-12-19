@@ -1,8 +1,31 @@
 class Order < ApplicationRecord
+  include AASM
   belongs_to :user
   belongs_to :company
   has_many :order_products
   before_save :set_values
+
+  STATUS = { wait: '代付款', pay: '代发货', send: '待收货', receive: '已收货'}
+
+  aasm :status do
+    state :wait, :initial => true
+    state :pay, :send, :receive
+
+    #审核成功 直接上架
+    event :do_pay do
+      transitions :from => [:wait], :to => :pay
+    end
+
+    #审核失败
+    event :do_send do
+      transitions :from => :pay, :to => :send
+    end
+
+    #上架
+    event :do_receive do
+      transitions :from => :send, :to => :receive
+    end
+  end
 
   # 下单
   class << self
