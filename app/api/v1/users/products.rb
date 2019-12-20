@@ -16,11 +16,13 @@ module V1
           optional :category_id, type: Integer, desc: '分类'
           optional :sort, type: String, desc: '排序'
           optional :search, type: String, desc: '检索'
+          optional :ids, type: String, desc: '批量查询用于购物车数据商品查询'
         end
         get '/' do
           products = @product_model.where(status: 'up').search_conn(params)
           present paginate(products), with: V1::Entities::Product
         end
+
 
         route_param :id do
           before do

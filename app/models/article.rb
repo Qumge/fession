@@ -20,4 +20,5 @@ class Article < ApplicationRecord
   belongs_to :article
   belongs_to :company
   belongs_to :product
+  has_one :task_article_task, :class_name => 'Task::ArticleTask'
 end

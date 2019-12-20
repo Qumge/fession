@@ -9,7 +9,7 @@ module V1
       end
 
       resources 'cash' do
-        desc '分享日志', {
+        desc '提现记录', {
             headers: {
                 "X-Auth-Token" => {
                     description: "登录token 运营平台账号",
