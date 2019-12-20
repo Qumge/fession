@@ -125,9 +125,9 @@ module V1
         end
         post :audit do
           if ::Cash::STATUS[params[:status].to_sym].present?
-            cashes = Cash.where(id: JSON.parse(params[:ids]))
+            cashes = ::Cash.where(id: JSON.parse(params[:ids]))
             begin
-              Task.transaction do
+              ::Cash.transaction do
                 cashes.each do |cash|
                   Audit::CashAudit.create cash: cash, form_status: cash.status, to_status: params[:status], admin: @current_admin, reason: params[:reason]
                   cash.send "do_#{params[:status]}!" if cash.send "may_do_#{params[:status]}?"
