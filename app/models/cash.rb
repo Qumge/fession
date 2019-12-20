@@ -4,7 +4,7 @@ class Cash < ApplicationRecord
   has_many :audit_cash_audits, :class_name => 'Audit::CashAudit', foreign_key: :model_id
   after_create :cut_coin
 
-  STATUS = { wait: '待审核', failed: '已拒绝', success: '已同意', done: '已提现'}
+  STATUS = { wait: '待审核', failed: '已拒绝', success: '打款中', done: '已到账'}
 
   aasm :status do
     state :wait, :initial => true
