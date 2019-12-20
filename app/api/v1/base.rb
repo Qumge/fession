@@ -25,6 +25,7 @@ module V1
         mount V1::Admins::Posts
         mount V1::Admins::Addresses
         mount V1::Admins::CashRules
+        mount V1::Admins::Cash
         mount V1::Admins::SignRules
       end
 

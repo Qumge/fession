@@ -31,6 +31,20 @@ class Record
       share_data = Record::ShareLog.new(params).date_group_records
       data = Record::ShareLog.new(params).date_group_records
     end
+
+    def task_game_data params
+      # date_headers
+      #分享次数
+      share_data = Record::ShareLog.new(params).date_group_records
+      #查看次数
+      share_data = Record::ShareLog.new(params).date_group_records
+      # 分享消耗金币
+      task_coin_data = Record::TaskCoinLog.new(params).date_group_records
+      # 中奖人数
+      prize_data = Record::PrizeLog.new(params).date_group_records
+      #中奖消耗金币
+      prize_coin_data = Record::PrizeCoinLog.new(params).date_group_records
+    endx
   end
 
 end
