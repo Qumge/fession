@@ -44,7 +44,7 @@ class Record
       prize_data = Record::PrizeLog.new(params).date_group_records
       #中奖消耗金币
       prize_coin_data = Record::PrizeCoinLog.new(params).date_group_records
-    endx
+    end
   end
 
 end
