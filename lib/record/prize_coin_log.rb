@@ -6,7 +6,7 @@ class Record::PrizeCoinLog < Record
 
   def search_conn
     conn = ["channel = 'prize'"]
-    if @form.present?
+    if @date_from.present?
       conn << "coin_logs.created_at >= '#{@date_from}'"
     end
     if @date_to.present?

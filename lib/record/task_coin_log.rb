@@ -19,7 +19,7 @@ class Record::TaskCoinLog < Record
 
   def search_conn
     conn = ["coin_logs.channel = 'fission'"]
-    if @form.present?
+    if @date_from.present?
       conn << "coin_logs.created_at >= '#{@date_from}'"
     end
     if @date_to.present?

@@ -19,7 +19,7 @@ class Record::ViewLog < Record
 
   def search_conn
     conn = []
-    if @form.present?
+    if @date_from.present?
       conn << "view_logs.created_at >= '#{@date_from}'"
     end
     if @date_to.present?

@@ -6,7 +6,7 @@ class Record::PrizeLog < Record
 
   def search_conn
     conn = []
-    if @form.present?
+    if @date_from.present?
       conn << "prize_logs.created_at >= '#{@date_from}'"
     end
     if @date_to.present?

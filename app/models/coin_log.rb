@@ -19,6 +19,7 @@ class CoinLog < ApplicationRecord
   belongs_to :share_log
   belongs_to :prize_log, foreign_key: :model_id
   belongs_to :game_log, foreign_key: :model_id
+  belongs_to :order_product, foreign_key: :model_id
   #belongs_to :sign_log, foreign_key: :model_id
 
   after_create :set_coin

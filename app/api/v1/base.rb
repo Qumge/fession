@@ -27,6 +27,8 @@ module V1
         mount V1::Admins::CashRules
         mount V1::Admins::Cash
         mount V1::Admins::SignRules
+        mount V1::Admins::StatRecords
+        mount V1::Admins::Wechat
       end
 
       namespace :users do

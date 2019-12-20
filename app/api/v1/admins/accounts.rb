@@ -17,14 +17,16 @@ module V1
         params do
           # company_id 'status', type: String, desc: '商户状态 locked / active'
           optional 'company_id', type: String, desc: '商户id'
-          requires 'money', type: Integer, desc: '充值金额'
+          requires 'amount', type: Integer, desc: '充值金额'
         end
         post 'charge' do
-          if params[:company_id].present?
-            @company ||= Company.find_by id: params[:company_id]
+          @company ||= Company.find_by id: params[:company_id]
+          if @company.present?
+            company_payment = CompanyPayment.create company: @company, amount: params[:amount] * 100
+            present company_payment, with: V1::Entities::CompanyPayment
+          else
+            {error: '400001', message: '找不到商户'}
           end
-          @company.update coin: @company.coin + 100 * params[:money]
-          present @company, with: V1::Entities::Company
         end
 
         before do

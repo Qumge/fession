@@ -32,6 +32,7 @@ class Company < ApplicationRecord
   has_many :banner_company_banners, :class_name => 'Banner::CompanyBanner'
   has_many :addresses
   has_one :image, -> {where(model_type: 'Company')}, foreign_key: :model_id
+  has_many :company_payments
   acts_as_paranoid
 
   before_create :set_no
