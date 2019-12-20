@@ -6,7 +6,7 @@ module V1
         authenticate!
       end
       resources 'accounts' do
-        desc '账户', {
+        desc '充值', {
             headers: {
                 "X-Auth-Token" => {
                     description: "登录token",
@@ -23,6 +23,29 @@ module V1
           @company ||= Company.find_by id: params[:company_id]
           if @company.present?
             company_payment = CompanyPayment.create company: @company, amount: params[:amount] * 100
+            present company_payment, with: V1::Entities::CompanyPayment
+          else
+            {error: '400001', message: '找不到商户'}
+          end
+        end
+
+        desc '校验是否充值成功 status: pay标识充值成功', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          # company_id 'status', type: String, desc: '商户状态 locked / active'
+          optional 'company_id', type: String, desc: '商户id'
+          requires :id, type: Integer, desc: '充值记录id'
+        end
+        post 'check_charge' do
+          @company ||= Company.find_by id: params[:company_id]
+          if @company.present?
+            company_payment = CompanyPayment.find_by company: @company, id: params[:id]
             present company_payment, with: V1::Entities::CompanyPayment
           else
             {error: '400001', message: '找不到商户'}
