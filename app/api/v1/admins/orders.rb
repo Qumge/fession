@@ -26,7 +26,7 @@ module V1
 
         route_param :id do
           before do
-             @order= Order.find_by id: params[:id], compoany: @company
+             @order= Order.find_by id: params[:id], company: @company
             error!("找不到数据", 500) unless @order.present?
           end
 
@@ -41,6 +41,25 @@ module V1
           get '/' do
             present @order, with: V1::Entities::Order
           end
+
+          desc '发货', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          params do
+            requires :no, type: String, desc: '物流编号'
+            requires :name, type: String, desc: '物流公司 yuantong zhongtong shunfeng'
+          end
+          post 'send' do
+            logistic = Logistic.new order: @order 
+            logistic.update name: params[:name], no: params[:no]
+            present @order, with: V1::Entities::Order
+          end
+
         end
       end
     end

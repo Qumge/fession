@@ -4,6 +4,7 @@ class Order < ApplicationRecord
   belongs_to :company
   has_many :order_products
   before_save :set_values
+  has_one :logistic
 
   STATUS = { wait: '代付款', pay: '代发货', send: '待收货', receive: '已收货'}
 
