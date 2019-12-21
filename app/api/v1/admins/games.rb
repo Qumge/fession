@@ -29,7 +29,7 @@ module V1
             }
         }
         params do
-          requires :type, type: String, desc: '游戏类型 Game::Wheel Game::Tiger Game::Scratch'
+          requires :type, type: String, desc: '游戏类型 Game::Wheel Game::Tiger Game::Egg'
           requires :name, type: String, desc: '游戏名'
           optional :cost, type: Integer, desc: '游戏消耗金币数  商户创建时不填'
           requires :prizes, type: String, desc: '奖品 大转盘抽奖 默认为5个奖项 请勿多传或少传 [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}]', default:  [{product_id: 1, probability: 0.01, number: 1}, { coin: 200, probability: 0.01, number: 2}].to_json
