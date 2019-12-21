@@ -8,7 +8,7 @@ module V1
       end
 
       resources 'orders' do
-        desc '下单' , {
+        desc '订单列表' , {
             headers: {
                 "X-Auth-Token" => {
                     description: "登录token",
