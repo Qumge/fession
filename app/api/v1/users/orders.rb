@@ -33,11 +33,13 @@ module V1
             }
         }
         params do
+          optional :type, type: String, desc: "Order::CoinOrder Order::MoneyOrder Order::GameOrder"
           optional :status, type: String, desc: "类型 { wait: '代付款', pay: '代发货', send: '待收货', receive: '已收货'}"
         end
         get 'my' do
           orders = @current_user.orders
           orders = orders.where(status: params[:status]) if params[:status].present?
+          orders = orders.where(type: params[:type]) if params[:type].present?
           present paginate(orders), with: V1::Entities::Order
         end
 
@@ -48,7 +50,7 @@ module V1
             error!("找不到数据", 500) unless @order.present?
           end
 
-          desc '推文任务详情', {
+          desc '订单详情', {
               headers: {
                   "X-Auth-Token" => {
                       description: "登录token",
