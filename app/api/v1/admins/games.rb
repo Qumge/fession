@@ -15,7 +15,7 @@ module V1
                           Game::Wheel
                         when 'Game::Tiger'
                           Game::Tiger
-                        when 'Game::Scratch'
+                        when 'Game::Egg'
                           Game::Scratch
                         end
         end
@@ -36,8 +36,9 @@ module V1
           requires :image, type: String, desc: '背景图片'
         end
         post '/' do
+          image = Image.new file_path: params[:image], model_type: 'Game'
           game = @game_model.find_or_initialize_by company_id: nil
-          game.attributes = {name: params[:name], cost: params[:cost]}
+          game.attributes = {name: params[:name], cost: params[:cost], image: image}
           game = game.fetch_prizes JSON.parse(params[:prizes])
           if game.valid?
             present game, with: V1::Entities::Game
