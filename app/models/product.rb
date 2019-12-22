@@ -172,11 +172,11 @@ class Product < ApplicationRecord
               arr_norms << norm
             end
             self.norms = arr_norms
-            self.save
-            self.do_wait! if self.may_do_wait?
           end
         end
       end
+      self.save
+      self.do_wait! if self.may_do_wait?
     end
     self
   end
