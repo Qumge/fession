@@ -30,6 +30,10 @@ class Task < ApplicationRecord
   has_many :fission_logs
   has_one :image, -> {where(model_type: 'Task')}, foreign_key: :model_id
   has_many :view_logs
+  belongs_to :product, foreign_key: :model_id
+  belongs_to :article, foreign_key: :model_id
+  belongs_to :questionnaire, foreign_key: :model_id
+  belongs_to :game, foreign_key: :model_id
 
   STATUS = { wait: '待审核', failed: '已拒绝', success: '审核成功', active: '进行中', overtime: '已结束'}
 

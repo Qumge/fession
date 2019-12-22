@@ -3,15 +3,15 @@ class Record::ShareLog < Record
   def records_scope
     case @type
     when 'Task::GameTask'
-      ::ShareLog.joins(fission_log: {task: :game})
+      ::ShareLog.joins(fission_log: {task: :game}).where('tasks.type = ?', 'Task:GameTask')
     when 'Task::ArticleTask'
-      ::ShareLog.joins(fission_log: {task: :article})
+      ::ShareLog.joins(fission_log: {task: :article}).where('tasks.type = ?', 'Task:ArticleTask')
     when 'Task:LinkTask'
-      ::ShareLog.joins(fission_log: {task: :article})
+      ::ShareLog.joins(fission_log: :task).where.('tasks.type = ?', 'Task:LinkTask')
     when 'Task::ProductTask'
-      ::ShareLog.joins(fission_log: {task: :product})
+      ::ShareLog.joins(fission_log: {task: :product}).where('tasks.type = ?', 'Task::ProductTask')
     when 'Task::QuestionnaireTask'
-      ::ShareLog.joins(fission_log: {task: :questionnaire})
+      ::ShareLog.joins(fission_log: {task: :questionnaire}).where('tasks.type = ?', 'Task::QuestionnaireTask')
     else
       ::ShareLog.joins(fission_log: :task)
     end
