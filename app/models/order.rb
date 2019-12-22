@@ -5,6 +5,7 @@ class Order < ApplicationRecord
   has_many :order_products
   before_save :set_values
   has_one :logistic
+  belongs_to :address
 
   STATUS = { wait: '代付款', pay: '代发货', send: '待收货', receive: '已收货'}
 
@@ -30,7 +31,7 @@ class Order < ApplicationRecord
 
   # 下单
   class << self
-    def apply_order user, product_norms
+    def apply_order user, product_norms, address_id
       product_norms ||= JSON.parse [{id: 1, number: 2}, {id: 2, number: 2}, {id: 13, norm: {id: 13, number: 1}}, {id: 12, norm: {id: 11, number: 1}}].to_json
       begin
         company_orders = {}
@@ -64,7 +65,7 @@ class Order < ApplicationRecord
         end
         company_orders.each do |company, order_products|
           model = company.present? ? Order::MoneyOrder : Order::CoinOrder
-          order = model.new company: company, user: user
+          order = model.new company: company, user: user, address_id: address_id
           order.order_products = order_products
           order.save!
           orders << order

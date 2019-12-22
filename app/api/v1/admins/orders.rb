@@ -55,7 +55,7 @@ module V1
             requires :name, type: String, desc: '物流公司 yuantong zhongtong shunfeng'
           end
           post 'send' do
-            logistic = Logistic.new order: @order 
+            logistic = Logistic.new order: @order
             logistic.update name: params[:name], no: params[:no]
             present @order, with: V1::Entities::Order
           end

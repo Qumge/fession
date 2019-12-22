@@ -51,7 +51,7 @@ module V1
         params do
           requires 'name', type: String, desc: '商品名'
           requires 'category_id', type: Integer, desc: '分类'
-          requires 'coin', type: Integer, desc: '返金币'
+          optional 'coin', type: Integer, desc: '返金币'
           requires 'images', type: String, desc: '图片路径["www.baidu.com/aa.png", "www.baidu.com/aa.png"]'
           optional 'stock', type: Integer, desc: '库存'
           optional 'specs', type: String, desc: "规格 [{name: '颜色', values: ['红色', '黑色']}, {name: '尺码', values: ['xl', 'xxl']}]", default:  [{name: '颜色', values: ['红色', '黑色']}, {name: '尺码', values: ['xl', 'xxl']}].to_json

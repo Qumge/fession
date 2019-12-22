@@ -35,6 +35,7 @@ class Product < ApplicationRecord
   has_many :audits, foreign_key: :model_id
   has_many :audit_product_audits, :class_name => 'Audit::ProductAudit', foreign_key: :model_id
   has_one :task_product_task, :class_name => 'Task::ProductTask', foreign_key: :model_id
+  validates_presence_of :price
 
 
   acts_as_paranoid

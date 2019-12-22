@@ -49,6 +49,7 @@ module V1
         mount V1::Users::MyPosts
         mount V1::Users::Categories
         mount V1::Users::Orders
+        mount V1::Users::Addresses
       end
 
       add_swagger_documentation(

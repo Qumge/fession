@@ -24,7 +24,7 @@
 #
 
 class CoinProduct < Product
-  validates_presence_of :coin
+  # validates_presence_of :coin
   validates_presence_of :name
   after_create :set_status
 

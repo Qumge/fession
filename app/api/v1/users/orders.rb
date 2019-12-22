@@ -17,10 +17,11 @@ module V1
             }
         }
         params do
+          requires :address_id, type: Integer, desc: '地址'
           requires :product_norms,     type: String, desc: "商品信息[{商品id ， 数量}]#{[{id: 1, number: 2}, {id: 2, number: 2}, {id: 13, norm: {id: 13, number: 1}}, {id: 12, norm: {id: 11, number: 1}}].to_json}"
         end
         post '/' do
-          orders = Order.apply_order @current_user, JSON.parse(params[:product_norms])
+          orders = Order.apply_order @current_user, JSON.parse(params[:product_norms]), params[:address_id]
           present orders, with: V1::Entities::Order
         end
 
