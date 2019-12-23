@@ -70,6 +70,7 @@ class Order < ApplicationRecord
 
 
     def apply_order user, product_norms, address_id
+      p product_norms, 111
       product_norms ||= JSON.parse [{id: 1, number: 2}, {id: 2, number: 2}, {id: 13, norm: {id: 13, number: 1}}, {id: 12, norm: {id: 11, number: 1}}].to_json
       begin
         company_orders = {}
@@ -110,7 +111,7 @@ class Order < ApplicationRecord
         end
         orders
       rescue => e
-        console.log(e.message)
+        p e.message
         {error: e.message}
       end
     end
