@@ -11,16 +11,26 @@ module V1
         desc '商品列表'
         params do
           optional :page,     type: Integer, default: 1, desc: '页码'
-          optional :per_page, type: Integer, desc: '每页数据个数', default: 6
+          optional :per_page, type: Integer, desc: '每页数据个数', default: 10
           optional :type, type: String, desc: '类型 MoneyProduct CoinProduct', default: 'MoneyProduct'
           optional :category_id, type: Integer, desc: '分类'
           optional :sort, type: String, desc: '排序'
           optional :search, type: String, desc: '检索'
-          optional :ids, type: String, desc: '批量查询用于购物车数据商品查询'
         end
         get '/' do
           products = @product_model.where(status: 'up').search_conn(params)
           present paginate(products), with: V1::Entities::Product
+        end
+
+        desc '根据ids查询商品规格信息'
+        params do
+          optional :page,     type: Integer, default: 1, desc: '页码'
+          optional :per_page, type: Integer, desc: '每页数据个数', default: 10
+          requires :ids, type: String, desc: '规格id数组'
+        end
+        get :norms do
+          norms = ::Norm.where(id: JSON.parse(params[:ids]))
+          present paginate(norms), with: V1::Entities::NormWithProduct
         end
 
 

@@ -38,9 +38,7 @@ module V1
           optional :status, type: String, desc: "类型 { wait: '代付款', pay: '代发货', send: '待收货', receive: '已收货'}"
         end
         get 'my' do
-          orders = @current_user.orders
-          orders = orders.where(status: params[:status]) if params[:status].present?
-          orders = orders.where(type: params[:type]) if params[:type].present?
+          orders = @current_user.orders.search_conn(params)
           present paginate(orders), with: V1::Entities::Order
         end
 

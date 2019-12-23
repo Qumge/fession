@@ -7,15 +7,20 @@ class Order < ApplicationRecord
   has_one :logistic
   belongs_to :address
 
-  STATUS = { wait: '代付款', pay: '代发货', send: '待收货', receive: '已收货'}
+  STATUS = { wait: '代付款', pay: '代发货', send: '已发货', receive: '已完成', cancel: '已取消', after_sale: '售后订单'}
 
   aasm :status do
     state :wait, :initial => true
-    state :pay, :send, :receive
+    state :pay, :send, :receive, :cancel, :after_sale
 
     #审核成功 直接上架
     event :do_pay do
       transitions :from => [:wait], :to => :pay
+    end
+
+    #审核成功 直接上架
+    event :do_cancel do
+      transitions :from => [:wait], :to => :cancel
     end
 
     #审核失败
@@ -23,14 +28,47 @@ class Order < ApplicationRecord
       transitions :from => :pay, :to => :send
     end
 
-    #上架
+    #收货
     event :do_receive do
       transitions :from => :send, :to => :receive
     end
+
+    #售后
+    event :do_after_sale do
+      transitions :from => [:send, :receive], :to => :after_sale
+    end
+
   end
 
   # 下单
   class << self
+    def search_conn params
+      orders = self.joins(order_products: :product).order('created_at  desc')
+      if params[:company_id].present?
+        orders = orders.where(company_id: params[:company_id])
+      end
+      if params[:no].present?
+        orders = orders.where('orders.no like ?', "%#{params[:no]}%")
+      end
+      if params[:name].present?
+        orders = orders.where('products.name like ?', "%#{params[:name]}%")
+      end
+      if params[:status].present?
+        orders = orders.where('orders.status=?', params[:status])
+      end
+      if params[:type].present?
+        orders = orders.where('orders.type=?', params[:type])
+      end
+      if params[:date_from].present?
+        orders = orders.where('orders.created_at >=?', params[:date_from].to_datetime.beginning_of_day)
+      end
+      if params[:date_to].present?
+        orders = orders.where('orders.created_at <?', params[:date_to].to_datetime.end_of_day)
+      end
+      orders
+    end
+
+
     def apply_order user, product_norms, address_id
       product_norms ||= JSON.parse [{id: 1, number: 2}, {id: 2, number: 2}, {id: 13, norm: {id: 13, number: 1}}, {id: 12, norm: {id: 11, number: 1}}].to_json
       begin

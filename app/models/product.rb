@@ -102,9 +102,6 @@ class Product < ApplicationRecord
       if params[:company_id].present?
         products = products.where(company_id: params[:company_id])
       end
-      if params[:ids].present?
-        products = products.where(id: JSON.parse(params[:ids]))
-      end
       products
     end
   end
