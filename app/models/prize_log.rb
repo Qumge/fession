@@ -15,7 +15,7 @@ class PrizeLog < ApplicationRecord
   after_create :award_prize
   belongs_to :prize
   belongs_to :game
-  # belongs_to :order
+  has_one :order
   belongs_to :user
 
   def award_prize

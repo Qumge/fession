@@ -20,9 +20,10 @@ module V1
           optional :date_from, type: String, desc: '起始时间'
           optional :date_to, type: String, desc: '截止时间'
           optional :no, type: String, desc: '订单编号'
-          optional :type, type: String, desc: '订单类型 Order::CoinOrder Order::GameOrder Order::MoneyOrder'
+          optional :type, type: String, desc: '订单类型 Order::CoinOrder Order::MoneyOrder'
           optional :company_id, type: Integer, desc: '商户id'
           optional :name, type: String, desc: '产品名'
+          optional :game, type: Integer, desc: '游戏订单 1 正常订单 0'
           optional :status,     type: String, desc: "商品信息[{商品id ， 数量}] { wait: '代付款', pay: '代发货', send: '已发货', receive: '已完成', cancel: '已取消', after_sale: '售后订单'}"
         end
         get '/' do

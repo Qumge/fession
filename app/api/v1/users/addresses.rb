@@ -32,14 +32,32 @@ module V1
           requires :name, type: String, desc: '联系人'
           requires :phone, type: String, desc: '联系号码'
           requires :content, type: String, desc: '联系地址'
+          optional :default, type: Integer, desc: '设为默认地址  1 是  0 否'
         end
         post '/' do
           address = @current_user.addresses.new name: params[:name], phone: params[:phone], content: params[:content]
+          p params, 1111
+          if params[:default].present? && params[:default]
+            address.tag = 'default'
+          end
           if address.save
             present address, with: V1::Entities::Address
           else
             {error: '20001', message: address.errors.messages}
           end
+        end
+
+        desc '默认地址', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token 运营平台账号",
+                    required: false
+                }
+            }
+        }
+        get 'default' do
+          address = @current_user.addresses.find_by tag: 'default'
+          present address, with: V1::Entities::Address
         end
 
         route_param :id do
@@ -71,6 +89,7 @@ module V1
             requires :name, type: String, desc: '联系人'
             requires :phone, type: String, desc: '联系号码'
             requires :content, type: String, desc: '联系地址'
+            optional :default, type: Integer, desc: '设为默认地址  1 是  0 否'
           end
           patch '/' do
             if @address.update name: params[:name], phone: params[:phone], content: params[:content]

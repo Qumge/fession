@@ -10,6 +10,8 @@ module V1
       expose :logistic, using: V1::Entities::Logistic
       expose :order_products, using: V1::Entities::OrderProduct
       expose :address, using: V1::Entities::Address
+      expose :view_amount
+      expose :coin
       with_options(format_with: :timestamp) do
         expose :created_at, documentation: { type: 'Timestamp' }
         expose :updated_at, documentation: { type: 'Timestamp' }

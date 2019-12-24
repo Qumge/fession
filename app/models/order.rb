@@ -6,6 +6,7 @@ class Order < ApplicationRecord
   before_save :set_values
   has_one :logistic
   belongs_to :address
+  belongs_to :prize_log
 
   STATUS = { wait: '代付款', pay: '代发货', send: '已发货', receive: '已完成', cancel: '已取消', after_sale: '售后订单'}
 
@@ -57,13 +58,35 @@ class Order < ApplicationRecord
         orders = orders.where('orders.status=?', params[:status])
       end
       if params[:type].present?
-        orders = orders.where('orders.type=?', params[:type])
+        orders = orders.where('orders.type=? and orders.prize_log_id is null', params[:type])
+      end
+      if params[:game].present?
+        if params[:game] == 1
+          orders = orders.where('orders.prize_log_id is not null')
+        else
+          orders = orders.where('orders.type=? and orders.prize_log_id is null', params[:type])
+        end
       end
       if params[:date_from].present?
         orders = orders.where('orders.created_at >=?', params[:date_from].to_datetime.beginning_of_day)
       end
       if params[:date_to].present?
         orders = orders.where('orders.created_at <?', params[:date_to].to_datetime.end_of_day)
+      end
+      orders
+    end
+
+    def search_user_conn params
+      orders = self.joins(order_products: :product).order('created_at  desc')
+      if params[:type].present?
+        if params[:type] == 'Order::GameOrder'
+          orders = orders.where('orders.prize_log_id is not null')
+        else
+          orders = orders.where('orders.type=? and orders.prize_log_id is null', params[:type])
+        end
+      end
+      if params[:status].present?
+        orders = orders.where('orders.status=?', params[:status])
       end
       orders
     end
@@ -117,7 +140,8 @@ class Order < ApplicationRecord
     end
 
     def prize_order user, product
-      order = Order::GameOrder.new user: user, company: product.company
+      order_model = product.company.present? ? Order::MoneyOrder : Order::CoinOrder
+      order = order_model.new user: user, company: product.company
       order_product = OrderProduct.new product: product, number: 1, price: product.price, amount: 1*product.price
       order.order_products = [order_product]
       order.save!
@@ -135,7 +159,28 @@ class Order < ApplicationRecord
   end
 
   def set_amount
-    self.order_products.sum :amount
+    self.amount = self.order_products.sum :amount
+  end
+
+  def view_amount
+    if self.type == 'Order::MoneyOrder'
+      amount.to_f / 100
+    else
+      amount
+    end
+  end
+
+  def coin
+    if self.type == 'Order::MoneyOrder'
+      coin = 0
+      order_products.each do |order_product|
+        p order_product.product.coin, 1111
+        coin += order_product.product.coin.to_i * order_product.number
+      end
+      coin
+    else
+      0
+    end
   end
 
 

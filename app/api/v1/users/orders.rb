@@ -39,9 +39,27 @@ module V1
           optional :status, type: String, desc: "类型 { wait: '代付款', pay: '代发货', send: '待收货', receive: '已收货'}"
         end
         get 'my' do
-          orders = @current_user.orders.search_conn(params)
+          orders = @current_user.orders.search_user_conn(params)
           present paginate(orders), with: V1::Entities::Order
         end
+
+        desc '订单批量查询 用于查看生成的订单  可能多个' , {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :ids, type: String, desc: "多个订单id , 隔开"
+        end
+        get 'apply' do
+          orders = @current_user.orders.where(id: params[:ids].split(','))
+          present orders, with: V1::Entities::Order
+        end
+
+
 
 
         route_param :id do
