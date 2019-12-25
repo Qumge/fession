@@ -59,6 +59,7 @@ class User < ApplicationRecord
   has_many :cashes
   has_many :orders
   has_many :addresses
+  has_many :payments
 
 
 

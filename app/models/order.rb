@@ -7,7 +7,8 @@ class Order < ApplicationRecord
   has_one :logistic
   belongs_to :address
   belongs_to :prize_log
-
+  # has_and_belongs_to_many :payments, join_table: 'order_payments'
+  has_many :payments
   STATUS = { wait: '代付款', pay: '代发货', send: '已发货', receive: '已完成', cancel: '已取消', after_sale: '售后订单'}
 
   aasm :status do
@@ -92,7 +93,7 @@ class Order < ApplicationRecord
     end
 
 
-    def apply_order user, product_norms, address_id
+    def apply_order user, product_norms, address_id, desc
       p product_norms, 111
       product_norms ||= JSON.parse [{id: 1, number: 2}, {id: 2, number: 2}, {id: 13, norm: {id: 13, number: 1}}, {id: 12, norm: {id: 11, number: 1}}].to_json
       begin
@@ -127,8 +128,10 @@ class Order < ApplicationRecord
         end
         company_orders.each do |company, order_products|
           model = company.present? ? Order::MoneyOrder : Order::CoinOrder
-          order = model.new company: company, user: user, address_id: address_id
+          amount =  order_products.sum{|order_product| order_product.amount}
+          order = model.new company: company, user: user, address_id: address_id, amount: amount
           order.order_products = order_products
+          order.desc = desc
           order.save!
           orders << order
         end
@@ -150,7 +153,6 @@ class Order < ApplicationRecord
 
   def set_values
     set_no
-    set_amount
   end
 
   def set_no
@@ -158,9 +160,6 @@ class Order < ApplicationRecord
     self.no = "#{self.company.no.to_s[0..3] if self.company.present?}#{Time.now.to_i}#{rand(1000..9999).to_s}#{sid.size >= 4 ? sid[0..3] : sid.rjust(4, '0')}"
   end
 
-  def set_amount
-    self.amount = self.order_products.sum :amount
-  end
 
   def view_amount
     if self.type == 'Order::MoneyOrder'
@@ -168,6 +167,15 @@ class Order < ApplicationRecord
     else
       amount
     end
+  end
+
+  def get_status
+    STATUS[self.status.to_sym] if self.status.present?
+  end
+
+
+  def current_payment
+    payments.last
   end
 
   def coin

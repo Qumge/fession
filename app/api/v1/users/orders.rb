@@ -18,10 +18,11 @@ module V1
         }
         params do
           optional :address_id, type: Integer, desc: '地址'
+          optional :desc, type: String, desc: '备注'
           requires :product_norms,     type: String, desc: "商品信息[{商品id ， 数量}]#{[{id: 1, number: 2}, {id: 2, number: 2}, {id: 13, norm: {id: 13, number: 1}}, {id: 12, norm: {id: 11, number: 1}}].to_json}"
         end
         post '/' do
-          orders = Order.apply_order @current_user, JSON.parse(params[:product_norms]), params[:address_id]
+          orders = Order.apply_order @current_user, JSON.parse(params[:product_norms]), params[:address_id], params[:desc]
           present orders, with: V1::Entities::Order
         end
 
@@ -57,6 +58,31 @@ module V1
         get 'apply' do
           orders = @current_user.orders.where(id: params[:ids].split(','))
           present orders, with: V1::Entities::Order
+        end
+
+        desc '支付订单 生成支付码' , {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :ids, type: String, desc: "多个订单id , 隔开"
+        end
+        post 'wx_pay' do
+          orders = @current_user.orders.where(id: params[:ids].split(','))
+          orders.update_all desc: params[:desc]
+          payment = @current_user.payments.new
+          p payment, 111
+          payment.orders = orders
+          p orders.first.amount, 111
+          payment.amount = orders.sum{|order| order.amount}
+          payment.save
+          payment.unifiedorder
+          # payment.update orders: orders
+          present payment, with: V1::Entities::Payment
         end
 
 

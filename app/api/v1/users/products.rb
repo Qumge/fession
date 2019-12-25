@@ -33,6 +33,16 @@ module V1
           present paginate(norms), with: V1::Entities::NormWithProduct
         end
 
+        desc '根据id查询商品规格信息'
+        params do
+          requires :id, type: String, desc: '规格id数组'
+        end
+        get :norm do
+          p params, 11111111
+          norm = ::Norm.find_by(id: params[:id])
+          present norm, with: V1::Entities::NormWithProduct
+        end
+
 
         route_param :id do
           before do

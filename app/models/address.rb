@@ -47,11 +47,18 @@ class Address < ApplicationRecord
   end
 
   def set_default
+    p 11111111
     if self.user.present?
-      default_address =  self.user.addresses.where('addresses.tag != ? and addresses.id != ?', 'default', self.id)
+      if self.id.present?
+        default_address =  self.user.addresses.where('addresses.tag = ? and addresses.id != ?', 'default', self.id)
+      else
+        default_address =  self.user.addresses.where('addresses.tag = ? ', 'default')
+      end
+      p default_address, 1111
       if default_address.present?
+        p self.tag, 111
         if self.tag == 'default'
-          self.user.addresses.where('addresses.id != ?', self.id).update_all tag: null
+          default_address.update_all tag: nil
         end
       else
         self.tag = 'default'

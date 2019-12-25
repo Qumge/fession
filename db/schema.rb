@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_24_034855) do
+ActiveRecord::Schema.define(version: 2019_12_25_101507) do
 
   create_table "addresses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -235,6 +235,13 @@ ActiveRecord::Schema.define(version: 2019_12_24_034855) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "order_payments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "payment_id"
+    t.integer "order_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "order_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "norm_id"
     t.integer "product_id"
@@ -258,16 +265,20 @@ ActiveRecord::Schema.define(version: 2019_12_24_034855) do
     t.datetime "payment_at"
     t.integer "address_id"
     t.integer "prize_log_id"
+    t.text "desc"
   end
 
   create_table "payments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "order_id"
     t.integer "user_id"
-    t.string "type"
     t.string "status"
     t.integer "amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "no"
+    t.text "apply_res"
+    t.string "prepay_id"
+    t.text "response_data"
   end
 
   create_table "posts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
