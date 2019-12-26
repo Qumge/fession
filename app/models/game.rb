@@ -119,6 +119,10 @@ class Game < ApplicationRecord
     self.prize_logs.joins(:prize).where('prizes.type = ?', 'Prize::ProductPrize').size
   end
 
+  def h5_link
+    "#{Settings.h5_url}/pages/game/show?id=#{self.id}"
+  end
+
 
 
 end

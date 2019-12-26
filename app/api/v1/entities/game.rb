@@ -12,6 +12,7 @@ module V1
       expose :prize_coin
       expose :prize_product_num
       expose :image, using: V1::Entities::Image
+      expose :h5_link
       expose :prizes, using: V1::Entities::Prize
       with_options(format_with: :timestamp) do
         expose :created_at

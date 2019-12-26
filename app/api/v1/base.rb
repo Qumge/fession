@@ -50,6 +50,7 @@ module V1
         mount V1::Users::Categories
         mount V1::Users::Orders
         mount V1::Users::Addresses
+        mount V1::Users::Games
       end
 
       mount V1::Wechat
