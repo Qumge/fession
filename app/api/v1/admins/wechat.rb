@@ -17,7 +17,7 @@ module V1
           else
             payment = Payment.find_by no: result['out_trade_no']['__content__']
             if payment.present?
-              
+
             end
           end
 

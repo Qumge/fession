@@ -10,7 +10,7 @@ module V1
       expose :status
       expose :get_status
       expose :number
-      expose :view_num
+      # expose :view_num
       expose :user do
         expose :user, merge: true, using: V1::Entities::User
       end
