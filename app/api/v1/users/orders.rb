@@ -24,7 +24,12 @@ module V1
         end
         post '/' do
           orders = Order.apply_order @current_user, JSON.parse(params[:product_norms]), params[:address_id], params[:desc], params[:platform]
-          present orders, with: V1::Entities::Order
+          if orders.is_a? Hash
+            orders
+          else
+            present orders, with: V1::Entities::Order
+          end
+
         end
 
 
@@ -37,11 +42,13 @@ module V1
             }
         }
         params do
+          optional :page,     type: Integer, default: 1, desc: '页码'
+          optional :per_page, type: Integer, desc: '每页数据个数', default: 10
           optional :type, type: String, desc: "Order::CoinOrder Order::MoneyOrder Order::GameOrder"
           optional :status, type: String, desc: "类型 { wait: '代付款', pay: '代发货', send: '待收货', receive: '已收货'}"
         end
         get 'my' do
-          orders = @current_user.orders.search_user_conn(params)
+          orders = @current_user.orders.where('orders.status != ? and orders.status != ?', 'wait', 'apply').search_user_conn(params)
           present paginate(orders), with: V1::Entities::Order
         end
 
@@ -104,6 +111,19 @@ module V1
               }
           }
           get '/' do
+            present @order, with: V1::Entities::Order
+          end
+
+          desc '签收', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          post 'receive' do
+            @order.do_receive! if @order.may_do_receive?
             present @order, with: V1::Entities::Order
           end
 

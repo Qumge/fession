@@ -17,7 +17,7 @@ class Order < ApplicationRecord
 
     #审核成功 直接上架
     event :do_pay do
-      transitions :from => [:wait], :to => :pay
+      transitions :from => [:wait], :to => :pay, after: Proc.new{after_pay}
     end
 
     #审核成功 直接上架
@@ -37,7 +37,7 @@ class Order < ApplicationRecord
 
     #售后
     event :do_after_sale do
-      transitions :from => [:send, :receive], :to => :after_sale
+      transitions :from => [:send, :receive], :to => :after_pay
     end
 
   end
@@ -161,6 +161,11 @@ class Order < ApplicationRecord
     self.no = "#{self.company.no.to_s[0..3] if self.company.present?}#{Time.now.to_i}#{rand(1000..9999).to_s}#{sid.size >= 4 ? sid[0..3] : sid.rjust(4, '0')}"
   end
 
+  def after_pay
+    self.update payment_at: DateTime.now
+    set_stock
+  end
+
 
   def view_amount
     if self.type == 'Order::MoneyOrder'
@@ -168,6 +173,10 @@ class Order < ApplicationRecord
     else
       amount
     end
+  end
+
+  def number
+    self.order_products.sum :number
   end
 
   def get_express_type
@@ -178,10 +187,22 @@ class Order < ApplicationRecord
     STATUS[self.status.to_sym] if self.status.present?
   end
 
+  def get_status_desc
+    case self.status
+    when 'pay'
+      '商家会快马加鞭给您发出'
+    when 'send'
+      "#{(DateTime.now -self.payment_at).round}天后将自动确认"
+    when 'receive'
+      "非常感谢您的惠顾"
+    end
+  end
+
 
   def current_payment
     payments.last
   end
+
 
   def express
     begin

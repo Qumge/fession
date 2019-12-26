@@ -20,6 +20,7 @@ class CoinLog < ApplicationRecord
   belongs_to :prize_log, foreign_key: :model_id
   belongs_to :game_log, foreign_key: :model_id
   belongs_to :order_product, foreign_key: :model_id
+  belongs_to :order, foreign_key: :model_id
   #belongs_to :sign_log, foreign_key: :model_id
 
   after_create :set_coin
@@ -69,8 +70,10 @@ class CoinLog < ApplicationRecord
       user.update coin: user.coin.to_i + coin
     when 'prize'
       user.update coin: user.coin + coin
-      prize_log.game.update residue_coin: game.residue_coin.to_i - coin if prize_log.game.present?
+      prize_log.game.update residue_coin: prize_log.game.residue_coin.to_i - coin if prize_log.game.present?
       company.update coin: company.coin.to_i - coin if company.present?
+    when 'order'
+      user.update coin: user.coin.to_i + coin
     end
   end
 
