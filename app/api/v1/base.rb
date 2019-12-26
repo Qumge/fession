@@ -52,6 +52,8 @@ module V1
         mount V1::Users::Addresses
       end
 
+      mount V1::Wechat
+
       add_swagger_documentation(
           :api_version => "api/v1",
           hide_documentation_path: true,

@@ -14,6 +14,8 @@ module V1
       expose :view_amount
       expose :status
       expose :coin
+      expose :express_no
+      expose :get_express_type
       with_options(format_with: :timestamp) do
         expose :created_at, documentation: { type: 'Timestamp' }
         expose :updated_at, documentation: { type: 'Timestamp' }

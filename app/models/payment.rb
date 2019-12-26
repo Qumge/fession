@@ -5,7 +5,7 @@ class Payment < ApplicationRecord
   include AASM
   after_create :unifiedorder
 
-  STATUS = { wait: '新数据', apply: '微信下单', pay: '支付成功'}
+  STATUS = {wait: '新数据', apply: '微信下单', pay: '支付成功'}
   aasm :status do
     state :wait, :initial => true
     state :apply, :pay
@@ -23,25 +23,68 @@ class Payment < ApplicationRecord
   end
 
   def js_pay
-    params = {prepayid: self.prepay_id, noncestr: SecureRandom.hex(16), }
-    WxPay::Service.generate_js_pay_req params
+    if self.prepay_id.present?
+      WxPay.appid = self.appid
+      params = {prepayid: self.prepay_id, noncestr: SecureRandom.hex(16), }
+      WxPay::Service.generate_js_pay_req params
+    end
+
+  end
+
+  def order_query
+    p self.appid, 111
+    WxPay.appid = self.appid
+    params = {out_trade_no: self.order.no}
+    res = WxPay::Service.order_query params
+    if res[:raw].present? && res[:raw]['xml'].present? && res[:raw]['xml']['return_code'] == 'SUCCESS'
+      self.update response_data: res[:raw]['xml']
+      self.do_pay! if self.may_do_pay?
+      self.order.do_pay! if self.order.may_do_pay?
+    end
+    self
+  end
+
+  def appid
+    if self.apply_res
+      JSON.parse(self.apply_res)['appid']
+    end
+  end
+
+  def times_order_query times = 5
+    p 'time pay'
+    times.times do |time|
+      payment = self.order_query
+      break if payment.pay?
+      sleep 2
+    end
+  end
+
+  def order_pay
+    self.order.do_pay! if self.order.may_do_pay?
   end
 
   def unifiedorder
+    if self.order.platform == 'app'
+      WxPay.appid = Settings.app_appid
+    else
+      WxPay.appid = Settings.web_appid
+    end
+    trade_type = self.order.platform == 'app' ? 'APP' : 'JSAPI'
     params = {
         body: '裂变商城',
         out_trade_no: self.order.no,
         total_fee: 1, #amount
         spbill_create_ip: '127.0.0.1',
-        notify_url: Settings.notify_url+ "?type=user",
-        trade_type: 'JSAPI',
-        openid: user.web_openid
+        notify_url: Settings.user_notify_url,
+        trade_type: trade_type,
     }
+    unless self.order.platform == 'app'
+      params[:openid] = user.web_openid
+    end
+    p params, 111
     payment_logger.info '========beigin unfiedorder============'
     r = WxPay::Service.invoke_unifiedorder params
-    p r, 222
     if r.success?
-      p r, 1111
       self.do_apply! if self.may_do_apply?
       self.update apply_res: r[:raw]['xml'].to_json, prepay_id: r[:raw]['xml']['prepay_id']
     else

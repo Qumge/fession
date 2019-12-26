@@ -10,7 +10,7 @@ class Order < ApplicationRecord
   # has_and_belongs_to_many :payments, join_table: 'order_payments'
   has_many :payments
   STATUS = { wait: '代付款', pay: '代发货', send: '已发货', receive: '已完成', cancel: '已取消', after_sale: '售后订单'}
-
+  EXPRESS = {EMS: 'EMS', STO: '申通', YTO: '圆通', ZTO: '中通', SFEXPRESS: '顺丰', YUNDA: '韵达', TTKDEX: '天天快递', DEPPON: '德邦', HTKY: '汇通快递'}
   aasm :status do
     state :wait, :initial => true
     state :pay, :send, :receive, :cancel, :after_sale
@@ -93,7 +93,7 @@ class Order < ApplicationRecord
     end
 
 
-    def apply_order user, product_norms, address_id, desc
+    def apply_order user, product_norms, address_id, desc, platform
       p product_norms, 111
       product_norms ||= JSON.parse [{id: 1, number: 2}, {id: 2, number: 2}, {id: 13, norm: {id: 13, number: 1}}, {id: 12, norm: {id: 11, number: 1}}].to_json
       begin
@@ -132,6 +132,7 @@ class Order < ApplicationRecord
           order = model.new company: company, user: user, address_id: address_id, amount: amount
           order.order_products = order_products
           order.desc = desc
+          order.platform = platform
           order.save!
           orders << order
         end
@@ -169,6 +170,10 @@ class Order < ApplicationRecord
     end
   end
 
+  def get_express_type
+    EXPRESS[self.express_type.to_sym] if self.express_type.present?
+  end
+
   def get_status
     STATUS[self.status.to_sym] if self.status.present?
   end
@@ -176,6 +181,15 @@ class Order < ApplicationRecord
 
   def current_payment
     payments.last
+  end
+
+  def express
+    begin
+      r = Express.result self.express_no, nil
+      JSON.parse r.body
+    rescue => e
+      {error: '20001', message: '查询不到信息，请稍后再试'}
+    end
   end
 
   def coin

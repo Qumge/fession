@@ -9,9 +9,7 @@ module V1
           requires :url, type: String, desc: '当前页面url'
         end
         post 'jssdk' do
-          s = Wechat.api.jsapi_ticket.signature params[:url]
-          p Wechat, 11111111111
-          p s, 111111111111111
+          s = ::Wechat.api.jsapi_ticket.signature params[:url]
           s
         end
       end

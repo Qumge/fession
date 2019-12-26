@@ -12,12 +12,12 @@ class CompanyPayment < ApplicationRecord
     state :wait, :initial => true
     state :apply, :pay
 
-    #审核成功 直接上架
+
     event :do_apply do
       transitions :from => [:wait], :to => :apply
     end
 
-    #审核失败
+
     event :do_pay do
       transitions :from => :apply, :to => :pay
     end
@@ -28,13 +28,34 @@ class CompanyPayment < ApplicationRecord
     self.no = "#{self.company.no.to_s[0..3] if self.company.present?}#{Time.now.to_i}#{rand(1000..9999)}"
   end
 
+  def order_query
+    params = {out_trade_no: self.order.no}
+    res = WxPay::Service.order_query params
+    if res[:raw].present? && res[:raw]['return_code'] == 'SUCCESS'
+      self.update response_data: result
+      self.do_pay! if self.may_do_pay?
+    end
+    self
+  end
+
+
+
+
+  def times_order_query times=5
+    times.times do |time|
+      payment = self.order_query
+      break if payment.pay?
+      sleep 2000
+    end
+  end
+
   def unifiedorder
     params = {
         body: '金币充值',
         out_trade_no: self.no,
         total_fee: 1, #amount
         spbill_create_ip: '127.0.0.1',
-        notify_url: Settings.notify_url,
+        notify_url: Settings.company_notify_url,
         trade_type: 'NATIVE'
     }
     p 11111

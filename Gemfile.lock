@@ -46,6 +46,8 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
+    ali_express (0.1.1)
+      rest-client
     aliyunsdkcore (0.0.13)
       activesupport (>= 3.0.0)
       faraday (>= 0.15.4)
@@ -346,6 +348,7 @@ PLATFORMS
 
 DEPENDENCIES
   aasm
+  ali_express
   aliyunsdkcore
   ancestry
   annotate

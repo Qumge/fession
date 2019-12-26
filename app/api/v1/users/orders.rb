@@ -18,11 +18,12 @@ module V1
         }
         params do
           optional :address_id, type: Integer, desc: '地址'
+          optional :platform, type: String, desc: '下单平台 app web', default: 'app'
           optional :desc, type: String, desc: '备注'
           requires :product_norms,     type: String, desc: "商品信息[{商品id ， 数量}]#{[{id: 1, number: 2}, {id: 2, number: 2}, {id: 13, norm: {id: 13, number: 1}}, {id: 12, norm: {id: 11, number: 1}}].to_json}"
         end
         post '/' do
-          orders = Order.apply_order @current_user, JSON.parse(params[:product_norms]), params[:address_id], params[:desc]
+          orders = Order.apply_order @current_user, JSON.parse(params[:product_norms]), params[:address_id], params[:desc], params[:platform]
           present orders, with: V1::Entities::Order
         end
 
@@ -104,6 +105,18 @@ module V1
           }
           get '/' do
             present @order, with: V1::Entities::Order
+          end
+
+          desc '查询物流信息', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          get 'express' do
+            @order.express
           end
 
           desc '订单地址变更', {

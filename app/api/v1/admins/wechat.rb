@@ -12,6 +12,7 @@ module V1
           company_payment = CompanyPayment.find_by no: result['out_trade_no']['__content__']
           if company_payment.present?
             company_payment.update response_data: result
+
             company_payment.do_pay! if company_payment.may_do_pay?
             p company_payment, 333
           else

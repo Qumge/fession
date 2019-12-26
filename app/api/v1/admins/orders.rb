@@ -34,7 +34,12 @@ module V1
 
         route_param :id do
           before do
-             @order= Order.find_by id: params[:id], company: @company
+            if @company.present?
+              @order= Order.find_by id: params[:id], company: @company
+            else
+              @order= Order.find_by id: params[:id]
+            end
+
             error!("找不到数据", 500) unless @order.present?
           end
 
@@ -48,6 +53,36 @@ module V1
           }
           get '/' do
             present @order, with: V1::Entities::Order
+          end
+
+          desc '发货 设置物流信息', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          params do
+            requires :express_no, type: String, desc: '物流编号'
+            optional :express_type, type: String, desc: '物流公司 可以不填'
+          end
+          patch 'express' do
+            @order.update express_no: params[:express_no], express_type: params[:type]
+            @order.do_send! if @order.may_do_send?
+            present @order, with: V1::Entities::Order
+          end
+
+          desc '查询物流信息', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          get 'express' do
+            @order.express
           end
 
           desc '发货', {

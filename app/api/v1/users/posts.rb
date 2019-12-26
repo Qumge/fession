@@ -47,6 +47,7 @@ module V1
               }
           }
           get '/' do
+            @post.update number: @post.number + 1
             present @post, with: V1::Entities::Post, user: @current_user
           end
 
