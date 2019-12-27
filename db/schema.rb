@@ -171,14 +171,6 @@ ActiveRecord::Schema.define(version: 2019_12_27_083337) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "follows", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "model_id"
-    t.integer "user_id"
-    t.string "type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "game_logs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "game_id"
     t.integer "coin"
@@ -497,7 +489,6 @@ ActiveRecord::Schema.define(version: 2019_12_27_083337) do
     t.string "card_no"
     t.string "real_name"
     t.index ["deleted_at"], name: "index_users_on_deleted_at"
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   create_table "view_logs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
