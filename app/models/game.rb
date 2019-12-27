@@ -52,22 +52,24 @@ class Game < ApplicationRecord
   end
 
   def play user
-    if self.can_play? user
-      GameLog.create user: user, game: self, coin: self.cost
-    else
-      raise '金币不足或者次数已用完'
+    begin
+      self.can_play? user
+      game_log = GameLog.create user: user, game: self, coin: self.cost
+      game_log
+    rescue => e
+      {error: '30001', message: e.message}
     end
   end
 
   def can_play? user
     if time_valid?
       if self.cost.present?
-        user.coin > self.cost
+        raise '金币不足' unless user.coin > self.cost
       else
-        GameLog.find_by(game: self, user: user).blank?
+        raise '您已经玩过这个游戏了' if GameLog.find_by(game: self, user: user).present?
       end
     else
-      false
+      raise '游戏已经结束'
     end
 
   end

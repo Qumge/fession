@@ -14,6 +14,7 @@ class GameLog < ApplicationRecord
   belongs_to :user
   belongs_to :game
   after_create :win_prize
+  has_one :prize_log
 
 
   def win_prize
@@ -28,7 +29,7 @@ class GameLog < ApplicationRecord
       a += prize.probability
       if s <= a * 10000
         p 333333
-        PrizeLog.create user: self.user, game: self.game, prize: prize
+        PrizeLog.create user: self.user, game: self.game, prize: prize, game_log: self
         return
       end
     end

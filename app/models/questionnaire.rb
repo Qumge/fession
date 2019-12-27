@@ -19,7 +19,7 @@ class Questionnaire < ApplicationRecord
   has_many :questions
   has_one :task
   belongs_to :company
-  has_one :task_questionnaire_task, :class_name => 'Task::QuestionnaireTask'
+  has_one :task_questionnaire_task, :class_name => 'Task::QuestionnaireTask', foreign_key: 'model_id'
   def fetch_questions params_questions
     # params_questions = params[:questions]
     #params_questions = [{name: '玩过的游戏', type: 'Question::Multiple', options: ['dnf', 'dota', 'lol']}, {name: '性别', type: 'Question::Single', options: ['男', '女']}, {name: '建议', type: 'Question::Completion'}]

@@ -26,17 +26,22 @@ module V1
 
         route_param :id do
           before do
-            @game = ::Game.find_by id: params[:id], company_id: nil
+            @game = ::Game.find_by id: params[:id]
             error!("找不到数据", 500) unless @game.present?
           end
           desc '游戏详情'
           get '/' do
-            present @game, with: V1::Entities::Game
+            present @game, with: V1::Entities::GameWithTask
           end
 
           desc '玩游戏'
           post 'play' do
-            @game.play @current_user
+            game_log =  @game.play @current_user
+            if game_log[:error].present?
+              game_log
+            else
+              present game_log, with: V1::Entities::GameLog
+            end
           end
         end
       end

@@ -33,6 +33,21 @@ module V1
           get '/' do
             present @task, with: V1::Entities::Task
           end
+
+          desc '问卷收集', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          params do
+            requires :answer, type: String, desc: "收集答案#{[{question_id: 1, option_id: [1], content: '不知道'}].to_json}"
+          end
+          post 'answer' do
+            answers = Answer.fetch_params @current_user, @task.questionnaire, params
+          end
         end
       end
     end

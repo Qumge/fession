@@ -17,6 +17,7 @@ class PrizeLog < ApplicationRecord
   belongs_to :game
   has_one :order
   belongs_to :user
+  belongs_to :game_log
 
   def award_prize
     case prize.type
