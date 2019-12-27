@@ -78,10 +78,11 @@ class Product < ApplicationRecord
   class << self
     def search_conn params
       products = self.all
-      if params[:sorts].present?
-        sorts = JSON.parse params[:sorts]
-        s = sorts.collect{|sort| "#{sort['column']} #{sort['sort']}"}.join ','
-        products = products.order(s)
+      p params, 111
+      if params[:sort].present?
+        # sorts = JSON.parse params[:sort]
+        # s = sorts.collect{|sort| "#{sort['column']} #{sort['sort']}"}.join ','
+        products = products.order(params[:sort])
       end
       if params[:category_id].present?
         category = Category.find_by id: params[:category_id]

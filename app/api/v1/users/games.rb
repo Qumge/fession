@@ -8,7 +8,14 @@ module V1
       end
 
       resources 'games' do
-        desc '游戏列表'
+        desc '游戏列表', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
         params do
           optional :type, type: String, desc: '游戏类型 Game::Wheel Game::Egg Game::Scratch'
         end

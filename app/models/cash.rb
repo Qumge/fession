@@ -5,7 +5,7 @@ class Cash < ApplicationRecord
   after_create :cut_coin
 
   STATUS = { wait: '待审核', failed: '已拒绝', success: '打款中', done: '已到账'}
-
+  BANK = {"1002"=>"工商银行", "1005"=>"农业银行", "1003"=>"建设银行", "1026"=>"中国银行", "1020"=>"交通银行", "1001"=>"招商银行", "1066"=>"邮储银行", "1006"=>"民生银行", "1010"=>"平安银行", "1021"=>"中信银行", "1004"=>"浦发银行", "1009"=>"兴业银行", "1022"=>"光大银行", "1027"=>"广发银行", "1025"=>"华夏银行", "1056"=>"宁波银行", "4836"=>"北京银行", "1024"=>"上海银行", "1054"=>"南京银行"}
   aasm :status do
     state :wait, :initial => true
     state :failed, :success, :done
@@ -17,7 +17,7 @@ class Cash < ApplicationRecord
 
     # 审核成功
     event :do_success do
-      transitions :from => :wait, :to => :success
+      transitions :from => :wait, :to => :success, after: Proc.new {pay_bank}
     end
 
 
@@ -26,10 +26,14 @@ class Cash < ApplicationRecord
       transitions :from => :wait, :to => :failed, after: Proc.new {add_coin}
     end
 
-    #审核失败
+    #打款成功
     event :do_done do
       transitions :from => :success, :to => :done
     end
+  end
+
+  def pay_bank
+
   end
 
   def add_coin
@@ -37,8 +41,15 @@ class Cash < ApplicationRecord
   end
 
   def cut_coin
-    p 111111111111
     CoinLog.create channel: 'cash', coin: coin - 2*coin, user: user
+  end
+
+  def bank
+    BANK[self.bank_code] if self.bank_code.present?
+  end
+
+  def get_status
+    STATUS[self.status.to_sym] if self.status.present?
   end
 
   def fetch_params params
@@ -46,7 +57,7 @@ class Cash < ApplicationRecord
     if cash_rule.present?
       if params[:amount] >= cash_rule.floor
         if self.user.coin.to_i >= params[:amount] * cash_rule.coin
-          self.update coin: params[:amount] * cash_rule.coin, amount: params[:amount]
+          self.update coin: params[:amount] * cash_rule.coin, amount: params[:amount], bank_code: params[:bank_code], enc_bank_no: params[:enc_bank_no], enc_true_name: params[:enc_true_name]
         else
           self.errors.add :amount, '金币不足'
         end

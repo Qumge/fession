@@ -23,6 +23,8 @@ module V1
       expose :coin
       expose :total_coin
       expose :desc
+      expose :card_no
+      expose :real_name
       expose :feature_coin do |instance, options|
         0
       end
@@ -35,6 +37,8 @@ module V1
       expose :followers do |instance, option|
         instance.followers.size
       end
+      expose :card_face, using: V1::Entities::Image
+      expose :card_back, using: V1::Entities::Image
 
 
       # product_category 是在rails的model中定义的关联，在这里可以直接用

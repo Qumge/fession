@@ -1,6 +1,6 @@
 module V1
   module Entities
-    class User < Grape::Entity
+    class UserWithFission < Grape::Entity
       format_with(:timestamp) { |dt| dt.try :strftime, '%Y-%m-%d %H:%M:%S' }
       expose :id
       expose :login
@@ -21,6 +21,7 @@ module V1
       expose :gender
       expose :view_num
       expose :desc
+      expose :fission_logs, using: V1::Entities::FissionLog
       expose :follow do |instance, options|
         user = options[:user]
         if user.present? && user.follow_users.where(id: instance.id).present?

@@ -51,6 +51,7 @@ module V1
         mount V1::Users::Orders
         mount V1::Users::Addresses
         mount V1::Users::Games
+        mount V1::Users::Cashes
       end
 
       mount V1::Wechat

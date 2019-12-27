@@ -60,6 +60,9 @@ class User < ApplicationRecord
   has_many :orders
   has_many :addresses
   has_many :payments
+  has_many :prize_logs
+  has_one :card_face, -> {where(model_type: 'CardFace')}, {foreign_key: :model_id, class_name: 'Image'}
+  has_one :card_back, -> {where(model_type: 'CardBack')}, foreign_key: :model_id, class_name: 'Image'
 
 
 
@@ -145,6 +148,15 @@ class User < ApplicationRecord
     self.desc = params[:desc] if params[:desc].present?
     self.avatar_url = params[:avatar_url] if params[:avatar_url].present?
     self.login = params[:login] if params[:login].present?
+  end
+
+  def fetch_card params
+    self.card_face = Image.create file_path: params[:card_face], model_type: 'CardFace', model_id: self.id
+    self.card_back = Image.create file_path: params[:card_back], model_type: 'CardBack', model_id: self.id
+    self.real_name = params[:real_name]
+    self.card_no = params[:card_no]
+    self.save
+    self
   end
 
   # class << self

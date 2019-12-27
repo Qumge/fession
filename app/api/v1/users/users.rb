@@ -265,26 +265,7 @@ module V1
           end
         end
 
-        desc '提现', {
-            headers: {
-                "X-Auth-Token" => {
-                    description: "登录token",
-                    required: false
-                }
-            }
-        }
-        params do
-          requires :amount,     type: Integer,  desc: '金钱单位（元） 需要大于提现规则'
-        end
-        post 'cash' do
-          cash = @current_user.cashes.new
-          cash = cash.fetch_params params
-          if cash.errors.present?
-            {error: '30001', message: cash.errors.messages}
-          else
-            present cash, with: V1::Entities::Cash
-          end
-        end
+
 
         desc '玩游戏', {
             headers: {
@@ -322,6 +303,69 @@ module V1
           view_log = ViewLog.fetch_params params, @current_user
           present view_log, with: V1::Entities::ViewLog
         end
+
+        desc '身份认证', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :real_name, type: String, desc: '真实姓名'
+          requires :card_no, type: String, desc: '身份证号'
+          requires :card_face, type: String, desc: '身份证正面'
+          requires :card_back, type: String, desc: '身份证背面'
+        end
+        post :card do
+          user = @current_user.fetch_card params
+          present user, with: V1::Entities::Account
+        end
+
+        desc '他人主页信息', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+
+        desc '我的中奖记录', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        get :prize_logs do
+          prize_logs = @current_user.prize_logs.order('prize_logs.created_at desc')
+          present prize_logs, with: V1::Entities::PrizeLog
+        end
+
+        desc '他人主页信息', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :user_id, type: Integer, desc: '用户id'
+        end
+        get :user do
+          user = User.find_by id: params[:user_id]
+          if user.present?
+            p user, 111
+            present user, with: V1::Entities::UserWithFission, user: current_user
+          else
+            error!("找不到数据", 500)
+          end
+        end
+
       end
     end
   end
