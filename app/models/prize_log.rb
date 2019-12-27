@@ -29,7 +29,7 @@ class PrizeLog < ApplicationRecord
       end
     when 'Prize::ProductPrize'
       # 生成一个订单
-      Order.prize_order user, prize.product
+      Order.prize_order user, prize.product, self
     end
     prize.update number: prize.number - 1
   end

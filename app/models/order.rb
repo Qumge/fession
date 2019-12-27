@@ -143,9 +143,9 @@ class Order < ApplicationRecord
       end
     end
 
-    def prize_order user, product
+    def prize_order user, product, prize_log
       order_model = product.company.present? ? Order::MoneyOrder : Order::CoinOrder
-      order = order_model.new user: user, company: product.company
+      order = order_model.new user: user, company: product.company, prize_log: prize_log
       order_product = OrderProduct.new product: product, number: 1, price: product.price, amount: 1*product.price
       order.order_products = [order_product]
       order.save!

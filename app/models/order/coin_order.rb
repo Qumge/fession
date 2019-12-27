@@ -3,14 +3,19 @@ class Order::CoinOrder < Order
   after_create :set_pay
 
   def must_can_buy
-    errors.add(:amount, '金币不足') if user.coin < amount
+    errors.add(:amount, '金币不足') if user.coin < amount.to_i && self.prize_log.blank?
   end
 
   def set_pay
-    if self.may_do_pay?
-      self.user.coin_logs.create channel: 'order', model_id: self.id, coin: self.amount - 2*self.amount
+    if self.prize_log.present?
       self.do_pay!
+    else
+      if self.may_do_pay?
+        self.user.coin_logs.create channel: 'order', model_id: self.id, coin: self.amount - 2*self.amount
+        self.do_pay!
+      end
     end
+
   end
 
   def set_stock

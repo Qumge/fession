@@ -58,6 +58,40 @@ module V1
           total_data, date_headers, chart_data, table_data = SaleData.new(params).data
           {total_data: total_data, date_headers: date_headers, chart_data: chart_data, table_data: paginate(Kaminari.paginate_array(table_data.to_a))}
         end
+
+        desc '首页待办任务', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token 运营平台账号",
+                    required: false
+                }
+            }
+        }
+        get 'tasks' do
+          if @company.present?
+            wait_order = ::Order.where(status: 'pay', company_id: @company.id)
+            after_sale_order = ::Order.where(status: 'pay', company_id: @company.id)
+            sale_out = ::Norm.where(stock: 0)
+            {wait_order: wait_order.size, after_sale_order: after_sale_order.size, sale_out: sale_out.size}
+          else
+            wait_product = ::Product.where(status: 'wait')
+            wait_post = ::Post.where(status: 'wait')
+            wait_cash = ::Cash.where(status: 'wait')
+            wait_order = ::Order.where(status: 'pay')
+            after_sale_order = ::Order.where(status: 'pay')
+
+            wait_product_task = Task::ProductTask.where(status: 'wait')
+            wait_game_task = Task::GameTask.where(status: 'wait')
+            wait_questionnaire_task = Task::QuestionnaireTask.where(status: 'wait')
+            wait_article_task = Task::ArticleTask.where(status: 'wait')
+
+            {
+                wait_product: wait_product.size, wait_post: wait_post.size, wait_cash: wait_cash.size, wait_order: wait_order.size,
+                after_sale_order: after_sale_order.size, wait_product_task: wait_product_task.size, wait_game_task: wait_game_task.size,
+                wait_questionnaire_task: wait_questionnaire_task.size, wait_article_task: wait_article_task.size
+            }
+          end
+        end
       end
 
     end

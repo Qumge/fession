@@ -24,12 +24,12 @@ class GameLog < ApplicationRecord
     s = rand 1000000
     p s, 11111
     a = 0
-    self.game.prizes.where('prizes.number > 0 or prizes.number = null').order('probability desc').each do |prize|
+    self.game.prizes.order('probability desc').each do |prize|
       p prize.probability * 10000, 2222
       a += prize.probability
       if s <= a * 10000
         p 333333
-        PrizeLog.create user: self.user, game: self.game, prize: prize, game_log: self
+        PrizeLog.create user: self.user, game: self.game, prize: prize, game_log: self if prize.number.to_i > 0
         return
       end
     end

@@ -54,6 +54,7 @@ class Game < ApplicationRecord
   def play user
     begin
       self.can_play? user
+      p 111111111
       game_log = GameLog.create user: user, game: self, coin: self.cost
       game_log
     rescue => e
