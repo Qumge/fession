@@ -9,11 +9,11 @@ class Order < ApplicationRecord
   belongs_to :prize_log
   # has_and_belongs_to_many :payments, join_table: 'order_payments'
   has_many :payments
-  STATUS = { wait: '代付款', pay: '代发货', send: '已发货', receive: '已完成', cancel: '已取消', after_sale: '售后订单'}
+  STATUS = { wait: '代付款', pay: '代发货', send: '已发货', receive: '已完成', cancel: '已取消', apply_after: '申请售后', after_sale: '售后订单', after_failed: '申请售后失败'}
   EXPRESS = {EMS: 'EMS', STO: '申通', YTO: '圆通', ZTO: '中通', SFEXPRESS: '顺丰', YUNDA: '韵达', TTKDEX: '天天快递', DEPPON: '德邦', HTKY: '汇通快递'}
   aasm :status do
     state :wait, :initial => true
-    state :pay, :send, :receive, :cancel, :after_sale
+    state :pay, :send, :receive, :cancel, :apply_after, :after_sale, :after_failed
 
     #审核成功 直接上架
     event :do_pay do
@@ -35,9 +35,19 @@ class Order < ApplicationRecord
       transitions :from => :send, :to => :receive
     end
 
+    #申请售后
+    event :do_apply_after do
+      transitions :from => [:send, :receive], :to => :apply_after
+    end
+
     #售后
     event :do_after_sale do
-      transitions :from => [:send, :receive], :to => :after_pay
+      transitions :from => :apply_after, :to => :after_sale
+    end
+
+    #售后
+    event :do_after_failed do
+      transitions :from => :apply_after, :to => :after_failed
     end
 
   end
@@ -192,7 +202,8 @@ class Order < ApplicationRecord
     when 'pay'
       '商家会快马加鞭给您发出'
     when 'send'
-      "#{(DateTime.now -self.payment_at).round}天后将自动确认"
+      #{}"#{(DateTime.now - self.payment_at).round}天后将自动确认" if self.payment_at.present?
+      '货物已发出，请注意查收'
     when 'receive'
       "非常感谢您的惠顾"
     end

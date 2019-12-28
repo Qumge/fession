@@ -68,7 +68,7 @@ module V1
             optional :express_type, type: String, desc: '物流公司 可以不填'
           end
           patch 'express' do
-            @order.update express_no: params[:express_no], express_type: params[:type]
+            @order.update express_no: params[:express_no], express_type: params[:express_type]
             @order.do_send! if @order.may_do_send?
             present @order, with: V1::Entities::Order
           end
@@ -100,6 +100,27 @@ module V1
           post 'send' do
             logistic = Logistic.new order: @order
             logistic.update name: params[:name], no: params[:no]
+            present @order, with: V1::Entities::Order
+          end
+
+          desc '同意、拒绝售后申请', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          params do
+            requires :agree, type: Integer, desc: '1： 同意 0： 拒绝 '
+          end
+          post 'after_sale' do
+            if params[:agree] == 1
+              @order.do_after_sale! if @order.may_do_after_sale?
+            else
+              @order.do_after_failed! if @order.may_do_after_failed?
+            end
+
             present @order, with: V1::Entities::Order
           end
 

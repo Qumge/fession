@@ -29,6 +29,44 @@ module V1
           end
         end
 
+
+        desc '充值记录', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          # company_id 'status', type: String, desc: '商户状态 locked / active'
+          optional 'company_id', type: String, desc: '商户id 商户账号不用传'
+        end
+        post 'payments' do
+          params[:company_id] = @company.id if @company.present?
+          company_payments = CompanyPayment.where company_id: params[:company_id]
+          present company_payments, with: V1::Entities::CompanyPayment
+        end
+
+        desc '消费记录', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          # company_id 'status', type: String, desc: '商户状态 locked / active'
+          optional 'company_id', type: String, desc: '商户id 商户账号不用传'
+        end
+        post 'coin_logs' do
+          params[:company_id] = @company.id if @company.present?
+          p params[:company_id], 11
+          coin_logs = CoinLog.where company_id: params[:company_id]
+          present coin_logs, with: V1::Entities::CoinLog
+        end
+
         desc '校验是否充值成功 status: pay标识充值成功', {
             headers: {
                 "X-Auth-Token" => {
