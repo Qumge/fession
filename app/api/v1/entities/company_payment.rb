@@ -8,6 +8,11 @@ module V1
       expose :amount do |instance, options|
         instance.amount.to_f / 100 if instance.amount.present?
       end
+      expose :coin
+      expose :pay_type do |instance, options|
+        '微信支付'
+      end
+
       expose :prepay_id
       expose :qrcode
       expose :company, using: V1::Entities::Company
