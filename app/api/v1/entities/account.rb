@@ -21,6 +21,7 @@ module V1
       expose :gender
       expose :view_num
       expose :coin
+      expose :can_cash_amount
       expose :total_coin
       expose :desc
       expose :card_no

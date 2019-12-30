@@ -2,6 +2,7 @@ module V1
   module Admins
     class Accounts < Grape::API
       helpers AdminLoginHelper
+      include Grape::Kaminari
       before do
         authenticate!
       end
@@ -27,6 +28,48 @@ module V1
           else
             {error: '400001', message: '找不到商户'}
           end
+        end
+
+
+        desc '充值记录', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          # company_id 'status', type: String, desc: '商户状态 locked / active'
+          optional 'company_id', type: String, desc: '商户id 商户账号不用传'
+          optional :page,     type: Integer, default: 1, desc: '页码'
+          optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+        end
+        post 'payments' do
+          params[:company_id] = @company.id if @company.present?
+          company_payments = CompanyPayment.where company_id: params[:company_id], status: 'pay'
+          present paginate(company_payments), with: V1::Entities::CompanyPayment
+        end
+
+        desc '消费记录', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          # company_id 'status', type: String, desc: '商户状态 locked / active'
+          optional 'company_id', type: String, desc: '商户id 商户账号不用传'
+          optional :page,     type: Integer, default: 1, desc: '页码'
+          optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+        end
+        post 'coin_logs' do
+          params[:company_id] = @company.id if @company.present?
+          p params[:company_id], 11
+          coin_logs = CoinLog.where company_id: params[:company_id]
+          present paginate(coin_logs), with: V1::Entities::CoinLog
         end
 
         desc '校验是否充值成功 status: pay标识充值成功', {

@@ -115,6 +115,15 @@ class User < ApplicationRecord
     self.authentication_token ||= generate_authentication_token
   end
 
+  def can_cash_amount
+    cash_rule = CashRule.first
+    if cash_rule.present?
+      self.coin.to_i/cash_rule.coin
+    else
+      self.coin.to_i / 100
+    end
+  end
+
   def ensure_authentication_token!
     self.authentication_token ||= generate_authentication_token
     #记录登录时间TODO

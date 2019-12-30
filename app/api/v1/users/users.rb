@@ -323,14 +323,7 @@ module V1
           present user, with: V1::Entities::Account
         end
 
-        desc '他人主页信息', {
-            headers: {
-                "X-Auth-Token" => {
-                    description: "登录token",
-                    required: false
-                }
-            }
-        }
+       
 
         desc '我的中奖记录', {
             headers: {
@@ -360,7 +353,29 @@ module V1
           user = User.find_by id: params[:user_id]
           if user.present?
             p user, 111
-            present user, with: V1::Entities::UserWithFission, user: current_user
+            present user, with: V1::Entities::User, user: current_user
+          else
+            error!("找不到数据", 500)
+          end
+        end
+
+        desc '他人任务', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :user_id, type: Integer, desc: '用户id'
+          optional :page,     type: Integer, default: 1, desc: '页码'
+          optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+        end
+        get :user_tasks do
+          user = User.find_by id: params[:user_id]
+          if user.present?
+            present paginate(user.fission_logs), with: V1::Entities::FissionLog
           else
             error!("找不到数据", 500)
           end

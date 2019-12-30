@@ -24,8 +24,16 @@ class CompanyPayment < ApplicationRecord
 
   end
 
+
   def set_no
     self.no = "#{self.company.no.to_s[0..3] if self.company.present?}#{Time.now.to_i}#{rand(1000..9999)}"
+    cash_rule = CashRule.first
+    if cash_rule.present?
+      self.coin = cash_rule.coin * amount / 100
+    else
+      self.coin = cash_rule.coin * amount / 100
+    end
+
   end
 
   def order_query
