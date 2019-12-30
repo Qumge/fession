@@ -124,6 +124,17 @@ class Game < ApplicationRecord
 
   def h5_link
     "#{Settings.h5_url}/pages/game/show?id=#{self.id}"
+    path = case self.type
+           when 'Game::Egg'
+             'golden'
+           when 'Game::Wheel'
+             'luck_wheel'
+           when 'Game::Scratch'
+             'scratch_card'
+           when 'Game::Tiger'
+             'tiger'
+           end
+    "#{Settings.h5_url}/pages/game/#{path}?id=#{self.id}"
   end
 
 

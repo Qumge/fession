@@ -43,7 +43,7 @@ module V1
               }
           }
           params do
-            requires :answer, type: String, desc: "收集答案#{[{question_id: 1, option_id: [1], content: '不知道'}].to_json}"
+            requires :answer, type: String, desc: "收集答案{1: [1,2], }#{[{question_id: 1, option_id: [1], content: '不知道'}].to_json}"
           end
           post 'answer' do
             answers = Answer.fetch_params @current_user, @task.questionnaire, params

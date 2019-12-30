@@ -40,7 +40,7 @@ class Task::GameTask < Task
            when 'Game::Tiger'
              'tiger'
            end
-    "#{Settings.h5_url}/pages/game/#{path}?id=#{self.id}"
+    "#{Settings.h5_url}/pages/game/#{path}?id=#{self.game.id}"
   end
 
 end

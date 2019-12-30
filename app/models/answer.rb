@@ -25,22 +25,20 @@ class Answer < ApplicationRecord
         begin
           current_answers = Answer.where(questionnaire: questionnaire, user: user)
           raise '您已经回答过这个问卷了' if current_answers.present?
-          answers.each do |answer|
-            p answer['question_id'], 111
-            question = questionnaire.questions.find_by id: answer['question_id']
+          answers.each do |question_id, value|
+            question = questionnaire.questions.find_by id: question_id
             raise '数据错误： 问题不存在' unless question.present?
             case question.type
             when 'Question::Completion'
-              self.create question: question, questionnaire: questionnaire, user: user, content: answer[]
+              self.create question: question, questionnaire: questionnaire, user: user, content: value
             when 'Question::Multiple'
-              option_ids = answer['option_id']
-              option_ids.each do |option_id|
+              value.each do |option_id|
                 option = question.options.find_by id: option_id
                 raise '数据错误 选项不存在' unless option.present?
                 self.create option: option, question: question, questionnaire: questionnaire, user: user
               end
             when 'Question::Single'
-              option = question.options.find_by id: answer['option_id'].first
+              option = question.options.find_by id: value
               raise '数据错误 选项不存在' unless option.present?
               self.create option: option, question: question, questionnaire: questionnaire, user: user
             end

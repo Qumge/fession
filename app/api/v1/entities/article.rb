@@ -5,6 +5,7 @@ module V1
       expose :id
       expose :subject
       expose :content
+      expose :view_num
       expose :product, using: V1::Entities::Product
       with_options(format_with: :timestamp) do
         expose :created_at
