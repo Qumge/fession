@@ -71,6 +71,57 @@ module V1
           {total_data: total_data, date_headers: date_headers, chart_data: chart_data, table_data: paginate(Kaminari.paginate_array(table_data.to_a))}
         end
 
+        desc '用户', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token 运营平台账号",
+                    required: false
+                }
+            }
+        }
+        params do
+          optional :date_from, type: String, desc: '起始时间'
+          optional :date_to, type: String, desc: '结束时间'
+          optional :page, type: String, desc: '页码'
+          optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+        end
+        get 'users' do
+          if params[:date_from]
+            params[:date_from] = params[:date_from].to_datetime
+          end
+          if params[:date_to]
+            params[:date_to] = params[:date_to].to_datetime
+          end
+          total_data, date_headers, chart_data, table_data = UserData.new(params).data
+          {total_data: total_data, date_headers: date_headers, chart_data: chart_data, table_data: paginate(Kaminari.paginate_array(table_data.to_a))}
+        end
+
+        desc '商户数据', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token 运营平台账号",
+                    required: false
+                }
+            }
+        }
+        params do
+          optional :date_from, type: String, desc: '起始时间'
+          optional :date_to, type: String, desc: '结束时间'
+          optional :page, type: String, desc: '页码'
+          optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+        end
+        get 'companies' do
+          if params[:date_from]
+            params[:date_from] = params[:date_from].to_datetime
+          end
+          if params[:date_to]
+            params[:date_to] = params[:date_to].to_datetime
+          end
+          total_data, date_headers, chart_data, table_data = CompanyData.new(params).data
+          {total_data: total_data, date_headers: date_headers, chart_data: chart_data, table_data: paginate(Kaminari.paginate_array(table_data.to_a))}
+        end
+
+
         desc '首页待办任务', {
             headers: {
                 "X-Auth-Token" => {
