@@ -26,7 +26,7 @@ class Record::OrderProductPay < Record
     s = {}
     date_headers.each do |date|
       data = date_group_records[date]
-      s[date] = data.present? ? data.sum{|d| d.amount} : 0
+      s[date] = data.present? ? data.sum{|d| d.amount}.to_f / 100 : 0
     end
     s
   end

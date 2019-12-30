@@ -3,9 +3,9 @@ class Record
   def initialize args = {}
     @type = args[:type]
     @game_type = args[:game_type]
-    @date_from = args[:form]
+    @date_from = args[:date_from]
     @date_from ||= (DateTime.now-6.days).beginning_of_day
-    @date_to = args[:to]
+    @date_to = args[:date_to]
     @date_to ||= DateTime.now.end_of_day
     @company_id = args[:company_id]
     @task_id = args[:task_id]
@@ -17,6 +17,8 @@ class Record
   end
 
   def date_headers
+    p @date_from, 1111
+    p @date_to, 22222
     (@date_from..@date_to).collect {|date| date.strftime '%Y-%m-%d'}
   end
 
@@ -39,7 +41,7 @@ class Record
       when 'Task::ProductTask'
         task_product_data params
       when 'Task::QuestionnaireTask'
-        task_questionnaire_data
+        task_questionnaire_data params
       when 'Task::ArticleTask'
 
       else
@@ -75,7 +77,7 @@ class Record
 
 
     def task_data params={}
-      date_headers = self.new.date_headers
+      date_headers = self.new(params).date_headers
 
       #分享次数
       # {"2019-12-21"=>0, "2019-12-22"=>0, "2019-12-23"=>0, "2019-12-24"=>0, "2019-12-25"=>0, "2019-12-26"=>0, "2019-12-27"=>0}

@@ -24,7 +24,7 @@ module V1
           optional :company_id, type: Integer, desc: '商户id'
           optional :name, type: String, desc: '产品名'
           optional :game, type: Integer, desc: '游戏订单 1 正常订单 0'
-          optional :status,     type: String, desc: "商品信息[{商品id ， 数量}] { wait: '代付款', pay: '代发货', send: '已发货', receive: '已完成', cancel: '已取消', after_sale: '售后订单'}"
+          optional :status,     type: String, desc: "商品信息[{商品id ， 数量}] { wait: '待付款', pay: '待发货', send: '已发货', receive: '已完成', cancel: '已取消', after_sale: '售后订单'}"
         end
         get '/' do
           params[:company_id] =  @company.id if @company.present?
@@ -54,24 +54,24 @@ module V1
           get '/' do
             present @order, with: V1::Entities::Order
           end
-
-          desc '发货 设置物流信息', {
-              headers: {
-                  "X-Auth-Token" => {
-                      description: "登录token",
-                      required: false
-                  }
-              }
-          }
-          params do
-            requires :express_no, type: String, desc: '物流编号'
-            optional :express_type, type: String, desc: '物流公司 可以不填'
-          end
-          patch 'express' do
-            @order.update express_no: params[:express_no], express_type: params[:type]
-            @order.do_send! if @order.may_do_send?
-            present @order, with: V1::Entities::Order
-          end
+          #
+          # desc '发货 设置物流信息', {
+          #     headers: {
+          #         "X-Auth-Token" => {
+          #             description: "登录token",
+          #             required: false
+          #         }
+          #     }
+          # }
+          # params do
+          #   requires :express_no, type: String, desc: '物流编号'
+          #   optional :express_type, type: String, desc: '物流公司 可以不填'
+          # end
+          # patch 'express' do
+          #   @order.update express_no: params[:express_no], express_type: params[:type]
+          #   @order.do_send! if @order.may_do_send?
+          #   present @order, with: V1::Entities::Order
+          # end
 
           desc '查询物流信息', {
               headers: {
@@ -85,7 +85,7 @@ module V1
             @order.express
           end
 
-          desc '发货', {
+          desc '发货 设置物流信息', {
               headers: {
                   "X-Auth-Token" => {
                       description: "登录token",
@@ -98,8 +98,8 @@ module V1
             requires :name, type: String, desc: '物流公司 yuantong zhongtong shunfeng'
           end
           post 'send' do
-            logistic = Logistic.new order: @order
-            logistic.update name: params[:name], no: params[:no]
+            @order.update express_no: params[:no], express_type: params[:name]
+            @order.do_send! if @order.may_do_send?
             present @order, with: V1::Entities::Order
           end
 

@@ -31,6 +31,12 @@ module V1
           if @company.present?
             params[:company_id] = @company.id
           end
+          if params[:date_from]
+            params[:date_from] = params[:date_from].to_datetime
+          end
+          if params[:date_to]
+            params[:date_to] = params[:date_to].to_datetime
+          end
           total_data, date_headers, chart_data, table_data = Record.data params
           {total_data: total_data, date_headers: date_headers, chart_data: chart_data, table_data: paginate(Kaminari.paginate_array(table_data.to_a))}
         end
@@ -54,6 +60,12 @@ module V1
         get 'orders' do
           if @company.present?
             params[:company_id] = @company.id
+          end
+          if params[:date_from]
+            params[:date_from] = params[:date_from].to_datetime
+          end
+          if params[:date_to]
+            params[:date_to] = params[:date_to].to_datetime
           end
           total_data, date_headers, chart_data, table_data = SaleData.new(params).data
           {total_data: total_data, date_headers: date_headers, chart_data: chart_data, table_data: paginate(Kaminari.paginate_array(table_data.to_a))}

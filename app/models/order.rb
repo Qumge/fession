@@ -15,17 +15,17 @@ class Order < ApplicationRecord
     state :wait, :initial => true
     state :pay, :send, :receive, :cancel, :after_sale
 
-    #审核成功 直接上架
+    #支付
     event :do_pay do
       transitions :from => [:wait], :to => :pay, after: Proc.new{after_pay}
     end
 
-    #审核成功 直接上架
+    #取消
     event :do_cancel do
       transitions :from => [:wait], :to => :cancel
     end
 
-    #审核失败
+    #发货
     event :do_send do
       transitions :from => :pay, :to => :send
     end
