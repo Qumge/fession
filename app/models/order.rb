@@ -173,7 +173,14 @@ class Order < ApplicationRecord
 
   def after_pay
     self.update payment_at: DateTime.now
+    set_sale
     set_stock
+  end
+
+  def set_sale
+    self.order_products.each do |order_product|
+      order_product.product.set_sale order_product.number, order_product.amount
+    end
   end
 
 

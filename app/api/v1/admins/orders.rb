@@ -54,7 +54,7 @@ module V1
           get '/' do
             present @order, with: V1::Entities::Order
           end
-<<<<<<< HEAD
+
           #
           # desc '发货 设置物流信息', {
           #     headers: {
@@ -73,7 +73,6 @@ module V1
           #   @order.do_send! if @order.may_do_send?
           #   present @order, with: V1::Entities::Order
           # end
-=======
 
           desc '发货 设置物流信息', {
               headers: {
@@ -92,7 +91,6 @@ module V1
             @order.do_send! if @order.may_do_send?
             present @order, with: V1::Entities::Order
           end
->>>>>>> 64e658ad095ea769f80bc51259b045e9fbd46dbe
 
           desc '查询物流信息', {
               headers: {

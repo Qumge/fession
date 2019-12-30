@@ -100,7 +100,7 @@ class SaleData
       #支付人数
       pay_user_number << (pay_records[date].present? ? pay_records[date].uniq{|order_product| order_product.order.user_id}.size : 0)
       # 交易商品数量
-      pay_product_number << (pay_records[date].present? ? pay_records[date]..sum{|order_product| order_product.number}  : 0)
+      pay_product_number << (pay_records[date].present? ? pay_records[date].sum{|order_product| order_product.number}  : 0)
     end
 
 

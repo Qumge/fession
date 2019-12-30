@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_29_062220) do
+ActiveRecord::Schema.define(version: 2019_12_30_065524) do
 
   create_table "addresses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -62,6 +62,8 @@ ActiveRecord::Schema.define(version: 2019_12_29_062220) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
+    t.integer "view_num", default: 0
+    t.integer "product_view_num", default: 0
     t.index ["deleted_at"], name: "index_articles_on_deleted_at"
   end
 
@@ -168,6 +170,14 @@ ActiveRecord::Schema.define(version: 2019_12_29_062220) do
     t.integer "user_id"
     t.string "token"
     t.string "ancestry"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "follows", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "model_id"
+    t.integer "user_id"
+    t.string "type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -329,6 +339,9 @@ ActiveRecord::Schema.define(version: 2019_12_29_062220) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
+    t.integer "view_num", default: 0
+    t.integer "amount", default: 0
+    t.integer "sale_coin", default: 0
     t.index ["deleted_at"], name: "index_products_on_deleted_at"
   end
 
@@ -442,6 +455,9 @@ ActiveRecord::Schema.define(version: 2019_12_29_062220) do
     t.integer "share_num", default: 0
     t.integer "number", default: 0
     t.integer "view_num", default: 0
+    t.integer "sale", default: 0
+    t.integer "amount", default: 0
+    t.integer "sale_coin", default: 0
     t.index ["deleted_at"], name: "index_tasks_on_deleted_at"
   end
 

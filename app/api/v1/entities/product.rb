@@ -19,6 +19,9 @@ module V1
       expose :stock
       expose :sale
       expose :coin
+      expose :view_num
+      expose :sale_coin
+      expose :amount
       expose :desc do |instance, options|
         instance.desc.to_s
       end

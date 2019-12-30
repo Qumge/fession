@@ -13,6 +13,9 @@ module V1
       expose :view_num
       expose :share_num
       expose :cost_coin
+      expose :sale
+      expose :amount
+      expose :sale_coin
       expose :user_per_coin
       expose :share_link
       expose :status

@@ -204,5 +204,19 @@ class Product < ApplicationRecord
     self.images&.first&.image_path
   end
 
+  def set_view
+    self.update view_num: self.view_num + 1
+    if self.task_product_task.present? && self.task_product_task.time_valid?
+      self.task_product_task.update view_num: self.task_product_task.view_num + 1
+    end
+  end
+
+  def set_sale number, amount
+    self.update sale: self.sale + number, amount: self.amount + amount, sale_coin: self.sale_coin + number * self.coin.to_i
+    if self.task_product_task.present? && self.task_product_task.time_valid?
+      self.task_product_task.update  sale: self.task_product_task.sale + number, amount: self.task_product_task.amount + amount, sale_coin: self.task_product_task.sale_coin + number * self.coin.to_i
+    end
+  end
+
 
 end

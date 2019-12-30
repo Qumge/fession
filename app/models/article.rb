@@ -21,4 +21,9 @@ class Article < ApplicationRecord
   belongs_to :company
   belongs_to :product
   has_one :task_article_task, :class_name => 'Task::ArticleTask'
+
+
+  def set_view_num
+    self.update view_num: self.view_num + 1
+  end
 end

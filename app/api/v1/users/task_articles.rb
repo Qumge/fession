@@ -27,6 +27,7 @@ module V1
 
           desc '推文任务详情'
           get '/' do
+            @task.article.set_view_num
             present @task, with: V1::Entities::Task
           end
         end

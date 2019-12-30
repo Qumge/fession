@@ -50,11 +50,12 @@ module V1
             error!("找不到数据", 500) unless @product.present?
           end
 
-          desc '推文任务详情'
+          desc '商品详情'
           params do
             optional :type, type: String, desc: '类型MoneyProduct CoinProduct', default: 'MoneyProduct'
           end
           get '/' do
+            @product.set_view
             present @product, with: V1::Entities::Product
           end
         end

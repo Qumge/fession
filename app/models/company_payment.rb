@@ -19,7 +19,7 @@ class CompanyPayment < ApplicationRecord
 
 
     event :do_pay do
-      transitions :from => :apply, :to => :pay
+      transitions :from => :apply, :to => :pay, after: Proc.new{company_set_coin}
     end
 
   end
@@ -34,6 +34,10 @@ class CompanyPayment < ApplicationRecord
       self.coin = cash_rule.coin * amount / 100
     end
 
+  end
+
+  def company_set_coin
+    self.company.update coin: self.company.coin.to_i + self.coin.to_i
   end
 
   def order_query
