@@ -84,6 +84,23 @@ module V1
           end
         end
 
+
+        desc '收集的问卷内容', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :reply_id, type: Integer, desc: '回答id'
+        end
+        get 'answer' do
+          reply = Reply.where(id: params[:reply_id])
+          present reply, with: V1::Entities::Reply
+        end
+
         route_param :id do
           before do
             #@task = Task::QuestionnaireTask.find_by id: params[:id], company: @company
@@ -155,6 +172,24 @@ module V1
           get '/' do
             present @task, with: V1::Entities::Task
           end
+
+          desc '问卷收集列表', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          params do
+            optional :page,     type: Integer, default: 1, desc: '页码'
+            optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+          end
+          get 'reply' do
+            replies = @task.questionnaire.replies.all
+            present paginate(replies), with: V1::Entities::Reply
+          end
+
         end
       end
 

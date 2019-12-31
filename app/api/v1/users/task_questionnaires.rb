@@ -3,6 +3,9 @@ module V1
     class TaskQuestionnaires < Grape::API
       helpers V1::Users::UserLoginHelper
       include Grape::Kaminari
+      before do
+        authenticate!
+      end
 
       resources 'task_questionnaires' do
         desc '问卷任务列表'
@@ -46,7 +49,8 @@ module V1
             requires :answer, type: String, desc: "收集答案{1: [1,2], }#{[{question_id: 1, option_id: [1], content: '不知道'}].to_json}"
           end
           post 'answer' do
-            answers = Answer.fetch_params @current_user, @task.questionnaire, params
+            p @current_user, 333333333
+            reply = Answer.fetch_params @current_user, @task.questionnaire, params
           end
         end
       end

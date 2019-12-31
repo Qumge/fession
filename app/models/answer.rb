@@ -18,32 +18,36 @@ class Answer < ApplicationRecord
   belongs_to :option
   belongs_to :user
   belongs_to :questionnaire
+  belongs_to :reply
   class << self
     def fetch_params user, questionnaire, params
+      p user, questionnaire, 22222222
       answers = JSON.parse params[:answer]
       self.transaction do
         begin
-          current_answers = Answer.where(questionnaire: questionnaire, user: user)
-          raise '您已经回答过这个问卷了' if current_answers.present?
+          reply = questionnaire.replies.find_by user: user
+          raise '您已经回答过这个问卷了' if reply.present?
+          reply = questionnaire.replies.new user: user
+          p reply, 1111
           answers.each do |question_id, value|
             question = questionnaire.questions.find_by id: question_id
             raise '数据错误： 问题不存在' unless question.present?
             case question.type
             when 'Question::Completion'
-              self.create question: question, questionnaire: questionnaire, user: user, content: value
+              reply.answers.new question: question, questionnaire: questionnaire, user: user, content: value
             when 'Question::Multiple'
               value.each do |option_id|
                 option = question.options.find_by id: option_id
                 raise '数据错误 选项不存在' unless option.present?
-                self.create option: option, question: question, questionnaire: questionnaire, user: user
+                reply.answers.new option: option, question: question, questionnaire: questionnaire, user: user
               end
             when 'Question::Single'
               option = question.options.find_by id: value
               raise '数据错误 选项不存在' unless option.present?
-              self.create option: option, question: question, questionnaire: questionnaire, user: user
+              reply.answers.new option: option, question: question, questionnaire: questionnaire, user: user
             end
           end
-          Answer.where(questionnaire: questionnaire, user: user)
+          reply.save
         rescue => e
           {error: '30001', message: e.message}
         end
