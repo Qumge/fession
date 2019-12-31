@@ -158,6 +158,40 @@ module V1
           get '/' do
             present @task, with: V1::Entities::Task
           end
+
+          desc '奖品管理', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+
+          get 'prizes' do
+            prize_logs = @task.game.prize_logs
+            {number: prize_logs.size,
+             coin: prize_logs.sum{|prize_log| prize_log.prize.type == 'Prize::CoinPrize' ? prize_log.prize.coin : 0},
+             product_number: prize_logs.count{|prize_log| prize_log.prize.type == 'Prize::ProductPrize'}
+            }
+          end
+
+          desc '中奖记录', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          params do
+            optional :page,     type: Integer, default: 1, desc: '页码'
+            optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+          end
+          get 'prize_logs' do
+            prize_logs = @task.game.prize_logs
+            present paginate(prize_logs), with: V1::Entities::PrizeLog
+          end
         end
       end
     end
