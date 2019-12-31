@@ -53,6 +53,7 @@ module V1
         mount V1::Users::Addresses
         mount V1::Users::Games
         mount V1::Users::Cashes
+        mount V1::Users::Companies
       end
 
       mount V1::Wechat

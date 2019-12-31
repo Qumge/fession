@@ -95,7 +95,7 @@ class Product < ApplicationRecord
       end
       products = products.order('created_at desc')
       if params[:search].present?
-        products = products.where('name like ?', "%#{params[:search]}%")
+        products = products.where('products.name like ?', "%#{params[:search]}%")
       end
       if params[:status].present?
         products = products.where(status: params[:status])

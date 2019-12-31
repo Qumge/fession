@@ -409,6 +409,55 @@ module V1
         end
 
 
+
+
+        desc '关注商户', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :company_id,     type: Integer,  desc: '关注的人id'
+        end
+        post 'follow_company' do
+          company = Company.find_by id: params[:company_id]
+          if company.present?
+            @current_user.follow_companies << company unless @current_user.follow_companies.include?(company)
+            {error: '', message: '关注成功'}
+            #present @current_user.reload, with: V1::Entities::User
+          else
+            {error: '20002', message: '错误的商户'}
+          end
+        end
+
+        desc '取消关注商户', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :user_id,     type: Integer,  desc: '关注的人id'
+        end
+        post 'unfollow_company' do
+          company = Company.find_by id: params[:company_id]
+          if company.present?
+            @current_user.follow_companies.delete company
+            {error: '', message: '取消关注成功'}
+            #present @current_user.reload, with: V1::Entities::User
+          else
+            {error: '20002', message: '错误的商户'}
+          end
+        end
+
+
+
+
       end
     end
   end
