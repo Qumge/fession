@@ -128,7 +128,7 @@ class SaleData
       datas << {name: '支付单数量', data: pay_data.blank? ? 0 : pay_data.count('distinct(orders.user_id)')}
       datas << {name: '交易商品数', data: pay_data.blank? ? 0 : pay_data.sum{|data| data.number}}
 
-      date_datas << {date => datas}
+      date_datas << [date, datas]
     end
     date_datas
   end

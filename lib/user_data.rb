@@ -93,7 +93,7 @@ class UserData
       datas << {name: '活跃用户', data: active_users_data.blank? ? 0 : active_users_data.size}
       datas << {name: '交易用户', data: order_users_data.blank? ? 0 : order_users_data.uniq{|order| order.user_id}.size}
 
-      date_datas << {date => datas}
+      date_datas << [date, datas]
     end
     date_datas
   end

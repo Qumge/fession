@@ -352,6 +352,7 @@ module V1
         get :user do
           user = User.find_by id: params[:user_id]
           if user.present?
+            UserViewLog.create user: user, viewer: current_user
             p user, 111
             present user, with: V1::Entities::User, user: current_user
           else
@@ -380,6 +381,33 @@ module V1
             error!("找不到数据", 500)
           end
         end
+
+        desc '我的数据统计', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          optional :date_from, type: String, desc: '起始时间 不填默认查询7天数据'
+          optional :date_to, type: String, desc: '结束时间'
+          optional :page,     type: Integer, default: 1, desc: '页码'
+          optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+        end
+        get :stat do
+          if params[:date_from]
+            params[:date_from] = params[:date_from].to_datetime
+          end
+          if params[:date_to]
+            params[:date_to] = params[:date_to].to_datetime
+          end
+          params[:user_id] = @current_user.id
+          total_data, date_headers, chart_data, table_data = AccountData.new(params).data
+          {total_data: total_data, date_headers: date_headers, chart_data: chart_data, table_data: paginate(Kaminari.paginate_array(table_data.to_a))}
+        end
+
 
       end
     end

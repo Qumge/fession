@@ -63,6 +63,7 @@ class User < ApplicationRecord
   has_many :prize_logs
   has_one :card_face, -> {where(model_type: 'CardFace')}, {foreign_key: :model_id, class_name: 'Image'}
   has_one :card_back, -> {where(model_type: 'CardBack')}, foreign_key: :model_id, class_name: 'Image'
+  has_many :user_view_logs
 
 
 
