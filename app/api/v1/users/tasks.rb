@@ -5,6 +5,18 @@ module V1
       include Grape::Kaminari
 
       resources 'tasks' do
+        desc '所有任务'
+        params do
+          optional :page,     type: Integer, default: 1, desc: '页码'
+          optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+          optional :company_id, type: Integer, desc: '商户id'
+        end
+        get '/' do
+          tasks = Task.order('created_at desc')
+          tasks = tasks.where(id: params[:company_id]) if params[:company_id].present?
+          present paginate(tasks), with: V1::Entities::Task
+        end
+
         desc '热门任务'
         params do
           optional :page,     type: Integer, default: 1, desc: '页码'
@@ -53,7 +65,7 @@ module V1
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
         end
         get 'company_banners' do
-          banners = Banner::HotBanner.where(company_id: :company_id).order('no')
+          banners = Banner::CompanyBanner.where(company_id: params[:company_id]).order('no')
           present paginate(banners), with: V1::Entities::Banner
         end
 

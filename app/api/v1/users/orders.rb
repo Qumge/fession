@@ -156,6 +156,43 @@ module V1
             end
             present @order, with: V1::Entities::Order
           end
+
+          desc '申请售后', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          params do
+            requires :type, type: String, desc: '退货类型  AfterOrder::All : 退货退款 AfterOrder::Money ： 退款'
+          end
+          post 'after_order' do
+            if params[:address_id].present?
+              @order.update address_id: params[:address_id]
+            end
+            after_order = AfterOrder.find_or_create_by user: @order.user, order: @order, type: params[:type]
+            present after_order, with: V1::Entities::AfterOrderWithOrder
+          end
+
+          desc '售后订单设置发货地址', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          params do
+            requires :express_no, type: String, desc: '物流编号'
+            requires :express_type, type: String, desc: "物流公司{EMS: 'EMS', STO: '申通', YTO: '圆通', ZTO: '中通', SFEXPRESS: '顺丰', YUNDA: '韵达', TTKDEX: '天天快递', DEPPON: '德邦', HTKY: '汇通快递'}"
+          end
+          post 'set_express' do
+            @order.after_order.update express_no: params[:express_no], express_type: params[:express_type]
+            present @order.after_order, with: V1::Entities::AfterOrderWithOrder
+          end
+
         end
       end
     end

@@ -11,6 +11,7 @@ module V1
       expose :order_products, using: V1::Entities::OrderProduct
       expose :address, using: V1::Entities::Address
       expose :current_payment, using: V1::Entities::Payment
+      expose :after_order, using: V1::Entities::AfterOrder
       expose :view_amount
       expose :status
       expose :coin

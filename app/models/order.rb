@@ -7,9 +7,10 @@ class Order < ApplicationRecord
   has_one :logistic
   belongs_to :address
   belongs_to :prize_log
+  has_one :after_order
   # has_and_belongs_to_many :payments, join_table: 'order_payments'
   has_many :payments
-  STATUS = { wait: '代付款', pay: '代发货', send: '已发货', receive: '已完成', cancel: '已取消', apply_after: '申请售后', after_sale: '售后订单', after_failed: '申请售后失败'}
+  STATUS = { wait: '代付款', pay: '代发货', send: '已发货', receive: '已完成', cancel: '已取消'}
   EXPRESS = {EMS: 'EMS', STO: '申通', YTO: '圆通', ZTO: '中通', SFEXPRESS: '顺丰', YUNDA: '韵达', TTKDEX: '天天快递', DEPPON: '德邦', HTKY: '汇通快递'}
   aasm :status do
     state :wait, :initial => true
@@ -35,20 +36,20 @@ class Order < ApplicationRecord
       transitions :from => :send, :to => :receive
     end
 
-    #申请售后
-    event :do_apply_after do
-      transitions :from => [:send, :receive], :to => :apply_after
-    end
+    # #申请售后
+    # event :do_after_sale do
+    #   transitions :from => [:send, :receive], :to => :after_sale
+    # end
 
-    #售后
-    event :do_after_sale do
-      transitions :from => :apply_after, :to => :after_sale
-    end
-
-    #售后
-    event :do_after_failed do
-      transitions :from => :apply_after, :to => :after_failed
-    end
+    # #售后
+    # event :do_after_sale do
+    #   transitions :from => :receive, :to => :after_sale
+    # end
+    #
+    # #售后
+    # event :do_after_failed do
+    #   transitions :from => :apply_after, :to => :after_failed
+    # end
 
   end
 

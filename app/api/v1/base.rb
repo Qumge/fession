@@ -30,6 +30,7 @@ module V1
         mount V1::Admins::StatRecords
         mount V1::Admins::Wechat
         mount V1::Admins::Orders
+        mount V1::Admins::AfterOrders
       end
 
       namespace :users do

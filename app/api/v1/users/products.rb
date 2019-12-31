@@ -16,6 +16,7 @@ module V1
           optional :category_id, type: Integer, desc: '分类'
           optional :sort, type: String, desc: '排序'
           optional :search, type: String, desc: '检索'
+          optional :company_id, type: Integer, desc: '商户id'
         end
         get '/' do
           products = @product_model.where(status: 'up').search_conn(params)
