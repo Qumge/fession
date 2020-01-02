@@ -27,6 +27,7 @@ module V1
         route_param :id do
           before do
             @game = ::Game.find_by id: params[:id]
+            p @game
             error!("找不到数据", 500) unless @game.present?
           end
           desc '游戏详情'
