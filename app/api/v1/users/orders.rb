@@ -169,9 +169,6 @@ module V1
             requires :type, type: String, desc: '退货类型  AfterOrder::All : 退货退款 AfterOrder::Money ： 退款'
           end
           post 'after_order' do
-            if params[:address_id].present?
-              @order.update address_id: params[:address_id]
-            end
             after_order = AfterOrder.find_or_create_by user: @order.user, order: @order, type: params[:type]
             present after_order, with: V1::Entities::AfterOrderWithOrder
           end
