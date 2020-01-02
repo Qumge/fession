@@ -29,7 +29,7 @@ class Task::GameTask < Task
   end
 
 
-  def h5_link
+  def h5_path
     path = case game.type
            when 'Game::Egg'
              'golden'
@@ -40,7 +40,7 @@ class Task::GameTask < Task
            when 'Game::Tiger'
              'tiger'
            end
-    "#{Settings.h5_url}/pages/game/#{path}?id=#{self.game.id}"
+    "/pages/game/#{path}?id=#{self.game.id}"
   end
 
 end

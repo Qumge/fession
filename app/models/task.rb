@@ -190,4 +190,8 @@ class Task < ApplicationRecord
     coin_logs
   end
 
+  def h5_link
+    "#{Settings.h5_url}#{h5_path}"
+  end
+
 end

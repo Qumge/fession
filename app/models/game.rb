@@ -137,6 +137,10 @@ class Game < ApplicationRecord
     "#{Settings.h5_url}/pages/game/#{path}?id=#{self.id}"
   end
 
+  def sort_prizes
+    self.prizes.sort_by { |prize |  prize.probability}
+  end
+
 
 
 end

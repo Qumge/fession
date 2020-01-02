@@ -26,8 +26,8 @@ class GameLog < ApplicationRecord
     a = 0
     self.game.prizes.order('probability desc').each do |prize|
       p prize.probability * 10000, 2222
-      a += prize.probability
-      if s <= a * 10000
+      a += prize.probability * 10000
+      if s <= a
         p 333333
         PrizeLog.create user: self.user, game: self.game, prize: prize, game_log: self if prize.number.to_i > 0
         return

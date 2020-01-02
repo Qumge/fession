@@ -27,8 +27,8 @@ class Task::QuestionnaireTask < Task
     self.questionnaire&.name
   end
 
-  def h5_link
-    "#{Settings.h5_url}/pages/task/questionnaire?id=#{self.id}"
+  def h5_path
+    "/pages/task/questionnaire?id=#{self.id}"
   end
 
 end
