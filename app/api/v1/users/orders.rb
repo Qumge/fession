@@ -169,7 +169,12 @@ module V1
             requires :type, type: String, desc: '退货类型  AfterOrder::All : 退货退款 AfterOrder::Money ： 退款'
           end
           post 'after_order' do
-            after_order = AfterOrder.find_or_create_by user: @order.user, order: @order, type: params[:type]
+            if @order.pay?
+              after_order = AfterOrder::Money.find_or_create_by user: @order.user, order: @order
+            else
+              after_order = AfterOrder::All.find_or_create_by user: @order.user, order: @order
+            end
+
             present after_order, with: V1::Entities::AfterOrderWithOrder
           end
 
