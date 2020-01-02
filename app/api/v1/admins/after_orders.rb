@@ -35,7 +35,7 @@ module V1
         route_param :id do
           before do
             if @company.present?
-              @after_order = AfterOrder.find_by id: params[:id], company: @company
+              @after_order = AfterOrder.joins(:order).where('after_order.id = ? and orders.company_id = ?', params[:id], @company.id).first
             else
               @after_order= AfterOrder.find_by id: params[:id]
             end
