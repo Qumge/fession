@@ -31,6 +31,14 @@ class Payment < ApplicationRecord
 
   end
 
+  def app_pay
+    if self.prepay_id.present?
+      WxPay.appid = self.appid
+      params = {prepayid: self.prepay_id, noncestr: SecureRandom.hex(16), }
+      WxPay::Service.generate_app_pay_req params
+    end
+  end
+
   def order_query
     p self.appid, 111
     WxPay.appid = self.appid

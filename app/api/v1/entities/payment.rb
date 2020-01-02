@@ -9,6 +9,7 @@ module V1
       expose :prepay_id
       expose :user, using: V1::Entities::User
       expose :js_pay
+      expose :app_pay
       with_options(format_with: :timestamp) do
         expose :created_at, documentation: { type: 'Timestamp' }
         expose :updated_at, documentation: { type: 'Timestamp' }

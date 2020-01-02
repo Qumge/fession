@@ -23,6 +23,7 @@ module V1
           optional :company_id, type: Integer, desc: '商户id'
           optional :type, type: String, desc: '类型 AfterOrder::All : 退货退款 AfterOrder::Money ： 退款'
           optional :name, type: String, desc: '产品名'
+          optional :no, type: String, desc: '订单编号'
           optional :status,     type: String, desc: "{ apply: '申请', agree: '已同意', failed: '已拒绝', receive: '已退货待退款', refund: '已退款'}"
         end
         get '/' do

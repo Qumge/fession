@@ -10,7 +10,7 @@ class Order < ApplicationRecord
   has_one :after_order
   # has_and_belongs_to_many :payments, join_table: 'order_payments'
   has_many :payments
-  STATUS = { wait: '代付款', pay: '代发货', send: '已发货', receive: '已完成', cancel: '已取消'}
+  STATUS = { wait: '待付款', pay: '待发货', send: '已发货', receive: '已完成', cancel: '已取消'}
   EXPRESS = {EMS: 'EMS', STO: '申通', YTO: '圆通', ZTO: '中通', SFEXPRESS: '顺丰', YUNDA: '韵达', TTKDEX: '天天快递', DEPPON: '德邦', HTKY: '汇通快递'}
   aasm :status do
     state :wait, :initial => true

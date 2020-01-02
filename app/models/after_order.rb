@@ -57,6 +57,9 @@ class AfterOrder < ApplicationRecord
       if params[:date_to].present?
         after_orders = after_orders.where('after_orders.created_at <?', params[:date_to].to_datetime.end_of_day)
       end
+      if params[:no].present?
+        after_orders = after_orders.where('orders.no like ?', "%#{params[:no]}%")
+      end
       after_orders
     end
   end
