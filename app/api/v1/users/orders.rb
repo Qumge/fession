@@ -165,9 +165,6 @@ module V1
                   }
               }
           }
-          params do
-            requires :type, type: String, desc: '退货类型  AfterOrder::All : 退货退款 AfterOrder::Money ： 退款'
-          end
           post 'after_order' do
             if @order.pay?
               after_order = AfterOrder::Money.find_or_create_by user: @order.user, order: @order
