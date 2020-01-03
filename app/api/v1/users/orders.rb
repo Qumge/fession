@@ -157,6 +157,22 @@ module V1
             present @order, with: V1::Entities::Order
           end
 
+          desc '查询订单支付状态', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          params do
+            optional :address_id, type: Integer, desc: '地址'
+          end
+          post 'query_order' do
+            @order.current_payment.order_query
+            present @order, with: V1::Entities::Order
+          end
+
           desc '申请售后', {
               headers: {
                   "X-Auth-Token" => {

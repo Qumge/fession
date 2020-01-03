@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: addresses
+#
+#  id         :bigint           not null, primary key
+#  content    :string(255)
+#  name       :string(255)
+#  phone      :string(255)
+#  tag        :string(255)
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  company_id :integer
+#  user_id    :integer
+#
+
 class Address < ApplicationRecord
   validates_presence_of :name
   validates_presence_of :content

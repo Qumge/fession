@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: banners
+#
+#  id         :bigint           not null, primary key
+#  no         :integer
+#  type       :string(255)
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  company_id :integer
+#  task_id    :integer
+#
+
 class Banner < ApplicationRecord
   has_one :image, -> {where(model_type: 'Banner')}, foreign_key: :model_id
   belongs_to :task, foreign_key: :task_id

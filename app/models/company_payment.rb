@@ -1,3 +1,21 @@
+# == Schema Information
+#
+# Table name: company_payments
+#
+#  id            :bigint           not null, primary key
+#  amount        :integer
+#  apply_res     :text(65535)
+#  coin          :integer
+#  no            :string(255)
+#  qrcode        :string(255)
+#  response_data :text(65535)
+#  status        :string(255)
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  company_id    :integer
+#  prepay_id     :string(255)
+#
+
 class CompanyPayment < ApplicationRecord
 
   belongs_to :company

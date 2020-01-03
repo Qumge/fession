@@ -9,6 +9,7 @@
 #  option_id        :integer
 #  question_id      :integer
 #  questionnaire_id :integer
+#  reply_id         :integer
 #  user_id          :integer
 #
 

@@ -1,3 +1,20 @@
+# == Schema Information
+#
+# Table name: payments
+#
+#  id            :bigint           not null, primary key
+#  amount        :integer
+#  apply_res     :text(65535)
+#  no            :string(255)
+#  response_data :text(65535)
+#  status        :string(255)
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  order_id      :integer
+#  prepay_id     :string(255)
+#  user_id       :integer
+#
+
 class Payment < ApplicationRecord
   # has_and_belongs_to_many :orders, join_table: 'order_payments'
   belongs_to :order

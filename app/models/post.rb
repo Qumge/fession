@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: posts
+#
+#  id         :bigint           not null, primary key
+#  content    :text(65535)
+#  number     :integer          default(0)
+#  status     :string(255)
+#  title      :string(255)
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  user_id    :integer
+#
+
 class Post < ApplicationRecord
   has_many :images, -> {where(model_type: 'Post')}, foreign_key: :model_id
   include AASM

@@ -2,14 +2,16 @@
 #
 # Table name: articles
 #
-#  id         :bigint           not null, primary key
-#  content    :text(65535)
-#  deleted_at :datetime
-#  subject    :string(255)
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  company_id :integer
-#  product_id :integer
+#  id               :bigint           not null, primary key
+#  content          :text(65535)
+#  deleted_at       :datetime
+#  product_view_num :integer          default(0)
+#  subject          :string(255)
+#  view_num         :integer          default(0)
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  company_id       :integer
+#  product_id       :integer
 #
 # Indexes
 #

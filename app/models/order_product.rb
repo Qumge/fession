@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: order_products
+#
+#  id         :bigint           not null, primary key
+#  amount     :integer
+#  number     :integer
+#  price      :integer
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  norm_id    :integer
+#  order_id   :integer
+#  product_id :integer
+#
+
 class OrderProduct < ApplicationRecord
   belongs_to :product
   belongs_to :order

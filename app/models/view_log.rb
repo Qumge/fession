@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: view_logs
+#
+#  id             :bigint           not null, primary key
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  fission_log_id :integer
+#  task_id        :integer
+#  user_id        :integer
+#
+
 class ViewLog < ApplicationRecord
   belongs_to :fission_log
   belongs_to :user

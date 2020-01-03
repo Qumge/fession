@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: cashes
+#
+#  id            :bigint           not null, primary key
+#  amount        :integer
+#  bank_code     :string(255)
+#  coin          :integer
+#  enc_bank_no   :string(255)
+#  enc_true_name :string(255)
+#  status        :string(255)
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  user_id       :integer
+#
+
 class Cash < ApplicationRecord
   include AASM
   belongs_to :user

@@ -2,13 +2,15 @@
 #
 # Table name: coin_logs
 #
-#  id         :bigint           not null, primary key
-#  channel    :string(255)
-#  coin       :integer
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  user_id    :integer
-#
+#  id           :bigint           not null, primary key
+#  channel      :string(255)
+#  coin         :integer
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  company_id   :integer
+#  model_id     :integer
+#  share_log_id :integer
+#  user_id      :integer
 #
 
 class CoinLog < ApplicationRecord

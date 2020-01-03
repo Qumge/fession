@@ -1,26 +1,22 @@
 # == Schema Information
 #
-# Table name: products
+# Table name: prizes
 #
 #  id          :bigint           not null, primary key
 #  coin        :integer
+#  content     :string(255)
 #  deleted_at  :datetime
-#  desc        :text(65535)
-#  name        :string(255)
-#  no          :string(255)
-#  price       :integer
-#  sale        :integer          default(0)
-#  status      :string(255)
-#  stock       :integer          default(0)
+#  number      :integer
+#  probability :float(24)
 #  type        :string(255)
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
-#  category_id :integer
-#  company_id  :integer
+#  game_id     :integer
+#  product_id  :integer
 #
 # Indexes
 #
-#  index_products_on_deleted_at  (deleted_at)
+#  index_prizes_on_deleted_at  (deleted_at)
 #
 
 class Prize::ProductPrize < Prize
