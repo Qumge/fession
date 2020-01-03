@@ -117,6 +117,11 @@ class Payment < ApplicationRecord
     end
   end
 
+  def refund_money
+    # WxPay::Service.invoke_refund params
+    # todu
+  end
+
   def payment_logger
     Logger.new 'log/user_payment.log'
   end

@@ -26,6 +26,14 @@ class Address < ApplicationRecord
     def operator_address
       self.where(user_id: nil, company_id: nil)
     end
+
+    def receive_addresses
+      self.where(tag: ['receive', 'all'])
+    end
+
+    def send_addresses
+      self.where(tag: ['send', 'all'])
+    end
   end
 
   def send?

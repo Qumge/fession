@@ -18,7 +18,7 @@ class AfterOrder < ApplicationRecord
   belongs_to :order
   belongs_to :user
 
-  STATUS = { apply: '申请', agree: '已同意', failed: '已拒绝', receive: '已退货待退款', refund: '已退款'}
+  STATUS = { apply: '申请中', agree: '已同意', failed: '已拒绝', receive: '已退货待退款', refund: '已退款'}
   EXPRESS = {EMS: 'EMS', STO: '申通', YTO: '圆通', ZTO: '中通', SFEXPRESS: '顺丰', YUNDA: '韵达', TTKDEX: '天天快递', DEPPON: '德邦', HTKY: '汇通快递'}
 
 
@@ -28,7 +28,7 @@ class AfterOrder < ApplicationRecord
 
     #同意
     event :do_agree do
-      transitions :from => [:apply], :to => :agree
+      transitions :from => [:apply], :to => :agree, after: Proc.new{set_refund}
     end
 
     #拒绝
@@ -36,12 +36,12 @@ class AfterOrder < ApplicationRecord
       transitions :from => [:apply], :to => :failed
     end
 
-    #发货
+    #收货
     event :do_receive do
-      transitions :from => :agree, :to => :receive
+      transitions :from => :agree, :to => :receive, after: Proc.new{set_refund}
     end
 
-    #收货
+    #退款
     event :do_refund do
       transitions :from => [:receive, :agree], :to => :refund
     end
@@ -79,6 +79,15 @@ class AfterOrder < ApplicationRecord
     end
   end
 
+  def set_refund
+    if (self.type == 'AfterOrder::Money' && self.status == 'apply') || (self.type == 'AfterOrder::All' && self.status == 'send')
+      refund_money
+    end
+  end
+
+  def refund_money
+    self.order.refund_money
+  end
 
   def get_express_type
     EXPRESS[self.express_type.to_sym] if self.express_type.present?

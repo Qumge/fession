@@ -12,6 +12,7 @@ module V1
       expose :address, using: V1::Entities::Address
       expose :current_payment, using: V1::Entities::Payment
       expose :after_order, using: V1::Entities::AfterOrder
+      expose :prize_log, using: V1::Entities::PrizeLog
       expose :view_amount
       expose :status
       expose :coin
@@ -21,6 +22,7 @@ module V1
       expose :get_status
       expose :get_status_desc
       with_options(format_with: :timestamp) do
+        expose :payment_at, documentation: { type: 'Timestamp' }
         expose :created_at, documentation: { type: 'Timestamp' }
         expose :updated_at, documentation: { type: 'Timestamp' }
       end

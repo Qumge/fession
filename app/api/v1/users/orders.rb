@@ -201,11 +201,21 @@ module V1
           }
           params do
             requires :express_no, type: String, desc: '物流编号'
-            requires :express_type, type: String, desc: "物流公司{EMS: 'EMS', STO: '申通', YTO: '圆通', ZTO: '中通', SFEXPRESS: '顺丰', YUNDA: '韵达', TTKDEX: '天天快递', DEPPON: '德邦', HTKY: '汇通快递'}"
+            optional :express_type, type: String, desc: "物流公司{EMS: 'EMS', STO: '申通', YTO: '圆通', ZTO: '中通', SFEXPRESS: '顺丰', YUNDA: '韵达', TTKDEX: '天天快递', DEPPON: '德邦', HTKY: '汇通快递'}"
           end
           post 'set_express' do
             @order.after_order.update express_no: params[:express_no], express_type: params[:express_type]
             present @order.after_order, with: V1::Entities::AfterOrderWithOrder
+          end
+
+          desc '收货地址'
+          get 'address' do
+            if @order.company.present?
+              present @order.company.receive_address, with: V1::Entities::Address
+            else
+              present Address.operator_address.where(tag: ['receive', 'all']).first, with: V1::Entities::Address
+            end
+
           end
 
         end

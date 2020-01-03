@@ -16,7 +16,7 @@
 class CoinLog < ApplicationRecord
   belongs_to :user
   belongs_to :company
-  CHANNEL = {fission: '转发裂变', sign: '签到', game: '游戏抽奖', cash: '提现', prize: '中奖', failed_cash: '提现拒绝返还', product: '购买返金币', order: '金币商城消费'}
+  CHANNEL = {fission: '转发裂变', sign: '签到', game: '游戏抽奖', cash: '提现', prize: '中奖', failed_cash: '提现拒绝返还', product: '购买返金币', order: '金币商城消费', refund: '退货'}
   belongs_to :fission_log, foreign_key: :model_id
   belongs_to :share_log
   belongs_to :prize_log, foreign_key: :model_id
@@ -75,6 +75,8 @@ class CoinLog < ApplicationRecord
       prize_log.game.update residue_coin: prize_log.game.residue_coin.to_i - coin if prize_log.game.present?
       company.update coin: company.coin.to_i - coin if company.present?
     when 'order'
+      user.update coin: user.coin.to_i + coin
+    when 'refund'
       user.update coin: user.coin.to_i + coin
     end
   end

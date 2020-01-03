@@ -71,6 +71,14 @@ class Company < ApplicationRecord
     end
   end
 
+  def receive_address
+    self.addresses.where(tag: ['receive', 'all']).first
+  end
+
+  def senf_address
+    self.addresses.where(tag: ['senf', 'all']).first
+  end
+
   def get_status
     STATUS[self.status.to_sym] if self.status.present?
   end

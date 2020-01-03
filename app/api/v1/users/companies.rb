@@ -18,7 +18,6 @@ module V1
             present @company, with: V1::Entities::Company, user: @current_user
           end
 
-
         end
 
 

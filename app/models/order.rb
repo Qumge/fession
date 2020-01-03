@@ -125,6 +125,14 @@ class Order < ApplicationRecord
       orders
     end
 
+    def refund_money
+      if self.type == 'Order::MoneyOrder'
+        self.current_payment.refund_money
+      elsif self.type == 'Order::CoinOrder'
+        CoinLog.new user: order.user, channel: 'refund', model_id: self.id, coin: self.amount.to_i
+      end
+    end
+
 
     def apply_order user, product_norms, address_id, desc, platform
       p product_norms, 111
