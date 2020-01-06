@@ -38,7 +38,7 @@ class Product < ApplicationRecord
   has_many :audits, foreign_key: :model_id
   has_many :audit_product_audits, :class_name => 'Audit::ProductAudit', foreign_key: :model_id
   has_one :task_product_task, :class_name => 'Task::ProductTask', foreign_key: :model_id
-  validates_presence_of :price
+
 
 
   acts_as_paranoid
@@ -122,6 +122,7 @@ class Product < ApplicationRecord
 
 
   def fetch_for_api params, company = nil
+    p params, 11111111111
     self.name = params[:name] if params[:name].present?
     self.desc = params[:desc] if params[:desc].present?
     self.status = params[:status] if params[:status].present?
@@ -129,14 +130,15 @@ class Product < ApplicationRecord
     self.company = company if company.present?
     if params[:images].present?
       images = []
-      p params[:images], 1111
       JSON.parse(params[:images]).each do |image|
         images << Image.new(file_path: image, model_type: 'Product')
       end
       self.images = images
     end
     Product.transaction do
-      self.price = params[:price] if params[:price].present?
+      p params[:price], 33333333
+      self.price = 2000
+      p self.price, 2222222
       if params[:type] == 'CoinProduct'
         self.stock = params[:stock] if params[:stock].present?
       else
@@ -192,7 +194,7 @@ class Product < ApplicationRecord
   end
 
   def view_price
-    self.type == 'CoinProduct' ? self.price : (self.price.to_f / 100)
+    self.type == 'CoinProduct' ? self.price : (self.price)
   end
 
   def h5_link

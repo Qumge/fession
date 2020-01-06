@@ -30,8 +30,13 @@ class CoinProduct < Product
   # validates_presence_of :coin
   validates_presence_of :name
   after_create :set_status
+  validates_presence_of :price
 
   def set_status
     self.update status: 'up'
+  end
+
+  def view_price
+    self.price
   end
 end
