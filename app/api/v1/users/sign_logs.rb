@@ -16,8 +16,12 @@ module V1
                 }
             }
         }
+        params do
+          optional :date_from, type: String, desc: '起始'
+          optional :date_to, type: String, desc: '结束'
+        end
         get '/' do
-          present @current_user.sign_log, with: V1::Entities::SignLog
+          present @current_user.sign_logs.search_conn(params), with: V1::Entities::SignLog
         end
 
 

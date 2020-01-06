@@ -15,6 +15,19 @@ class SignLog < ApplicationRecord
   belongs_to :user
 
   class << self
+
+    def search_conn params
+
+      logs = self.all
+      if params[:date_from].present?
+        logs = logs.where('sign_at >= ? ', params[:date_from].to_datetime)
+      end
+      if params[:date_to].present?
+        logs = logs.where('sign_at < ? ', params[:date_to].to_datetime.end_of_day)
+      end
+      logs
+    end
+
     def sign user
       last_sign_log = user.sign_log
       if last_sign_log
