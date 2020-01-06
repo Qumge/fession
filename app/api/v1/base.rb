@@ -54,6 +54,7 @@ module V1
         mount V1::Users::Games
         mount V1::Users::Cashes
         mount V1::Users::Companies
+        mount V1::Users::SignLogs
       end
 
       mount V1::Wechat

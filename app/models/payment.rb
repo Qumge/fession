@@ -118,8 +118,22 @@ class Payment < ApplicationRecord
   end
 
   def refund_money
+    params = {
+        out_trade_no:self.order.no,
+        out_refund_no: self.order.no,
+        total_fee: 1,
+        refund_fee: 1
+    }
     # WxPay::Service.invoke_refund params
     # todu
+    if self.order.platform == 'app'
+      WxPay.appid = Settings.app_appid
+    else
+      WxPay.appid = Settings.web_appid
+    end
+    r = WxPay::Service.invoke_unifiedorder params
+    p r
+    r
   end
 
   def payment_logger

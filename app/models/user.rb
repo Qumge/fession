@@ -74,6 +74,7 @@ class User < ApplicationRecord
   has_one :card_back, -> {where(model_type: 'CardBack')}, foreign_key: :model_id, class_name: 'Image'
   has_many :user_view_logs
   has_many :replies
+  has_many :sign_logs
 
 
 
@@ -124,6 +125,10 @@ class User < ApplicationRecord
 
   def ensure_authentication_token
     self.authentication_token ||= generate_authentication_token
+  end
+
+  def sign_log
+    sign_logs.last
   end
 
   def can_cash_amount
