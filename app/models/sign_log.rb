@@ -13,6 +13,7 @@
 class SignLog < ApplicationRecord
 
   belongs_to :user
+  after_create :set_sign_coin
 
   class << self
 
@@ -44,6 +45,25 @@ class SignLog < ApplicationRecord
         user.sign_logs.create sign_at: DateTime.now
       end
     end
+  end
+
+
+  def set_sign_coin
+    #最大签到天数
+    max_days = SignRule.maximum :number
+    if max_days
+      days = self.days%max_days == 0 ? max_days : self.days%max_days
+      sign_rule = SignRule.find_by number: days
+      if sign_rule
+        CoinLog.create user: user, channel: 'sign', coin: sign_rule.coin, model_id: self.id
+      else
+        sign_rule = SignRule.find_by number: 1
+        if sign_rule
+          CoinLog.create user: user, channel: 'sign', coin: sign_rule.coin, model_id: self.id
+        end
+      end
+    end
+
   end
 
 
