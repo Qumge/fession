@@ -49,7 +49,7 @@ class Cash < ApplicationRecord
   end
 
   def pay_bank
-
+    #TODO
   end
 
   def add_coin

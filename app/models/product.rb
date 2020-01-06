@@ -136,9 +136,9 @@ class Product < ApplicationRecord
       self.images = images
     end
     Product.transaction do
+      self.price = params[:price] if params[:price].present?
       if params[:type] == 'CoinProduct'
         self.stock = params[:stock] if params[:stock].present?
-        self.price = params[:price] if params[:price].present?
       else
         self.coin = params[:coin] if params[:coin].present?
         if params[:specs].present? && params[:norms].present?

@@ -83,9 +83,9 @@ task :deploy => :environment do
     #重新设定shared_path位置
     invoke :'deploy:link_shared_paths'
     invoke :'bundle:install'
-    # invoke :'rails:db_create'
+    invoke :'rails:db_create'
     invoke :'rails:db_migrate' #首次执行可能会报错 需要我们手动先创建数据库 db:create
-    # invoke :'rails:db_seed'
+    invoke :'rails:db_seed'
     invoke :'rails:assets_precompile'
     invoke :'deploy:cleanup'
 

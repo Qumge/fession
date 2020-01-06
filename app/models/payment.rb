@@ -126,12 +126,13 @@ class Payment < ApplicationRecord
     }
     # WxPay::Service.invoke_refund params
     # todu
+    p params, 111
     if self.order.platform == 'app'
       WxPay.appid = Settings.app_appid
     else
       WxPay.appid = Settings.web_appid
     end
-    r = WxPay::Service.invoke_unifiedorder params
+    r = WxPay::Service.invoke_refund params
     p r
     r
   end
