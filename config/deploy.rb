@@ -29,7 +29,7 @@ task :environment do
 end
 
 # 中括号里的文件 会出现在服务器项目附录的shared文件夹中，这里加入了secrets.yml，环境密钥无需跟开发计算机一样
-set :shared_paths, ['config/database.yml', 'log', 'config/secrets.yml', 'config/puma.rb', 'config/settings/production.yml', 'config/settings.yml', 'config/wechat.yml']
+set :shared_paths, ['config/database.yml', 'log', 'config/secrets.yml', 'config/puma.rb', 'config/settings/production.yml', 'config/settings.yml', 'config/wechat.yml', 'apiclient_cert.p12']
 
 # 这个块里面的代码表示运行 mina setup时运行的命令
 task :setup => :environment do
@@ -54,6 +54,9 @@ task :setup => :environment do
 
   queue! %[touch "#{deploy_to}/shared/config/puma.rb"]
   queue  %[echo "-----> Be sure to edit 'shared/config/puma.rb'."]
+
+  queue! %[touch "#{deploy_to}/shared/apiclient_cert.p12"]
+  queue  %[echo "-----> Be sure to edit 'shared/apiclient_cert.p12'."]
 
   # tmp/sockets/puma.state
   queue! %[touch "#{deploy_to}/shared/tmp/sockets/puma.state"]
