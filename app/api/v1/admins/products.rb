@@ -152,6 +152,19 @@ module V1
             end
           end
 
+          desc '申请审核', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          post 'apply' do
+            @product.do_wait! if @product.may_do_wait?
+            present @product, with: V1::Entities::Product
+          end
+
 
           desc '商品详情', {
               headers: {
