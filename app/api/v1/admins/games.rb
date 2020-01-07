@@ -88,13 +88,23 @@ module V1
             date_to = params[:date_to].to_datetime
           end
           game = @game_model.find_by company_id: nil
-          {
+          if game.present?
+            {
               view_number: game.game_view_logs.where(created_at: date_from..date_to).size,
               play_number: game.game_logs.where(created_at: date_from..date_to).size,
               play_coin: game.game_logs.where(created_at: date_from..date_to).sum(:coin),
               prize_number: game.prize_logs.where(created_at: date_from..date_to).size,
               prize_coin: game.prize_logs.left_joins(:prize).where(created_at: date_from..date_to).sum('prizes.coin'),
           }
+          else
+            {
+              view_number: '-',
+              play_number: '-',
+              play_coin: '-',
+              prize_number: '-',
+              prize_coin: '-',
+          }
+          end
         end
       end
     end

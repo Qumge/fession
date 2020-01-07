@@ -186,14 +186,6 @@ ActiveRecord::Schema.define(version: 2020_01_07_084714) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "follows", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "model_id"
-    t.integer "user_id"
-    t.string "type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "game_logs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "game_id"
     t.integer "coin"
