@@ -75,7 +75,7 @@ class CompanyPayment < ApplicationRecord
     times.times do |time|
       payment = self.order_query
       break if payment.pay?
-      sleep 2000
+      sleep 2
     end
   end
 
