@@ -65,6 +65,33 @@ module V1
           present game, with: V1::Entities::Game
         end
 
+        desc '奖品管理', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+        params do
+          requires :type, type: String, desc: '游戏类型 Game::Wheel Game::Tiger Game::Scratch'
+        end
+        get 'prizes' do
+          game = @game_model.find_by company_id: nil
+          if game.present?
+            prize_logs = game.prize_logs
+            {number: prize_logs.size,
+             coin: prize_logs.sum{|prize_log| prize_log.prize.type == 'Prize::CoinPrize' ? prize_log.prize.coin : 0},
+             product_number: prize_logs.count{|prize_log| prize_log.prize.type == 'Prize::ProductPrize'}
+            }
+          else
+            {number: '-',
+            coin: '-',
+            product_number: '-'
+            }
+          end
+        end
+
         desc '平台游戏数据', {
             headers: {
                 "X-Auth-Token" => {
