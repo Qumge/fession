@@ -65,7 +65,7 @@ module V1
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
         end
-        get 'coin_logs' do
+        post 'coin_logs' do
           params[:company_id] = @company.id if @company.present?
           p params[:company_id], 11
           coin_logs = CoinLog.where company_id: params[:company_id]
