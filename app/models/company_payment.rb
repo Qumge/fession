@@ -61,7 +61,7 @@ class CompanyPayment < ApplicationRecord
   def order_query
     params = {out_trade_no: self.no}
     res = WxPay::Service.order_query params
-    if res[:raw].present? && res[:raw]['return_code'] == 'SUCCESS'
+    if res[:raw].present? && res[:raw]['xml'].present? && res[:raw]['xml']['return_code'] == 'SUCCESS'
       self.update response_data: result
       self.do_pay! if self.may_do_pay?
     end
