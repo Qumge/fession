@@ -214,35 +214,37 @@ class Record
     end
 
 
+    def task_article_data params={}
+      total_data, date_headers, chart_data, table_data = task_data params
+
+
+      #查看次数
+      view_data = Record::ViewLog.new(params).date_records
+      #获客成本
+      coin_per_user_data = coin_per_user params
+
+      chart_data = chart_data.push([
+                                       {
+                                           name: '查看次数',
+                                           data: view_data.values
+                                       },
+                                       {
+                                           name: '获客成本',
+                                           data: coin_per_user_data.values
+                                       }
+                                   ]).flatten
+
+      total_data.push({name: '查看次数', data: view_data.values.sum})
+
+      table_data.deep_merge!(view_data){|key, this_value, other_value| this_value << {name: '查看次数', data: other_value}}
+      table_data.deep_merge!(coin_per_user_data){|key, this_value, other_value| this_value << {name: '获客成本', data: other_value}}
+
+      return total_data, date_headers, chart_data, table_data
+    end
+
+
   end
-
-  def task_article_data params={}
-    total_data, date_headers, chart_data, table_data = task_data params
-
-
-    #查看次数
-    view_data = Record::ViewLog.new(params).date_records
-    #获客成本
-    coin_per_user_data = coin_per_user params
-
-    chart_data = chart_data.push([
-                                     {
-                                         name: '查看次数',
-                                         data: view_data.values
-                                     },
-                                     {
-                                         name: '获客成本',
-                                         data: coin_per_user_data.values
-                                     }
-                                 ]).flatten
-
-    total_data.push({name: '查看次数', data: view_data.values.sum})
-
-    table_data.deep_merge!(view_data){|key, this_value, other_value| this_value << {name: '查看次数', data: other_value}}
-    table_data.deep_merge!(coin_per_user_data){|key, this_value, other_value| this_value << {name: '获客成本', data: other_value}}
-
-    return total_data, date_headers, chart_data, table_data
-  end
+  
 
 end
 
