@@ -16,6 +16,8 @@ module V1
                         when 'Game::Tiger'
                           Game::Tiger
                         when 'Game::Egg'
+                          Game::Egg
+                        when 'Game::Scratch'
                           Game::Scratch
                         end
         end
@@ -61,6 +63,38 @@ module V1
         get 'show_game' do
           game = @game_model.find_by company_id: nil
           present game, with: V1::Entities::Game
+        end
+
+        desc '平台游戏数据', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :type, type: String, desc: '游戏类型 Game::Wheel Game::Tiger Game::Scratch'
+          requires :date_from, type: String, desc: '游戏类型 Game::Wheel Game::Tiger Game::Scratch'
+          requires :date_to, type: String, desc: '游戏类型 Game::Wheel Game::Tiger Game::Scratch'
+        end
+        get 'data' do
+          date_from=DateTime.new.beginning_of_day
+          date_to=DateTime.new.end_of_day
+          if params[:date_from].present?
+            date_from = params[:date_from].to_datetime
+          end
+          if params[:date_to].present?
+            date_to = params[:date_to].to_datetime
+          end
+          game = @game_model.find_by company_id: nil
+          {
+              view_number: game.game_view_logs.where(created_at: date_from..date_to).size,
+              play_number: game.game_logs.where(created_at: date_from..date_to).size,
+              play_coin: game.game_logs.where(created_at: date_from..date_to).sum(:coin),
+              prize_number: game.prize_logs.where(created_at: date_from..date_to).size,
+              prize_coin: game.prize_logs.left_joins(:prize).where(created_at: date_from..date_to).sum('prizes.coin'),
+          }
         end
       end
     end

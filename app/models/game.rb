@@ -28,6 +28,8 @@ class Game < ApplicationRecord
   belongs_to :company
   has_one :image, -> {where(model_type: 'Game')}, foreign_key: :model_id
   has_one :task_game_task, :class_name => 'Task::GameTask', foreign_key: :model_id
+  has_many :game_view_logs
+  has_many :game_logs
 
 
   def fetch_prizes params_prizes
@@ -120,6 +122,10 @@ class Game < ApplicationRecord
   #中奖商品数
   def prize_product_num
     self.prize_logs.joins(:prize).where('prizes.type = ?', 'Prize::ProductPrize').size
+  end
+
+  def date_logs date_from=Datetime.new.beginning_of_day, date_to=Datetime.new.end_of_day
+    self.game_view_logs.where(created_at: date_from..date_to)
   end
 
   def h5_link

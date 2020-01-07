@@ -32,6 +32,7 @@ module V1
           end
           desc '游戏详情'
           get '/' do
+            GameViewLog.create user: @current_user, game: @game
             present @game, with: V1::Entities::GameWithTask
           end
 

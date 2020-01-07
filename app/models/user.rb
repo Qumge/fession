@@ -75,6 +75,7 @@ class User < ApplicationRecord
   has_many :user_view_logs
   has_many :replies
   has_many :sign_logs
+  has_many :game_view_logs
 
 
 
