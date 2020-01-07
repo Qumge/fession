@@ -43,7 +43,7 @@ class Record
       when 'Task::QuestionnaireTask'
         task_questionnaire_data params
       when 'Task::ArticleTask'
-
+        task_article_data params
       else
         task_data params
       end
