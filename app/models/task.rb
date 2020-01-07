@@ -148,7 +148,12 @@ class Task < ApplicationRecord
 
   # 分享消耗金币
   def cost_coin
-    self.coin.to_i - self.residue_coin.to_i
+    if self.wait?
+      0
+    else
+      self.coin.to_i - self.residue_coin.to_i
+    end
+
   end
 
   # 获客成本

@@ -16,8 +16,12 @@ module V1
             {error: '20009', message: '账号被锁定'}
           elsif @user && !@user[:locked] && (@user.code_create_at + 5.minutes) > DateTime.now
             #sign_in @admin
-            @user.ensure_authentication_token!
-            {login: @user.login, id: @user.id, authentication_token: @user.authentication_token}
+            if @user.code == params[:code]
+              @user.ensure_authentication_token!
+              {login: @user.login, id: @user.id, authentication_token: @user.authentication_token}
+            else
+              {error: '20003', message: '账号或密码错误'}
+            end
           else
             {error: '20001', message: '验证码错误或超时'}
           end

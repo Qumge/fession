@@ -21,15 +21,23 @@ module V1
                   if @admin.company.locked?
                     {error: '20004', message: '商户已被冻结，请联系管理员'}
                   else
-                    @admin.ensure_authentication_token!
-                    {login: @admin.login, id: @admin.id, authentication_token: @admin.authentication_token, type: @admin.type, role_name: @admin.role&.name}
+                    if @admin.valid_password? params[:password]
+                      @admin.ensure_authentication_token!
+                      {login: @admin.login, id: @admin.id, authentication_token: @admin.authentication_token, type: @admin.type, role_name: @admin.role&.name}
+                    else
+                      {error: '20003', message: '账号或密码错误'}
+                    end
                   end
                 else
                   {error: '20003', message: '错误的商户账号'}
                 end
               else
-                @admin.ensure_authentication_token!
-                {login: @admin.login, id: @admin.id, authentication_token: @admin.authentication_token, type: @admin.type, role_name: @admin.role&.name}
+                if @admin.valid_password? params[:password]
+                  @admin.ensure_authentication_token!
+                  {login: @admin.login, id: @admin.id, authentication_token: @admin.authentication_token, type: @admin.type, role_name: @admin.role&.name}
+                else
+                  {error: '20003', message: '账号或密码错误'}
+                end
               end
             end
           else
