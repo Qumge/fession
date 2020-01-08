@@ -2,17 +2,19 @@
 #
 # Table name: payments
 #
-#  id            :bigint           not null, primary key
-#  amount        :integer
-#  apply_res     :text(65535)
-#  no            :string(255)
-#  response_data :text(65535)
-#  status        :string(255)
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  order_id      :integer
-#  prepay_id     :string(255)
-#  user_id       :integer
+#  id              :bigint           not null, primary key
+#  amount          :integer
+#  apply_res       :text(65535)
+#  no              :string(255)
+#  refund_response :string(255)
+#  response_data   :text(65535)
+#  status          :string(255)
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  order_id        :integer
+#  prepay_id       :string(255)
+#  transaction_id  :string(255)
+#  user_id         :integer
 #
 
 class Payment < ApplicationRecord
@@ -22,7 +24,7 @@ class Payment < ApplicationRecord
   include AASM
   after_create :unifiedorder
 
-  STATUS = {wait: '新数据', apply: '微信下单', pay: '支付成功'}
+  STATUS = {wait: '新数据', apply: '微信下单', pay: '支付成功', refund: '已退款'}
   aasm :status do
     state :wait, :initial => true
     state :apply, :pay
@@ -35,6 +37,11 @@ class Payment < ApplicationRecord
     #审核失败
     event :do_pay do
       transitions :from => :apply, :to => :pay
+    end
+
+    #审核失败
+    event :do_refund do
+      transitions :from => :pay, :to => :refund
     end
 
   end
@@ -62,7 +69,7 @@ class Payment < ApplicationRecord
     params = {out_trade_no: self.order.no}
     res = WxPay::Service.order_query params
     if res[:raw].present? && res[:raw]['xml'].present? && res[:raw]['xml']['return_code'] == 'SUCCESS'
-      self.update response_data: res[:raw]['xml']
+      self.update response_data: res[:raw]['xml'], transaction_id: res[:raw]['xml']['transaction_id']
       self.do_pay! if self.may_do_pay?
       self.order.do_pay! if self.order.may_do_pay?
     end
@@ -119,7 +126,7 @@ class Payment < ApplicationRecord
 
   def refund_money
     params = {
-        out_trade_no:self.order.no,
+        transaction_id: self.transaction_id,
         out_refund_no: self.order.no,
         total_fee: 1,
         refund_fee: 1
@@ -132,9 +139,13 @@ class Payment < ApplicationRecord
     else
       WxPay.appid = Settings.web_appid
     end
-    r = WxPay::Service.invoke_refund params
-    p r
-    r
+    res = WxPay::Service.invoke_refund params
+    if res[:raw].present? && res[:raw]['xml'].present?
+      self.update refund_response: res[:raw]['xml']
+      self.do_refund! if self.may_do_refund?
+      self.order.do_refund! if self.order.may_do_refund?
+    end
+    res
   end
 
   def payment_logger

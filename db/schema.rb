@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_07_084714) do
+ActiveRecord::Schema.define(version: 2020_01_08_095908) do
 
   create_table "addresses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -186,6 +186,14 @@ ActiveRecord::Schema.define(version: 2020_01_07_084714) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "follows", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "model_id"
+    t.integer "user_id"
+    t.string "type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "game_logs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "game_id"
     t.integer "coin"
@@ -299,6 +307,8 @@ ActiveRecord::Schema.define(version: 2020_01_07_084714) do
     t.text "apply_res"
     t.string "prepay_id"
     t.text "response_data"
+    t.string "transaction_id"
+    t.string "refund_response"
   end
 
   create_table "posts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
