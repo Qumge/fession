@@ -125,15 +125,6 @@ class Order < ApplicationRecord
       orders
     end
 
-    def refund_money
-      if self.type == 'Order::MoneyOrder'
-        self.current_payment.refund_money
-      elsif self.type == 'Order::CoinOrder'
-        CoinLog.create user: self.user, channel: 'refund', model_id: self.id, coin: self.amount.to_i
-        self.after_order.do_refund! if self.after_order.may_do_refund?
-      end
-    end
-
 
     def apply_order user, product_norms, address_id, desc, platform
       p product_norms, 111
@@ -273,6 +264,15 @@ class Order < ApplicationRecord
       coin
     else
       0
+    end
+  end
+
+  def refund_money
+    if self.type == 'Order::MoneyOrder'
+      self.current_payment.refund_money
+    elsif self.type == 'Order::CoinOrder'
+      CoinLog.create user: self.user, channel: 'refund', model_id: self.id, coin: self.amount.to_i
+      self.after_order.do_refund! if self.after_order.may_do_refund?
     end
   end
 
