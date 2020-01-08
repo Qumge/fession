@@ -15,7 +15,6 @@ module V1
       expose :h5_link
       expose :prizes, using: V1::Entities::Prize
       expose :sort_prizes, using: V1::Entities::Prize
-      expose :image, using: V1::Entities::Image
       with_options(format_with: :timestamp) do
         expose :created_at
         expose :updated_at
