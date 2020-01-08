@@ -23,6 +23,7 @@ module V1
       expose :failed_reason
       expose :coin
       expose :residue_coin
+      expose :game_coin, using: V1::Entities::Game, if: proc{|instance| instance.type == 'Task::GameTask'}
       expose :h5_link
       expose :h5_path
       expose :image, using: V1::Entities::Image

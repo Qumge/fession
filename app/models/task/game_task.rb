@@ -50,4 +50,8 @@ class Task::GameTask < Task
     "/pages/game/#{path}?id=#{self.game.id}"
   end
 
+  def game_coin
+    self.game.present? ? game.coin : ''
+  end
+
 end
