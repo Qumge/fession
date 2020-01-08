@@ -65,6 +65,33 @@ module V1
           present game, with: V1::Entities::Game
         end
 
+        desc '奖品管理', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+        params do
+          requires :type, type: String, desc: '游戏类型 Game::Wheel Game::Tiger Game::Scratch'
+        end
+        get 'prizes' do
+          game = @game_model.find_by company_id: nil
+          if game.present?
+            prize_logs = game.prize_logs
+            {number: prize_logs.size,
+             coin: prize_logs.sum{|prize_log| prize_log.prize.type == 'Prize::CoinPrize' ? prize_log.prize.coin : 0},
+             product_number: prize_logs.count{|prize_log| prize_log.prize.type == 'Prize::ProductPrize'}
+            }
+          else
+            {number: '-',
+            coin: '-',
+            product_number: '-'
+            }
+          end
+        end
+
         desc '平台游戏数据', {
             headers: {
                 "X-Auth-Token" => {
@@ -88,13 +115,23 @@ module V1
             date_to = params[:date_to].to_datetime
           end
           game = @game_model.find_by company_id: nil
-          {
+          if game.present?
+            {
               view_number: game.game_view_logs.where(created_at: date_from..date_to).size,
               play_number: game.game_logs.where(created_at: date_from..date_to).size,
               play_coin: game.game_logs.where(created_at: date_from..date_to).sum(:coin),
               prize_number: game.prize_logs.where(created_at: date_from..date_to).size,
               prize_coin: game.prize_logs.left_joins(:prize).where(created_at: date_from..date_to).sum('prizes.coin'),
           }
+          else
+            {
+              view_number: '-',
+              play_number: '-',
+              play_coin: '-',
+              prize_number: '-',
+              prize_coin: '-',
+          }
+          end
         end
       end
     end
