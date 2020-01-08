@@ -38,4 +38,14 @@ class Task::QuestionnaireTask < Task
     "/pages/task/questionnaire?id=#{self.id}"
   end
 
+  class << self
+    def search_conn params
+      s = super
+      if params[:name].present?
+        s = s.joins(:questionnaire).where('questionnaires.name like ?', "%#{params[:name]}%")
+      end
+      s
+    end
+  end
+
 end

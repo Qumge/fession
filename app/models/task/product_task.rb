@@ -38,4 +38,14 @@ class Task::ProductTask < Task
     "/pages/product/show?id=#{self.model_id}"
   end
 
+  class << self
+    def search_conn params
+      s = super
+      if params[:name].present?
+        s = s.joins(:product).where('products.name like ?', "%#{params[:name]}%")
+      end
+      s
+    end
+  end
+
 end

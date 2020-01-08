@@ -38,4 +38,14 @@ class Task::ArticleTask < Task
   def h5_path
     "/pages/task/article?id=#{self.id}"
   end
+
+  class << self
+    def search_conn params
+      s = super
+      if params[:name].present?
+        s = s.joins(:article).where('articles.subject like ?', "%#{params[:name]}%")
+      end
+      s
+    end
+  end
 end
