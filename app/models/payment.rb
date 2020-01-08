@@ -6,7 +6,7 @@
 #  amount          :integer
 #  apply_res       :text(65535)
 #  no              :string(255)
-#  refund_response :string(255)
+#  refund_response :text(65535)
 #  response_data   :text(65535)
 #  status          :string(255)
 #  created_at      :datetime         not null
@@ -142,8 +142,10 @@ class Payment < ApplicationRecord
     res = WxPay::Service.invoke_refund params
     if res[:raw].present? && res[:raw]['xml'].present?
       self.update refund_response: res[:raw]['xml']
-      self.do_refund! if self.may_do_refund?
-      self.order.after_order.do_refund! if self.order.after_order.may_do_refund?
+      if res[:raw]['xml']['result_code'] == 'SUCCESS'
+        self.do_refund! if self.may_do_refund?
+        self.order.after_order.do_refund! if self.order.after_order.may_do_refund?
+      end
     end
     res
   end
