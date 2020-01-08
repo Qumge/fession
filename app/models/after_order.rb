@@ -27,8 +27,8 @@ class AfterOrder < ApplicationRecord
     state :apply, :agree, :failed, :receive, :refund
 
     #同意
-    event :do_agree do
-      transitions :from => [:apply], :to => :agree, after: Proc.new{set_refund}
+    event :do_agree, after_commit: :set_refund do
+      transitions :from => [:apply], :to => :agree
     end
 
     #拒绝
@@ -37,8 +37,8 @@ class AfterOrder < ApplicationRecord
     end
 
     #收货
-    event :do_receive do
-      transitions :from => :agree, :to => :receive, after: Proc.new{set_refund}
+    event :do_receive, after_commit: :set_refund  do
+      transitions :from => :agree, :to => :receive
     end
 
     #退款
@@ -80,7 +80,7 @@ class AfterOrder < ApplicationRecord
   end
 
   def set_refund
-    if (self.type == 'AfterOrder::Money' && self.status == 'apply') || (self.type == 'AfterOrder::All' && self.status == 'send')
+    if (self.type == 'AfterOrder::Money' && self.status == 'agree') || (self.type == 'AfterOrder::All' && self.status == 'receive')
       refund_money
     end
   end
