@@ -27,7 +27,7 @@ class Payment < ApplicationRecord
   STATUS = {wait: '新数据', apply: '微信下单', pay: '支付成功', refund: '已退款'}
   aasm :status do
     state :wait, :initial => true
-    state :apply, :pay
+    state :apply, :pay, :refund
 
     #审核成功 直接上架
     event :do_apply do
