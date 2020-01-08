@@ -143,7 +143,7 @@ class Payment < ApplicationRecord
     if res[:raw].present? && res[:raw]['xml'].present?
       self.update refund_response: res[:raw]['xml']
       self.do_refund! if self.may_do_refund?
-      self.order.do_refund! if self.order.may_do_refund?
+      self.order.after_order.do_refund! if self.order.after_order.may_do_refund?
     end
     res
   end
