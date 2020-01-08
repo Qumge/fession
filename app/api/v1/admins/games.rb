@@ -92,6 +92,26 @@ module V1
           end
         end
 
+        desc '中奖记录', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :type, type: String, desc: '游戏类型 Game::Wheel Game::Tiger Game::Scratch'
+        end
+        get 'prize_logs' do
+          game = @game_model.find_by company_id: nil
+          if game.present?
+            present game.prize_logs, with: V1::Entities::PrizeLog
+          else
+            []
+          end
+        end
+
         desc '平台游戏数据', {
             headers: {
                 "X-Auth-Token" => {
