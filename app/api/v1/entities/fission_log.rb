@@ -5,7 +5,7 @@ module V1
       expose :id
       expose :token
       expose :share_url do |instance, options|
-        URI::encode "#{Settings.h5_url}/pages/task/show?id=#{instance.task_id}&token=#{instance.token}"
+        URI::encode "#{instance.task.h5_link}&token=#{instance.token}"
       end
       expose :parent, using: V1::Entities::FissionLog
       expose :user, using: V1::Entities::User
