@@ -101,7 +101,7 @@ class Cash < ApplicationRecord
 
   def cut_coin
     CoinLog.create channel: 'cash', coin: coin - 2*coin, user: user
-    self.update no
+    self.update no: "C#{DateTime.now.to_i}"
   end
 
   def bank
