@@ -8,6 +8,7 @@
 #  coin          :integer
 #  enc_bank_no   :string(255)
 #  enc_true_name :string(255)
+#  pay_status    :string(255)
 #  response_data :text(65535)
 #  status        :string(255)
 #  created_at    :datetime         not null
@@ -47,28 +48,28 @@ class Cash < ApplicationRecord
   end
 
   aasm :pay_status do
-    state :wait, :initial => true
-    state :failed, :success, :paying
+    state :pay_wait, :initial => true
+    state :pay_failed, :pay_success, :paying
 
     # # 申请审核
     # event :do_wait do
     #   transitions :from => :new, :to => :wait
     # end
 
-    # 审核成功
+    # 支付中
     event :do_paying do
-      transitions :from => [:wait, :failed], :to => :paying
+      transitions :from => [:pay_wait, :pay_failed], :to => :paying
     end
 
 
-    #审核失败
+    #
     event :do_pay_failed do
-      transitions :from => :paying, :to => :failed
+      transitions :from => :paying, :to => :pay_failed
     end
 
     #打款成功
     event :do_pay_success do
-      transitions :from => :paying, :to => :success
+      transitions :from => :paying, :to => :pay_success
     end
   end
 
