@@ -23,7 +23,7 @@ class Cash < ApplicationRecord
   after_create :cut_coin
 
   STATUS = { wait: '待审核', failed: '已拒绝', success: '已通过', done: '已到账'}
-  PAY_STATUS = {wait: '审核中', paying: '打款中', failed: '打款失败', success: '打款成功', }
+  PAY_STATUS = {pay_wait: '审核中', paying: '打款中', pay_failed: '打款失败', pay_success: '打款成功', }
   BANK = {"1002"=>"工商银行", "1005"=>"农业银行", "1003"=>"建设银行", "1026"=>"中国银行", "1020"=>"交通银行", "1001"=>"招商银行", "1066"=>"邮储银行", "1006"=>"民生银行", "1010"=>"平安银行", "1021"=>"中信银行", "1004"=>"浦发银行", "1009"=>"兴业银行", "1022"=>"光大银行", "1027"=>"广发银行", "1025"=>"华夏银行", "1056"=>"宁波银行", "4836"=>"北京银行", "1024"=>"上海银行", "1054"=>"南京银行"}
   aasm :status do
     state :wait, :initial => true

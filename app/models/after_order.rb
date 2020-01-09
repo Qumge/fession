@@ -24,7 +24,7 @@ class AfterOrder < ApplicationRecord
 
   aasm :status do
     state :apply, :initial => true
-    state :apply, :agree, :failed, :receive, :refund
+    state :agree, :failed, :receive, :refund
 
     #同意
     event :do_agree, after_commit: :set_refund do
