@@ -8,6 +8,7 @@
 #  coin          :integer
 #  enc_bank_no   :string(255)
 #  enc_true_name :string(255)
+#  no            :string(255)
 #  pay_at        :datetime
 #  pay_status    :string(255)
 #  response_data :text(65535)
@@ -61,7 +62,6 @@ class Cash < ApplicationRecord
     event :do_paying do
       transitions :from => [:pay_wait, :pay_failed], :to => :paying
     end
-
 
     #
     event :do_pay_failed do
