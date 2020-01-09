@@ -8,6 +8,7 @@
 #  coin          :integer
 #  enc_bank_no   :string(255)
 #  enc_true_name :string(255)
+#  response_data :text(65535)
 #  status        :string(255)
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
@@ -20,7 +21,8 @@ class Cash < ApplicationRecord
   has_many :audit_cash_audits, :class_name => 'Audit::CashAudit', foreign_key: :model_id
   after_create :cut_coin
 
-  STATUS = { wait: '待审核', failed: '已拒绝', success: '打款中', done: '已到账'}
+  STATUS = { wait: '待审核', failed: '已拒绝', success: '已通过', done: '已到账'}
+  PAY_STATUS = {wait: '审核中', paying: '打款中', failed: '打款失败', success: '打款成功', }
   BANK = {"1002"=>"工商银行", "1005"=>"农业银行", "1003"=>"建设银行", "1026"=>"中国银行", "1020"=>"交通银行", "1001"=>"招商银行", "1066"=>"邮储银行", "1006"=>"民生银行", "1010"=>"平安银行", "1021"=>"中信银行", "1004"=>"浦发银行", "1009"=>"兴业银行", "1022"=>"光大银行", "1027"=>"广发银行", "1025"=>"华夏银行", "1056"=>"宁波银行", "4836"=>"北京银行", "1024"=>"上海银行", "1054"=>"南京银行"}
   aasm :status do
     state :wait, :initial => true
@@ -32,8 +34,8 @@ class Cash < ApplicationRecord
     # end
 
     # 审核成功
-    event :do_success do
-      transitions :from => :wait, :to => :success, after: Proc.new {pay_bank}
+    event :do_success, after_commit: :pay_bank do
+      transitions :from => :wait, :to => :success
     end
 
 
@@ -42,14 +44,54 @@ class Cash < ApplicationRecord
       transitions :from => :wait, :to => :failed, after: Proc.new {add_coin}
     end
 
+  end
+
+  aasm :pay_status do
+    state :wait, :initial => true
+    state :failed, :success, :paying
+
+    # # 申请审核
+    # event :do_wait do
+    #   transitions :from => :new, :to => :wait
+    # end
+
+    # 审核成功
+    event :do_paying do
+      transitions :from => [:wait, :failed], :to => :paying
+    end
+
+
+    #审核失败
+    event :do_pay_failed do
+      transitions :from => :paying, :to => :failed
+    end
+
     #打款成功
-    event :do_done do
-      transitions :from => :success, :to => :done
+    event :do_pay_success do
+      transitions :from => :paying, :to => :success
     end
   end
 
   def pay_bank
     #TODO
+    self.do_paying! if self.may_do_paying?
+    params = {
+        enc_bank_no: self.enc_bank_no,
+        enc_true_name: self.enc_true_name,
+        bank_code: self.bank_code,
+        amount: self.amount,
+        desc: '金币提现',
+        partner_trade_no: self.no
+    }
+    r = WxPay::Service.pay_bank params
+    if r[:raw]
+      r.update response_data = r[:raw]['xml']
+      if r[:result_code] && raw[:result_code] == 'SUCCESS'
+        self.do_pay_success! if self.may_do_pay_success?
+      else
+        self.do_pay_failed! if self.may_do_pay_failed?
+      end
+    end
   end
 
   def add_coin
@@ -58,6 +100,7 @@ class Cash < ApplicationRecord
 
   def cut_coin
     CoinLog.create channel: 'cash', coin: coin - 2*coin, user: user
+    self.update no
   end
 
   def bank
@@ -66,6 +109,10 @@ class Cash < ApplicationRecord
 
   def get_status
     STATUS[self.status.to_sym] if self.status.present?
+  end
+
+  def get_pay_status
+    STATUS[self.pay_status.to_sym] if self.pay_status.present?
   end
 
   def fetch_params params

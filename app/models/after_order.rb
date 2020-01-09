@@ -18,7 +18,7 @@ class AfterOrder < ApplicationRecord
   belongs_to :order
   belongs_to :user
 
-  STATUS = { apply: '申请中', agree: '已同意', failed: '已拒绝', receive: '已退货待退款', refund: '已退款'}
+  STATUS = { apply: '售后申请中', agree: '已同意', failed: '已拒绝', receive: '已退货待退款', refund: '已退款'}
   EXPRESS = {EMS: 'EMS', STO: '申通', YTO: '圆通', ZTO: '中通', SFEXPRESS: '顺丰', YUNDA: '韵达', TTKDEX: '天天快递', DEPPON: '德邦', HTKY: '汇通快递'}
 
 
