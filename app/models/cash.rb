@@ -8,6 +8,7 @@
 #  coin          :integer
 #  enc_bank_no   :string(255)
 #  enc_true_name :string(255)
+#  pay_at        :datetime
 #  pay_status    :string(255)
 #  response_data :text(65535)
 #  status        :string(255)
@@ -89,6 +90,7 @@ class Cash < ApplicationRecord
       r.update response_data = r[:raw]['xml']
       if r[:result_code] && raw[:result_code] == 'SUCCESS'
         self.do_pay_success! if self.may_do_pay_success?
+        self.update pay_at: DateTime.now
       else
         self.do_pay_failed! if self.may_do_pay_failed?
       end

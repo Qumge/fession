@@ -18,6 +18,7 @@ module V1
       #expose :role, using: V1::Entities::Role
       with_options(format_with: :timestamp) do
         expose :created_at, documentation: { type: 'Timestamp' }
+        expose :pay_at, documentation: { type: 'Timestamp' }
         expose :updated_at, documentation: { type: 'Timestamp' }
       end
     end
