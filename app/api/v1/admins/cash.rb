@@ -26,10 +26,10 @@ module V1
         get '/' do
           cashes = ::Cash.order('created_at desc')
           if params[:status].present?
-            cashes.where(status: params[:status])
+            cashes = cashes.where(status: params[:status])
           end
           if params[:pay_status].present?
-            cashes.where(pay_status: params[:pay_status])
+            cashes = cashes.where(pay_status: params[:pay_status])
           end
           present paginate(cashes), with: V1::Entities::Cash
         end

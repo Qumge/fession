@@ -55,7 +55,7 @@ class Task < ApplicationRecord
 
     # 审核成功
     event :do_success do
-      transitions :from => :wait, :to => :success, after: Proc.new {set_residue}
+      transitions :from => [:wait, :failed], :to => :success, after: Proc.new {set_residue}
     end
 
     # 已结束
