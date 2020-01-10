@@ -115,7 +115,7 @@ class Admin < ApplicationRecord
           region_id: 'default',
           code: Settings.aliyun_sms_password_template,
           phone: login,
-          sign: Settings.aliyun_sign,
+          sign: Settings.company_sign,
           params: {code: code}.to_json
       }
       SmsRecord.create params
