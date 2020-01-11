@@ -41,4 +41,8 @@ class ShareLog < ApplicationRecord
     self.fission_log&.task&.company&.name
   end
 
+  def from_user_name
+    self.fission_log.parent&.user&.nick_name
+  end
+
 end

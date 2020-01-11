@@ -9,6 +9,7 @@ module V1
       expose :user_id
       expose :user_name
       expose :company_name
+      expose :from_user_name
       with_options(format_with: :timestamp) do
         expose :created_at
         expose :updated_at

@@ -114,6 +114,7 @@ module V1
 
         route_param :id do
           before do
+            p 11111
             if @company.present?
               @product = Product.find_by id: params[:id], company: @company
             else
