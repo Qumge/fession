@@ -32,5 +32,6 @@ class Operator < Admin
   belongs_to :role
   validates_presence_of :role_id, if: proc{|operator| operator.role_type == 'normal'}
   validates_presence_of :role_type
+  validates_uniqueness_of :login
   ROLE_TYPE = {'admin': '超管', 'normal': '运营'}
 end

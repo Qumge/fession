@@ -29,6 +29,7 @@
 class Customer < Admin
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  validates_uniqueness_of :login
   ROLE_TYPE = {'admin_customer': '店铺管理员', 'normal_customer': '运营'}
   #validates_presence_of :company_id
 end

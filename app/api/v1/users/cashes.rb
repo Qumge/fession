@@ -26,7 +26,7 @@ module V1
           cash = @current_user.cashes.new
           cash = cash.fetch_params params
           if cash.errors.present?
-            {error: '30001', message: cash.errors.messages}
+            {error: '30001', message: cash.errors.messages&.values&.first&.first}
           else
             present cash, with: V1::Entities::Cash
           end

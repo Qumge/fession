@@ -5,8 +5,12 @@
 #  id              :bigint           not null, primary key
 #  active_amount   :bigint           default(0)
 #  active_at       :datetime
+#  bank_code       :string(255)
+#  cashes          :integer          default(0)
 #  coin            :bigint           default(0)
 #  deleted_at      :datetime
+#  enc_bank_no     :string(255)
+#  enc_true_name   :string(255)
 #  invalid_amount  :bigint           default(0)
 #  locked_at       :datetime
 #  name            :string(255)
@@ -33,6 +37,7 @@ class Company < ApplicationRecord
   has_many :addresses
   has_one :image, -> {where(model_type: 'Company')}, foreign_key: :model_id
   has_many :company_payments
+  has_many :company_cashes
   acts_as_paranoid
 
   before_create :set_no
@@ -73,6 +78,14 @@ class Company < ApplicationRecord
 
   def receive_address
     self.addresses.where(tag: ['receive', 'all']).first
+  end
+
+  def can_cash? amount
+    self.active_amount >= 100 * amount && self.enc_bank_no.present? && self.enc_true_name.present? && self.bank_code.present?
+  end
+
+  def do_cash amount
+    self.company_cashes.create enc_true_name: self.enc_true_name, bank_code: self.bank_code, enc_bank_no: self.enc_bank_no, amount: 100*amount, no: "C#{DateTime.now.to_i}"
   end
 
   def senf_address

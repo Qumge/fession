@@ -36,6 +36,26 @@ module V1
           end
           present paginate(logs), with: V1::Entities::ShareLog
         end
+
+        desc '任务分享详情日志', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token 运营平台账号",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :task_id, type: Integer, desc: '任务id'
+        end
+        get 'task' do
+          task = Task.find_by id: params[:task_id]
+          if task.present?
+            present paginate(task.fission_logs.where(ancestry: nil)), with: V1::Entities::FissionLogTree
+          else
+
+          end
+        end
       end
     end
   end

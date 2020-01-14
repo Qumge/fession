@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_09_073041) do
+ActiveRecord::Schema.define(version: 2020_01_14_181203) do
 
   create_table "addresses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -157,7 +157,24 @@ ActiveRecord::Schema.define(version: 2020_01_09_073041) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
+    t.integer "cashes", default: 0
+    t.string "enc_bank_no"
+    t.string "enc_true_name"
+    t.string "bank_code"
     t.index ["deleted_at"], name: "index_companies_on_deleted_at"
+  end
+
+  create_table "company_cashes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "company_id"
+    t.string "status"
+    t.text "response_data"
+    t.string "enc_bank_no"
+    t.string "enc_true_name"
+    t.string "bank_code"
+    t.string "no"
+    t.integer "amount"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "company_follows", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -290,6 +307,9 @@ ActiveRecord::Schema.define(version: 2020_01_09_073041) do
     t.string "platform"
     t.string "express_no"
     t.string "express_type"
+    t.boolean "cashed", default: false
+    t.datetime "send_at"
+    t.datetime "receive_at"
   end
 
   create_table "payments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

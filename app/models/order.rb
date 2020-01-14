@@ -4,12 +4,15 @@
 #
 #  id           :bigint           not null, primary key
 #  amount       :integer
+#  cashed       :boolean          default(FALSE)
 #  desc         :text(65535)
 #  express_no   :string(255)
 #  express_type :string(255)
 #  no           :string(255)
 #  payment_at   :datetime
 #  platform     :string(255)
+#  receive_at   :datetime
+#  send_at      :datetime
 #  status       :string(255)
 #  type         :string(255)
 #  created_at   :datetime         not null
@@ -50,13 +53,18 @@ class Order < ApplicationRecord
 
     #发货
     event :do_send do
-      transitions :from => :pay, :to => :send
+      transitions :from => :pay, :to => :send, after: Proc.new{set_send_at}
     end
 
     #收货
     event :do_receive do
-      transitions :from => :send, :to => :receive
+      transitions :from => :send, :to => :receive, after: Proc.new{set_receive_at}
     end
+
+    # #收货
+    # event :do_done do
+    #   transitions :from => :send, :to => :receive
+    # end
 
     # #申请售后
     # event :do_after_sale do
@@ -77,6 +85,11 @@ class Order < ApplicationRecord
 
   # 下单
   class << self
+    #发货7天后 设置为收货状态
+    def set_receive
+      Order.where(status: 'send').where('send_at < ?', DateTime.now - 7.days).update_all receive_at: DateTime.now, status: 'receive'
+    end
+
     def search_conn params
       orders = self.joins(order_products: :product).order('created_at  desc')
       if params[:company_id].present?
@@ -196,6 +209,7 @@ class Order < ApplicationRecord
 
   def after_pay
     self.update payment_at: DateTime.now
+    self.company.update total_amount: self.company.total_amount.to_i + self.amount, invalid_amount: self.company.invalid_amount.to_i + self.amount if self.company.present? && self.prize_log.blank?
     set_sale
     set_stock
   end
@@ -206,6 +220,17 @@ class Order < ApplicationRecord
     end
   end
 
+  def set_send_at
+    self.update send_at: DateTime.now
+  end
+
+  def set_receive_at
+    self.update receive_at: DateTime.now
+  end
+
+  def can_after_order?
+    !self.cashed && (self.pay? || self.send? || (self.receive? && self.receive_at < (DateTime.now - 7.days)))
+  end
 
   def view_amount
     if self.type == 'Order::MoneyOrder'

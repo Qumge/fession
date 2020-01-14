@@ -76,23 +76,26 @@ class Cash < ApplicationRecord
 
   def pay_bank
     #TODO
-    self.do_paying! if self.may_do_paying?
-    params = {
+    
+    if self.may_do_paying?
+      self.do_paying! 
+      params = {
         enc_bank_no: self.enc_bank_no,
         enc_true_name: self.enc_true_name,
         bank_code: self.bank_code,
         amount: self.amount,
         desc: '金币提现',
         partner_trade_no: self.no
-    }
-    r = WxPay::Service.pay_bank params
-    if r[:raw]
-      self.update response_data: r[:raw]['xml']
-      if r[:result_code] && raw[:result_code] == 'SUCCESS'
-        self.do_pay_success! if self.may_do_pay_success?
-        self.update pay_at: DateTime.now
-      else
-        self.do_pay_failed! if self.may_do_pay_failed?
+      }
+      r = WxPay::Service.pay_bank params
+      if r[:raw]
+        self.update response_data: r[:raw]['xml']
+        if r[:result_code] && raw[:result_code] == 'SUCCESS'
+          self.do_pay_success! if self.may_do_pay_success?
+          self.update pay_at: DateTime.now
+        else
+          self.do_pay_failed! if self.may_do_pay_failed?
+        end
       end
     end
   end

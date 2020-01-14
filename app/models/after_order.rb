@@ -43,7 +43,7 @@ class AfterOrder < ApplicationRecord
 
     #退款
     event :do_refund do
-      transitions :from => [:receive, :agree], :to => :refund
+      transitions :from => [:receive, :agree], :to => :refund, after: Proc.new{set_account}
     end
   end
 
@@ -103,6 +103,13 @@ class AfterOrder < ApplicationRecord
       JSON.parse r.body
     rescue => e
       {error: '20001', message: '查询不到信息，请稍后再试'}
+    end
+  end
+
+  def set_account
+    company = self.order.company
+    if company.present?
+      company.update return_amount: company.return_amount.to_i + self.order.amount, invalid_amount: company.return_amount.to_i - self.order.amount
     end
   end
 end

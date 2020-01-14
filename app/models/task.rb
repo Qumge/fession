@@ -75,7 +75,7 @@ class Task < ApplicationRecord
   end
   class << self
     def search_conn params
-      tasks = self.all
+      tasks = self.joins(:company).where('companies.id is not null')
       if params[:sorts].present?
         sorts = JSON.parse params[:sorts]
         s = sorts.collect{|sort| "#{sort['column']} #{sort['sort']}"}.join ','
@@ -97,7 +97,7 @@ class Task < ApplicationRecord
     end
 
     def search_game_conn params
-      tasks = self.all
+      tasks = self.joins(:company).where('companies.id is not null')
       if params[:sorts].present?
         sorts = JSON.parse params[:sorts]
         s = sorts.collect{|sort| "#{sort['column']} #{sort['sort']}"}.join ','

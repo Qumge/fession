@@ -15,6 +15,21 @@ module V1
           0
         end
       end
+      expose :total_amount do |instance, options|
+        instance.total_amount.to_f / 100
+      end
+      expose :active_amount do |instance, options|
+        instance.active_amount.to_f / 100
+      end
+      expose :withdraw_amount do |instance, options|
+        instance.withdraw_amount.to_f / 100
+      end
+      expose :invalid_amount do |instance, options|
+        instance.invalid_amount.to_f / 100
+      end
+      expose :return_amount do |instance, options|
+        instance.return_amount.to_f / 100
+      end
       expose :image, using: V1::Entities::Image
 
       # product_category 是在rails的model中定义的关联，在这里可以直接用

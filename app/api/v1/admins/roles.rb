@@ -70,7 +70,7 @@ module V1
           if role.save
             present role, with: V1::Entities::Role
           else
-            {error: '10002', message: role.errors.messages}
+            {error: '10002', message: role.errors.messages&.values&.first&.first}
           end
         end
 
@@ -103,7 +103,7 @@ module V1
             if @role.save
               present @role, with: V1::Entities::Role
             else
-              {error: '10002', message: role.errors.messages}
+              {error: '10002', message: role.errors.messages&.values&.first&.first}
             end
           end
 

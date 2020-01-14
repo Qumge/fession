@@ -42,7 +42,7 @@ class SmsRecord < ApplicationRecord
       )
       self.update message: res['Message'], request_id: res['RequestId'], biz_id: res['BizId'], status: res['Code']
     rescue => e
-      p e.messages
+      p e
     end
 
   end

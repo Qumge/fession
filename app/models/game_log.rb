@@ -29,7 +29,7 @@ class GameLog < ApplicationRecord
       a += prize.probability * 10000
       if s <= a
         p 333333
-        PrizeLog.create user: self.user, game: self.game, prize: prize, game_log: self if prize.number.to_i > 0
+        PrizeLog.create user: self.user, game: self.game, prize: prize, game_log: self if prize.number.to_i > 0 || prize.type == 'Prize::CoinPrize'
         return
       end
     end

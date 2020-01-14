@@ -104,7 +104,7 @@ class Product < ApplicationRecord
         products = products.where(status: params[:status])
       end
       if params[:company_id].present?
-        products = products.where(company_id: params[:company_id])
+        products = products.joins(:company).where('companies.id = ?', params[:company_id])
       end
       products
     end

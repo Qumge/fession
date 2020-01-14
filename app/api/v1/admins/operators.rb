@@ -43,6 +43,7 @@ module V1
           requires 'name', type: String, desc: '姓名'
           requires 'login', type: String, desc: '登录账号'
           requires 'role_id', type: Integer, desc: '角色'
+          requires 'password', type: String, desc: '密码'
         end
         post '/' do
           operator = Operator.new role_type: 'normal'
@@ -50,7 +51,7 @@ module V1
           if operator.save
             present operator, with: V1::Entities::Admin
           else
-            {error: '20001', message: operator.errors.messages}
+            {error: '20001', message: operator.errors.messages&.values&.first&.first}
           end
         end
 
@@ -73,13 +74,14 @@ module V1
             optional 'login', type: String, desc: '登录账号'
             optional 'role_id', type: Integer, desc: '角色'
             optional :status, type: String, desc: '状态  locked active'
+            optional :password, type: String, desc: '密码'
           end
           patch '/' do
             @operator = @operator.fetch_params params
             if @operator.save
               present @operator, with: V1::Entities::Admin
             else
-              {error: '20001', message: @operator.errors.messages}
+              {error: '20001', message: @operator.errors.messages&.values&.first&.first}
             end
           end
 

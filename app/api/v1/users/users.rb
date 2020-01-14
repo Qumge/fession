@@ -145,6 +145,49 @@ module V1
           present paginate(@current_user.fission_logs), with: V1::Entities::FissionLog
         end
 
+        desc '我的任务详情', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :task_id, type: Integer, desc: '任务id'
+          # optional :page,     type: Integer, default: 1, desc: '页码'
+          # optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+        end
+        get 'task_show' do
+          fission_log = @current_user.fission_logs.where(task_id: params[:task_id]).first
+          present fission_log, with: V1::Entities::FissionLog
+        end
+
+        desc '任务金币获得详情', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :task_id, type: Integer, desc: '任务id'
+          optional :page,     type: Integer, default: 1, desc: '页码'
+          optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+        end
+        get 'task_coin' do
+          fission_log = @current_user.fission_logs.where(task_id: params[:task_id]).first
+          if fission_log.present?
+            p fission_log, 11
+            coin_logs = CoinLog.where(channel: 'fission', model_id: fission_log.id).order('created_at desc')
+            present paginate(coin_logs), with: V1::Entities::CoinLog
+          else
+            {errors: '20001', message: '找不到数据'}
+          end
+          
+        end
+
 
         desc '关注我的人', {
             headers: {

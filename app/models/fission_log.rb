@@ -47,4 +47,8 @@ class FissionLog < ApplicationRecord
     self.task.update number: self.task.number + 1
   end
 
+  def sort_share_logs
+    self.share_logs.order('created_at desc')
+  end
+
 end

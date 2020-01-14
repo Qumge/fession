@@ -45,6 +45,28 @@ module V1
           end
         end
 
+        desc '忘记密码  通过手机号码 发送密码'
+        params do
+          requires :login, type: String, desc: '登录账号手机号'
+          requires :type, type:String, desc: "类型 {Customer: '商户', Operator: '运营账号'}" 
+        end
+        post 'forget_password'  do
+          case params[:type]
+          when 'Customer'
+            model = Customer
+          when 'Operator'
+            model = Operator
+          else
+            return {error: '30002', message: '类型错误'}
+          end
+          admin = model.find_by login: params[:login]
+          if admin.present?
+            admin.send_password
+            {error: '', message: '密码已经发送到您的手机号'}
+          else
+            {error: '30001', message: '找不到账号'}
+          end
+        end
       end
     end
   end

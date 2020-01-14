@@ -33,10 +33,9 @@ class Admin < ApplicationRecord
          :recoverable, :rememberable#, :validatable#, :confirmable
   #before_save :ensure_authentication_token
   validates_presence_of :login
-  validates_uniqueness_of :login
   validates_format_of :login, with: /\A1[3|4|5|7|8][0-9]{9}\z/, if: proc{|admin| admin.login.present?}
   before_save :ensure_authentication_token
-  after_create :set_password
+  #after_create :set_password
 
   acts_as_paranoid
 
@@ -81,6 +80,7 @@ class Admin < ApplicationRecord
     self.role = Role.find_by id:(params[:role_id]) if params[:role_id].present?
     self.name = params[:name] if params[:name].present?
     self.login = params[:login] if params[:login].present?
+    self.password = params[:password] if params[:password].present?
     self.status =  params[:status] if params[:status].present? && ['locked', 'active'].include?(params[:status])
     self
   end
@@ -107,8 +107,7 @@ class Admin < ApplicationRecord
     false
   end
 
-  def set_password
-    unless self.role_type == 'super_admin'
+  def send_password
       code = rand(100000..999999)
       self.update password: code
       params = {
@@ -119,7 +118,6 @@ class Admin < ApplicationRecord
           params: {code: code}.to_json
       }
       SmsRecord.create params
-    end
   end
 
   private

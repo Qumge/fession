@@ -42,15 +42,16 @@ module V1
         params do
           requires 'name', type: String, desc: '商户名'
           requires 'login', type: String, desc: '商户账号'
+          requires 'password', type: String, desc: '密码'
         end
         post '/' do
           company = Company.new name: params[:name]
-          customer = Customer.new login: params[:login], company: company, role_type: 'admin_customer'
+          customer = Customer.new login: params[:login], company: company, role_type: 'admin_customer', password: params[:password]
           if customer.valid? && company.valid?
             customer.save
             present company, with: V1::Entities::Company
           else
-            {error: '10001', message: customer.errors.messages.merge(company.errors.messages)}
+            {error: '10001', message: customer.errors.messages.merge(company.errors.messages)&.values&.first&.first}
           end
         end
 
@@ -117,18 +118,20 @@ module V1
             optional 'name', type: String, desc: '商户名'
             optional 'login', type: String, desc: '商户账号'
             optional 'status', type: String, desc: '状态 active locked'
+            optional :password, type: String, desc: '密码'
           end
           patch '/' do
             @company.name = params[:name] if params[:name].present?
             customer = @company.customer
             customer.login = params[:login] if params[:login].present?
+            customer.password = params[:password] if params[:password].present?
             @company.status = params[:status] if params[:status].present? && ['active', 'locked'].include?(params[:status])
             if customer.valid? && @company.valid?
               customer.save
               @company.save
               present @company, with: V1::Entities::Company
             else
-              {error: '10001', message: customer.errors.messages.merge(@company.errors.messages)}
+              {error: '10001', message: customer.errors.messages.merge(@company.errors.messages)&.values&.first&.first}
             end
           end
 

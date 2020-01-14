@@ -5,8 +5,12 @@
 #  id              :bigint           not null, primary key
 #  active_amount   :bigint           default(0)
 #  active_at       :datetime
+#  bank_code       :string(255)
+#  cashes          :integer          default(0)
 #  coin            :bigint           default(0)
 #  deleted_at      :datetime
+#  enc_bank_no     :string(255)
+#  enc_true_name   :string(255)
 #  invalid_amount  :bigint           default(0)
 #  locked_at       :datetime
 #  name            :string(255)

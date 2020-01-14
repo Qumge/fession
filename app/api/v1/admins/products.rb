@@ -65,7 +65,7 @@ module V1
           if product.valid?
             present product.reload, with: V1::Entities::Product
           else
-            {error: '10002', message: product.errors.messages}
+            {error: '10002', message: product.errors.messages&.values&.first&.first}
           end
         end
 
@@ -149,7 +149,7 @@ module V1
             if product.valid?
               present product, with: V1::Entities::Product
             else
-              {error: '10002', message: product.errors.messages}
+              {error: '10002', message: product.errors.messages&.values&.first&.first}
             end
           end
 

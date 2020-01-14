@@ -48,7 +48,7 @@ module V1
           if address.save
             present address, with: V1::Entities::Address
           else
-            {error: '20001', message: address.errors.messages}
+            {error: '20001', message: address.errors.messages&.values&.first&.first}
           end
         end
 
@@ -91,7 +91,7 @@ module V1
             if @address.update name: params[:name], phone: params[:phone], content: params[:content]
               present @address, with: V1::Entities::Address
             else
-              {error: '20001', message: @address.errors.messages}
+              {error: '20001', message: @address.errors.messages&.values&.first&.first}
             end
           end
 
@@ -107,7 +107,7 @@ module V1
             if @address.destroy
               {error: '', message: '删除成功'}
             else
-              {error: '20001', message: @address.errors.messages}
+              {error: '20001', message: @address.errors.messages&.values&.first&.first}
             end
           end
 

@@ -89,3 +89,4 @@ gem 'wx_pay'
 gem 'ali_express'
 gem 'ali_express'
 gem 'exception_notification'
+gem 'whenever', require: false

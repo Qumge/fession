@@ -45,7 +45,7 @@ module V1
           if game.valid?
             present game, with: V1::Entities::Game
           else
-            {error: '10001', messages: game.errors.messages}
+            {error: '10001', messages: game.errors.messages&.values&.first&.first}
           end
         end
 
