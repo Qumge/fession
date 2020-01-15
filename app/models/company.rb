@@ -46,6 +46,7 @@ class Company < ApplicationRecord
   has_many :money_products
 
   STATUS = {active: '正常', locked: '冻结'}
+  BANK = {"1002"=>"工商银行", "1005"=>"农业银行", "1003"=>"建设银行", "1026"=>"中国银行", "1020"=>"交通银行", "1001"=>"招商银行", "1066"=>"邮储银行", "1006"=>"民生银行", "1010"=>"平安银行", "1021"=>"中信银行", "1004"=>"浦发银行", "1009"=>"兴业银行", "1022"=>"光大银行", "1027"=>"广发银行", "1025"=>"华夏银行", "1056"=>"宁波银行", "4836"=>"北京银行", "1024"=>"上海银行", "1054"=>"南京银行"}
 
   include AASM
   aasm :status do
@@ -98,6 +99,10 @@ class Company < ApplicationRecord
 
   def set_no
     self.no = "#{Time.now.to_i}#{rand(1000..9999).to_s}"
+  end
+
+  def bank
+    BANK[self.bank_code] if self.bank_code.present?
   end
 
 

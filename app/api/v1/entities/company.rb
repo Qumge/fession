@@ -7,6 +7,7 @@ module V1
       expose :no
       expose :status
       expose :coin
+      expose :enc_true_name
       expose :bank_code
       expose :bank
       expose :enc_bank_no
