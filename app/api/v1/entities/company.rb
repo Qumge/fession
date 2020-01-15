@@ -7,6 +7,9 @@ module V1
       expose :no
       expose :status
       expose :coin
+      expose :bank_code
+      expose :bank
+      expose :enc_bank_no
       expose :follow do |instance, options|
         user = options[:user]
         if user.present? && user.follow_companies.where(id: instance.id).present?
