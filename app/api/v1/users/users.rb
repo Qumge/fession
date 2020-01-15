@@ -27,6 +27,28 @@ module V1
           end
         end
 
+        desc '密码登录 登录成功将返回的authentication_token  之后请求时将 authentication_token写入header的 X-Auth-Token 里面'
+        params do
+          requires :login, type: String, desc: '登录账号'
+          requires :password, type: String, desc: '密码'
+        end
+        post "/password_login" do
+          @user = User.find_by_login params[:login]
+          if @user.present?
+            if @user && @user[:locked]
+              {error: '20009', message: '账号被锁定'}
+            else
+              if @user.valid_password? params[:password]
+                {login: @user.login, id: @user.id, authentication_token: @user.authentication_token}
+              else
+                {error: '20001', message: '账号或密码错误'}
+              end
+            end
+          else
+            {error: '20001', message: '账号或密码错误'}
+          end
+        end
+
 
         desc '公众号登录'
         params do
@@ -87,11 +109,14 @@ module V1
           optional :login, type: String, desc: '手机号  登录账号'
           optional :desc, type: String, desc: '个性签名'
           optional :avatar_url, type: String, desc: '头像'
+          optional :password, type: String, desc: '密码'
         end
         post 'profile' do
           @current_user.fetch_params params
           if @current_user.save
             present @current_user, with: V1::Entities::User
+          else
+            {error: '10002', message: current_user.errors.messages&.values&.first&.first}
           end
         end
 

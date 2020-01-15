@@ -174,6 +174,7 @@ class User < ApplicationRecord
     self.desc = params[:desc] if params[:desc].present?
     self.avatar_url = params[:avatar_url] if params[:avatar_url].present?
     self.login = params[:login] if params[:login].present?
+    self.password = params[:password] if params[:password].present?
   end
 
   def fetch_card params
