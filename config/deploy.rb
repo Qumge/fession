@@ -16,7 +16,7 @@ set :branch, 'master'
 #配置rvm位置
 set :rvm_path, '/usr/local/rvm/bin/rvm'
 set :term_mode, :system
-#set :whenever_name, "longsheng_#{rails_env}"
+set :whenever_name, "liebian_#{rails_env}"
 
 # This task is the environment that is loaded for most commands, such as
 # `mina deploy` or `mina rake`.
@@ -94,7 +94,7 @@ task :deploy => :environment do
 
     to :launch do
       #invoke :'whenever:update'
-      # invoke :'whenever:update'
+      invoke :'whenever:update'
       queue "mkdir -p #{deploy_to}/current/tmp/"
       # queue "chown -R www-data #{deploy_to}"
       #queue "touch #{deploy_to}/current/tmp/restart.txt"

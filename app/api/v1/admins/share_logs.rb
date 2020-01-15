@@ -49,12 +49,8 @@ module V1
           requires :task_id, type: Integer, desc: '任务id'
         end
         get 'task' do
-          task = Task.find_by id: params[:task_id]
-          if task.present?
-            present paginate(task.fission_logs.where(ancestry: nil)), with: V1::Entities::FissionLogTree
-          else
-
-          end
+          share_logs = ShareLog.joins(:fission_log).where('fission_logs.ancestry is null and fission_logs.task_id = ?', params[:task_id])
+          present paginate(share_logs), with: V1::Entities::ShareLogTree
         end
       end
     end

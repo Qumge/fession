@@ -16,6 +16,9 @@ class ShareLog < ApplicationRecord
 
   after_create :fission_coin
 
+  #fission_log: 分享来源
+  #user: 分享目标
+
   def fission_coin
     task = self.fission_log.task
     task.update share_num: task.share_num + 1 if task.present?
@@ -42,7 +45,15 @@ class ShareLog < ApplicationRecord
   end
 
   def from_user_name
-    self.fission_log.parent&.user&.nick_name
+    self.fission_log&.user&.nick_name
+  end
+
+  def share_logs
+    my_fission_log = self.fission_log.descendants.where(user: self.user, task: self.fission_log.task).first
+    p my_fission_log, 111
+    if my_fission_log.present?
+      my_fission_log.share_logs
+    end 
   end
 
 end

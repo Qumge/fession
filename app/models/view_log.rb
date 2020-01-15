@@ -41,9 +41,17 @@ class ViewLog < ApplicationRecord
     self.task.update view_num: self.task.view_num + 1
     if self.fission_log
       p 2222
+      p user, self.fission_log.user
+      # 查看人是自己
+      return if self.user == self.fission_log.user
+      # 查看人是自己的上级
+      return if self.fission_log.ancestors.where('fission_logs.user_id = ?', self.user.id).present?
       #检查是否为第一次查看
       first_view_log = ViewLog.find_by user: self.user, fission_log: self.fission_log, task: self.task
-      if first_view_log == self
+      # 检查查看人不是你的上级
+      fission_log.ancestors
+      p first_view_log, 111
+      if first_view_log == self 
         p 333
         share_log = ShareLog.create fission_log: self.fission_log, user: user
       end
