@@ -184,7 +184,7 @@ module V1
             @company.save
             present @company, with: V1::Entities::Company
           else
-            {error: '10001', message: @current_admin.errors.messages&.values&.first&.first.merge(@company.errors.messages&.values&.first&.first)}
+            {error: '10001', message: @current_admin.view_errors.merge(@company.view_errors)}
           end
         end
 

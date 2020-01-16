@@ -51,7 +51,7 @@ module V1
           if operator.save
             present operator, with: V1::Entities::Admin
           else
-            {error: '20001', message: operator.errors.messages&.values&.first&.first}
+            {error: '20001', message: operator.view_errors}
           end
         end
 
@@ -81,7 +81,7 @@ module V1
             if @operator.save
               present @operator, with: V1::Entities::Admin
             else
-              {error: '20001', message: @operator.errors.messages&.values&.first&.first}
+              {error: '20001', message: @operator.view_errors}
             end
           end
 

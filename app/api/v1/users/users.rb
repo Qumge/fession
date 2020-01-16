@@ -116,7 +116,7 @@ module V1
           if @current_user.save
             present @current_user, with: V1::Entities::User
           else
-            {error: '10002', message: current_user.errors.messages&.values&.first&.first}
+            {error: '10002', message: current_user.view_errors}
           end
         end
 

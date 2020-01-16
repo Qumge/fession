@@ -79,7 +79,7 @@ module V1
             task = Task::GameTask.create coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], game: game, company: @company, image: task_image
             present task, with: V1::Entities::Task
           else
-            {error: '10001', messages: game.errors.messages&.values&.first&.first}
+            {error: '10001', messages: game.view_errors}
           end
         end
 
@@ -127,7 +127,7 @@ module V1
               @task.do_wait! if @task.may_do_wait?
               present @task, with: V1::Entities::Task
             else
-              {error: '10001', messages: game.errors.messages&.values&.first&.first}
+              {error: '10001', messages: game.view_errors}
             end
           end
 

@@ -45,7 +45,7 @@ module V1
           if post.valid?
             present post, with: V1::Entities::Post
           else
-            {error: '20001', message: post.errors.messages&.values&.first&.first}
+            {error: '20001', message: post.view_errors}
           end
         end
 
@@ -73,7 +73,7 @@ module V1
             if @post.valid?
               present @post, with: V1::Entities::Post
             else
-              {error: '20001', message: @post.errors.messages&.values&.first&.first}
+              {error: '20001', message: @post.view_errors}
             end
           end
 

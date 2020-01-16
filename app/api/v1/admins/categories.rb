@@ -48,7 +48,7 @@ module V1
           if category.save
             present category, with: V1::Entities::Category
           else
-            {error: '20001', message: category.errors.messages&.values&.first&.first}
+            {error: '20001', message: category.view_errors}
           end
         end
 
@@ -86,7 +86,7 @@ module V1
             if @category.save
               present @category, with: V1::Entities::Category
             else
-              {error: '20001', message: @category.errors.messages&.values&.first&.first}
+              {error: '20001', message: @category.view_errors}
             end
           end
 

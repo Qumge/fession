@@ -62,7 +62,7 @@ module V1
           if banner.valid?
             present banner, with: V1::Entities::Banner
           else
-            {error: '20001', message: banner.errors.messages&.values&.first&.first}
+            {error: '20001', message: banner.view_errors}
           end
         end
 
@@ -95,7 +95,7 @@ module V1
             if banner.valid?
               present banner, with: V1::Entities::Banner
             else
-              {error: '20001', message: banner.errors.messages&.values&.first&.first}
+              {error: '20001', message: banner.view_errors}
             end
           end
 
