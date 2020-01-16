@@ -15,7 +15,7 @@ module V1
           #logger.debug "authenticate fail with HTTP_X_USER_ACCESS_TOKEN #{env['HTTP_X_USER_ACCESS_TOKEN']} "
           if @current_admin.type == 'Customer'
             @company = @current_admin.company
-            error!("401 Unauthorized", 401) if @company.status == 'locked'
+            error!("401 Unauthorized", 401) if @company.blank? || @company.status == 'locked'
           end
           #验证商户权限
         else
