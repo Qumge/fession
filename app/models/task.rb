@@ -42,6 +42,7 @@ class Task < ApplicationRecord
   belongs_to :questionnaire, foreign_key: :model_id
   belongs_to :game, foreign_key: :model_id
 
+
   STATUS = { wait: '待审核', failed: '已拒绝', success: '审核成功', active: '进行中', overtime: '已结束'}
 
   aasm :status do
@@ -94,6 +95,22 @@ class Task < ApplicationRecord
         end
       end
       tasks
+    end
+
+
+    def user_search_conn params
+      tasks = Task.valid_tasks.order('valid_from desc')
+      if params[:company_id].present?
+        tasks = tasks.where(company_id: params[:company_id])
+      end
+      if params[:name].present?
+        tasks = tasks.where('name like ?', "%#{params[:name]}%")
+      end
+      tasks
+    end
+
+    def valid_tasks
+      self.where(status: 'success').where('valid_to > ? and valid_from < ?', DateTime.now, DateTime.now)
     end
 
     def search_game_conn params

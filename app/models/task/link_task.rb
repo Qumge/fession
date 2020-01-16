@@ -43,4 +43,6 @@ class Task::LinkTask < Task
     "/pages/task/share_link?id=#{self.id}"
   end
 
+
+
 end

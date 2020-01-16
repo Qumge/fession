@@ -159,10 +159,14 @@ module V1
               }
           }
           delete '/' do
-            if @company.destroy
-              {error: '', message: '删除成功'}
+            if @company.total_amount > 0 || @company.invalid_amount > 0 || @company.coin > 0
+              {error: '30001', message: '该商户有未使用金币或未提现金额'}
             else
-              {error: '30001', message: '删除失败'}
+              if @company.destroy
+                {error: '', message: '删除成功'}
+              else
+                {error: '30001', message: '删除失败'}
+              end
             end
           end
 

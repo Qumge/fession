@@ -1,7 +1,7 @@
 module V1
   module Users
     class Tasks < Grape::API
-      helpers V1::Users::UserLoginHelper
+      # helpers V1::Users::UserLoginHelper
       include Grape::Kaminari
 
       resources 'tasks' do
@@ -10,10 +10,10 @@ module V1
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
           optional :company_id, type: Integer, desc: '商户id'
+          optional :name, type: String, desc: '检索'
         end
         get '/' do
-          tasks = Task.order('created_at desc')
-          tasks = tasks.where(id: params[:company_id]) if params[:company_id].present?
+          tasks = Task.user_search_conn(params)
           present paginate(tasks), with: V1::Entities::Task
         end
 
@@ -23,7 +23,7 @@ module V1
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
         end
         get 'hot' do
-          tasks = Task.order('share_num desc')
+          tasks = Task.valid_tasks.order('share_num desc')
           present paginate(tasks), with: V1::Entities::Task
         end
 

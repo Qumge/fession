@@ -30,6 +30,7 @@
 
 class Task::QuestionnaireTask < Task
   belongs_to :questionnaire, foreign_key: :model_id, class_name: "::Questionnaire"
+  before_save :set_name
   def view_name
     self.questionnaire&.name
   end
@@ -46,6 +47,10 @@ class Task::QuestionnaireTask < Task
       end
       s
     end
+  end
+
+  def set_name
+    self.name = self.questionnaire.name
   end
 
 end

@@ -30,6 +30,7 @@
 
 class Task::GameTask < Task
   belongs_to :game, foreign_key: :model_id
+  before_save :set_name
 
   def view_name
     self.game&.name
@@ -52,6 +53,10 @@ class Task::GameTask < Task
 
   def game_coin
     self.game.present? ? game.coin : ''
+  end
+
+  def set_name
+    self.name = self.game.name
   end
 
 end

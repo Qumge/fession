@@ -30,6 +30,7 @@
 
 class Task::ProductTask < Task
   belongs_to :product, foreign_key: :model_id
+  before_save :set_name
   def view_name
     self.product&.name
   end
@@ -46,6 +47,10 @@ class Task::ProductTask < Task
       end
       s
     end
+  end
+
+  def set_name
+    self.name = self.product.name
   end
 
 end
