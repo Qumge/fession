@@ -21,7 +21,7 @@ module V1
       expose :get_express_type
       expose :get_status
       expose :get_status_desc
-      expose :can_after_order
+      expose :can_after_order?
       with_options(format_with: :timestamp) do
         expose :payment_at, documentation: { type: 'Timestamp' }
         expose :created_at, documentation: { type: 'Timestamp' }
