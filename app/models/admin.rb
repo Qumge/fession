@@ -109,7 +109,7 @@ class Admin < ApplicationRecord
   end
 
   def send_password
-      code = rand(100000..999999)
+      code = rand(10000000..99999999)
       self.update password: code
       params = {
           region_id: 'default',
