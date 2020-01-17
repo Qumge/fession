@@ -26,3 +26,7 @@ end
 every 1.day, at: '0:10 am' do
   runner "Order::MoneyOrder.set_account"
 end
+
+every 1.day, at: '0:10 am' do
+  runner "Task.set_overtime"
+end

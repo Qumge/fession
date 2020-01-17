@@ -61,7 +61,7 @@ class Task < ApplicationRecord
 
     # 已结束
     event :do_overtime do
-      transitions :from => :success, :to => :overtime, after: Proc.new {set_residue}
+      transitions :from => :success, :to => :overtime
     end
 
     #审核失败
@@ -136,6 +136,11 @@ class Task < ApplicationRecord
         tasks = tasks.where('games.type = ?', params[:type])
       end
       tasks
+    end
+
+    #改变任务状态
+    def set_overtime
+      self.where(status: 'success').where('valid_to < ?', DateTime.now).update_all status: 'overtime'
     end
   end
 
