@@ -178,7 +178,7 @@ class Product < ApplicationRecord
         end
       end
       self.save
-      # self.do_wait! if self.may_do_wait?
+      self.do_wait! if self.may_do_wait?
     end
     self
   end
