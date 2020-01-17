@@ -136,10 +136,11 @@ class Product < ApplicationRecord
       self.images = images
     end
     Product.transaction do
-      self.price = params[:price]
       if params[:type] == 'CoinProduct'
         self.stock = params[:stock] if params[:stock].present?
+        self.price = params[:price]
       else
+        self.price = params[:price] * 100
         self.coin = params[:coin] if params[:coin].present?
         if params[:specs].present? && params[:norms].present?
           params_specs = JSON.parse(params[:specs])
@@ -192,7 +193,7 @@ class Product < ApplicationRecord
   end
 
   def view_price
-    self.type == 'CoinProduct' ? self.price : (self.price)
+    self.type == 'CoinProduct' ? self.price : (self.price.to_f / 100)
   end
 
   def h5_link
