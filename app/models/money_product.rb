@@ -37,6 +37,6 @@ class MoneyProduct < Product
   end
 
   def view_price
-    self.norms.order(:price).first&.price.to_f / 100
+    self.price.to_f / 100
   end
 end
