@@ -16,9 +16,10 @@ class CompanyData
     Company.where(created_at: @date_from..@date_to)
   end
 
-  # 任务商户
+  # 发布任务商户
   def task_companies
-    FissionLog.joins(task: :company).where('fission_logs.created_at >= ? and fission_logs.updated_at < ?', @date_from, @date_to)
+    Task.joins(:company).where('tasks.created_at >= ? and tasks.updated_at < ?', @date_from, @date_to)
+    # FissionLog.joins(task: :company).where('fission_logs.created_at >= ? and fission_logs.updated_at < ?', @date_from, @date_to)
   end
 
 
@@ -33,7 +34,7 @@ class CompanyData
 
 
   def total_data
-    [{name: '新增商户', data: new_companies.size}, {name: '任务商户', data: task_companies.uniq{|fission_log| fission_log.task.company_id}.size},
+    [{name: '新增商户', data: new_companies.size}, {name: '发布任务商户', data: task_companies.uniq{|task| task.company_id}.size},
     {name: '交易商户', data: order_companies.uniq{|order| order.company_id}.size}]
   end
 
@@ -56,7 +57,7 @@ class CompanyData
       # 新增商户
       new_companies_number << (new_companies_records[date].present? ? new_companies_records[date].size : 0)
       # 任务商户
-      task_companies_number << (task_companies_records[date].present? ? task_companies_records[date].uniq{|fission_log| fission_log.task.company_id}.size : 0)
+      task_companies_number << (task_companies_records[date].present? ? task_companies_records[date].uniq{|task| task.company_id}.size : 0)
       # 交易商户
       order_companies_number << (order_companies_records[date].present? ? order_companies_records[date].uniq{|order| order.company_id}.size : 0)
     end
@@ -78,7 +79,7 @@ class CompanyData
       datas = []
 
       datas << {name: '新增商户', data: new_companies_data.blank? ? 0 : new_companies_data.size}
-      datas << {name: '任务商户', data: task_companies_data.blank? ? 0 : task_companies_data.uniq{|fission_log| fission_log.task.company_id}.size }
+      datas << {name: '发布任务商户数', data: task_companies_data.blank? ? 0 : task_companies_data.uniq{|task| task.company_id}.size }
       datas << {name: '交易商户', data: order_companies_data.blank? ? 0 : order_companies_data.uniq{|order| order.company_id}.size}
 
       date_datas << {date => datas}

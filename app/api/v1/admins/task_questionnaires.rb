@@ -190,6 +190,18 @@ module V1
             present paginate(replies), with: V1::Entities::Reply
           end
 
+          desc '问卷统计', {
+              headers: {
+                  "X-Auth-Token" => {
+                      description: "登录token",
+                      required: false
+                  }
+              }
+          }
+          get 'stat' do
+            @task.questionnaire.stat_answers
+          end
+
         end
       end
 

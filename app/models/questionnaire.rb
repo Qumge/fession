@@ -21,6 +21,7 @@ class Questionnaire < ApplicationRecord
   belongs_to :company
   has_one :task_questionnaire_task, :class_name => 'Task::QuestionnaireTask', foreign_key: 'model_id'
   has_many :replies
+  has_many :answers
   def fetch_questions params_questions
     # params_questions = params[:questions]
     #params_questions = [{name: '玩过的游戏', type: 'Question::Multiple', options: ['dnf', 'dota', 'lol']}, {name: '性别', type: 'Question::Single', options: ['男', '女']}, {name: '建议', type: 'Question::Completion'}]
@@ -43,6 +44,23 @@ class Questionnaire < ApplicationRecord
     self.questions = questions
     self.save
     self
+  end
+
+  def stat_answers
+    stat_questions = []
+    self.questions.each do |question|
+      if question.type == 'Question::Completion'
+        stat_options = question.answers.pluck :content
+        stat_questions << {question_name: question.name, type: 'content', options: stat_options}
+      else
+        stat_options = []
+        question.options.each do |option|
+          stat_options << {name: option.name, number: option.answers.size}
+        end
+        stat_questions << {question_name: question.name, type: 'option', options: stat_options}
+      end
+    end
+    stat_questions
   end
 
 end

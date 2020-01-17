@@ -566,7 +566,6 @@ ActiveRecord::Schema.define(version: 2020_01_14_181203) do
     t.string "real_name"
     t.datetime "last_active_at"
     t.index ["deleted_at"], name: "index_users_on_deleted_at"
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   create_table "view_logs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
