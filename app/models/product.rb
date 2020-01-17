@@ -140,7 +140,7 @@ class Product < ApplicationRecord
         self.stock = params[:stock] if params[:stock].present?
         self.price = params[:price]
       else
-        self.price = params[:price] * 100
+        self.price = params[:price] * 100 if params[:price].present?
         self.coin = params[:coin] if params[:coin].present?
         if params[:specs].present? && params[:norms].present?
           params_specs = JSON.parse(params[:specs])
@@ -169,7 +169,7 @@ class Product < ApplicationRecord
               spec_attrs = spec_values.map(&:id).join('/')
               p spec_attrs
               norm = self.norms.find_or_initialize_by spec_attrs: spec_attrs
-              norm.price = params_norm['price'].to_i * 100
+              norm.price = params_norm['price'].to_f * 100
               norm.stock = params_norm['stock']
               arr_norms << norm
             end
@@ -192,9 +192,9 @@ class Product < ApplicationRecord
     end
   end
 
-  def view_price
-    self.type == 'CoinProduct' ? self.price : (self.price.to_f / 100)
-  end
+  # def view_price
+  #   self.type == 'CoinProduct' ? self.price : (self.price.to_f / 100)
+  # end
 
   def h5_link
     "#{Settings.h5_url}/pages/product/show?id=#{self.id}"
