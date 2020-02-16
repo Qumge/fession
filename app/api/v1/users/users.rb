@@ -403,7 +403,7 @@ module V1
           present view_log, with: V1::Entities::ViewLog
         end
 
-        desc '查看任务', {
+        desc '查看任务30秒获取拥挤', {
             headers: {
                 "X-Auth-Token" => {
                     description: "登录token",
