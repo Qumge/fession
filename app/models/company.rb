@@ -105,6 +105,10 @@ class Company < ApplicationRecord
     BANK[self.bank_code] if self.bank_code.present?
   end
 
+  def h5_link
+    "#{Settings.h5_url}/pages/company/show?id=#{self.id}"
+  end
+
 
 
 end

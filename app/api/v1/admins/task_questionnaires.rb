@@ -65,13 +65,14 @@ module V1
           requires :valid_from, type: DateTime, desc: '有效期始'
           requires :valid_to, type: DateTime, desc: '有效至'
           requires :image, type: String, desc: '展示图'
+          requires :commission, type: Integer, desc: '阅读文章赚佣金'
         end
         post '/' do
           image = Image.new file_path: params[:image], model_type: 'Task'
           questionnaire = ::Questionnaire.new name: params[:name], desc: params[:desc]
           questionnaire.company = @company
           questionnaire = questionnaire.fetch_questions JSON.parse(params[:questions])
-          task = Task::QuestionnaireTask.new  coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company, questionnaire: questionnaire, image: image
+          task = Task::QuestionnaireTask.new  coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company, questionnaire: questionnaire, image: image, commission: params[:commission]
 
           if questionnaire.valid?
             if task.save
@@ -127,13 +128,14 @@ module V1
             requires :valid_from, type: DateTime, desc: '有效期始'
             requires :valid_to, type: DateTime, desc: '有效至'
             requires :image, type: String, desc: '展示图'
+            requires :commission, type: Integer, desc: '阅读文章赚佣金'
           end
           patch '/' do
             image = Image.new file_path: params[:image], model_type: 'Task'
             questionnaire = @task.questionnaire
             questionnaire = questionnaire.fetch_questions JSON.parse(params[:questions]) if params[:questions].present?
             if questionnaire.valid?
-              if @task.update coin: params[:coin], valid_from: params[:valid_form], valid_to: params[:valid_to], company: @company, image: image
+              if @task.update coin: params[:coin], valid_from: params[:valid_form], valid_to: params[:valid_to], company: @company, image: image, commission: params[:commission]
                 @task.do_wait! if @task.may_do_wait?
                 present @task, with: V1::Entities::Task
               else

@@ -56,11 +56,12 @@ module V1
           requires :valid_from, type: DateTime, desc: '有效期始'
           requires :valid_to, type: DateTime, desc: '有效至'
           requires :image, type: String, desc: '展示图'
+          requires :commission, type: Integer, desc: '阅读文章赚佣金'
         end
         post '/' do
           image = Image.new file_path: params[:image], model_type: 'Task'
           article = ::Article.new product_id: params[:product_id], company: @company, subject: params[:subject], content: params[:content]
-          task = Task::ArticleTask.new article: article, coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company, image: image
+          task = Task::ArticleTask.new article: article, coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company, image: image, commission: params[:commission]
           if task.save
             present task, with: V1::Entities::Task
           end
@@ -90,12 +91,13 @@ module V1
             requires :valid_from, type: DateTime, desc: '有效期始'
             requires :valid_to, type: DateTime, desc: '有效至'
             requires :image, type: String, desc: '展示图'
+            requires :commission, type: Integer, desc: '阅读文章赚佣金'
           end
           patch '/' do
             image = Image.new file_path: params[:image], model_type: 'Task'
             article = @task.article
             article.attributes = {product_id: params[:product_id], company: @company, subject: params[:subject], content: params[:content]}
-            if @task.update article: article, coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company, image: image
+            if @task.update article: article, coin: params[:coin], valid_from: params[:valid_from], valid_to: params[:valid_to], company: @company, image: image, commission: params[:commission]
               @task.do_wait! if @task.may_do_wait?
               present @task, with: V1::Entities::Task
             else

@@ -5,6 +5,7 @@
 #  id           :bigint           not null, primary key
 #  amount       :integer          default(0)
 #  coin         :bigint
+#  commission   :integer
 #  deleted_at   :datetime
 #  name         :string(255)
 #  number       :integer          default(0)

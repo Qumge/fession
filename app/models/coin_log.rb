@@ -16,13 +16,14 @@
 class CoinLog < ApplicationRecord
   belongs_to :user
   belongs_to :company
-  CHANNEL = {fission: '转发裂变', sign: '签到', game: '游戏抽奖', cash: '提现', prize: '中奖', failed_cash: '提现拒绝返还', product: '购买返金币', order: '金币商城消费', refund: '退货'}
+  CHANNEL = {fission: '转发裂变', sign: '签到', game: '游戏抽奖', cash: '提现', prize: '中奖', failed_cash: '提现拒绝返还', product: '购买返金币', order: '金币商城消费', refund: '退货', view: '看文章', answer: '填问卷'}
   belongs_to :fission_log, foreign_key: :model_id
   belongs_to :share_log
   belongs_to :prize_log, foreign_key: :model_id
   belongs_to :game_log, foreign_key: :model_id
   belongs_to :order_product, foreign_key: :model_id
   belongs_to :order, foreign_key: :model_id
+  belongs_to :commission_log, foreign_key: :model_id
   #belongs_to :sign_log, foreign_key: :model_id
 
   after_create :set_coin
@@ -59,9 +60,11 @@ class CoinLog < ApplicationRecord
   def set_coin
     case self.channel
     when 'fission'
-      user.update coin: user.coin.to_i + coin
-      fission_log.task.update residue_coin: fission_log.task.residue_coin.to_i - coin
-      company.update coin: company.coin.to_i - coin
+      if fission_log.task.residue_coin >= coin && company.coin >= coin
+        user.update coin: user.coin.to_i + coin
+        fission_log.task.update residue_coin: fission_log.task.residue_coin.to_i - coin
+        company.update coin: company.coin.to_i - coin
+      end
     when 'sign'
       user.update coin: user.coin.to_i + coin
     when 'game'
@@ -78,6 +81,18 @@ class CoinLog < ApplicationRecord
       user.update coin: user.coin.to_i + coin
     when 'refund'
       user.update coin: user.coin.to_i + coin
+    when 'view'
+      if commission_log.task.residue_coin >= coin && company.coin >= coin
+        user.update coin: user.coin.to_i + coin
+        commission_log.task.update residue_coin: commission_log.task.residue_coin.to_i - coin
+        company.update coin: company.coin.to_i - coin
+      end
+    when 'answer'
+      if commission_log.task.residue_coin >= coin && company.coin >= coin
+        user.update coin: user.coin.to_i + coin
+        commission_log.task.update residue_coin: commission_log.task.residue_coin.to_i - coin
+        company.update coin: company.coin.to_i - coin
+      end
     end
   end
 

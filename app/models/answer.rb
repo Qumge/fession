@@ -20,6 +20,7 @@ class Answer < ApplicationRecord
   belongs_to :user
   belongs_to :questionnaire
   belongs_to :reply
+  after_create :set_commission
   class << self
     def fetch_params user, questionnaire, params
       p user, questionnaire, 22222222

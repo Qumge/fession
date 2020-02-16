@@ -24,6 +24,7 @@ module V1
       expose :coin
       expose :residue_coin
       expose :game_coin, if: proc{|instance| instance.type == 'Task::GameTask'}
+      expose :commission
       expose :h5_link
       expose :h5_path
       expose :image, using: V1::Entities::Image

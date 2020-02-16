@@ -205,12 +205,39 @@ module V1
           fission_log = @current_user.fission_logs.where(task_id: params[:task_id]).first
           if fission_log.present?
             p fission_log, 11
-            coin_logs = CoinLog.where(channel: 'fission', model_id: fission_log.id).order('created_at desc')
+            coin_logs = CoinLog.where(channel: 'fission', model_id: fission_log.subtree_ids).order('created_at desc')
             present paginate(coin_logs), with: V1::Entities::CoinLog
           else
             {errors: '20001', message: '找不到数据'}
           end
           
+        end
+
+        desc '个人任务数据统计', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :task_id, type: String, desc: '任务id'
+          optional :date_from, type: String, desc: '起始时间 不填默认查询7天数据'
+          optional :date_to, type: String, desc: '结束时间'
+          optional :page,     type: Integer, default: 1, desc: '页码'
+          optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+        end
+        get :user_task_stat do
+          if params[:date_from]
+            params[:date_from] = params[:date_from].to_datetime
+          end
+          if params[:date_to]
+            params[:date_to] = params[:date_to].to_datetime
+          end
+          params[:user_id] = @current_user.id
+          total_data, date_headers, chart_data, table_data = AccountData.new(params).data
+          {total_data: total_data, date_headers: date_headers, chart_data: chart_data, table_data: paginate(Kaminari.paginate_array(table_data.to_a))}
         end
 
 
@@ -376,6 +403,23 @@ module V1
           present view_log, with: V1::Entities::ViewLog
         end
 
+        desc '查看任务', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          requires :task_id, type: Integer, desc: '任务id'
+        end
+        post :commission do
+          task = Task.find_by id: params[:task_id]
+          commission_log = CommissionLog.find_or_create_by task: task, user: @current_user
+          present commission_log, with: V1::Entities::CommissionLog
+        end
+
         desc '身份认证', {
             headers: {
                 "X-Auth-Token" => {
@@ -426,6 +470,7 @@ module V1
           if user.present?
             UserViewLog.create user: user, viewer: current_user
             p user, 111
+            user.update view_num: user.view_num.to_i + 1
             present user, with: V1::Entities::User, user: current_user
           else
             error!("找不到数据", 500)

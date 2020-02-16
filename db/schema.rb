@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_14_181203) do
+ActiveRecord::Schema.define(version: 2020_02_16_093821) do
 
   create_table "addresses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -140,6 +140,13 @@ ActiveRecord::Schema.define(version: 2020_01_14_181203) do
     t.integer "company_id"
     t.integer "model_id"
     t.integer "share_log_id"
+  end
+
+  create_table "commission_logs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "task_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "companies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -510,6 +517,7 @@ ActiveRecord::Schema.define(version: 2020_01_14_181203) do
     t.integer "sale", default: 0
     t.integer "amount", default: 0
     t.integer "sale_coin", default: 0
+    t.integer "commission"
     t.index ["deleted_at"], name: "index_tasks_on_deleted_at"
   end
 

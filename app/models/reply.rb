@@ -13,4 +13,11 @@ class Reply < ApplicationRecord
   belongs_to :user
   belongs_to :questionnaire
   has_many :answers
+  after_create :set_commission
+
+  def set_commission
+    if questionnaire.task_questionnaire_task.present?
+      CommissionLog.find_or_create_by task: questionnaire.task_questionnaire_task, user: user
+    end
+  end
 end
