@@ -228,7 +228,7 @@ GEM
     paranoia (2.4.2)
       activerecord (>= 4.0, < 6.1)
     public_suffix (4.0.1)
-    puma (3.12.1)
+    puma (3.12.2)
     qiniu (6.8.1)
       json (~> 1.8)
       mime-types (~> 2.4, >= 2.4.0)
@@ -379,7 +379,7 @@ DEPENDENCIES
   mina (= 0.3.8)
   mysql2
   paranoia (~> 2.2)
-  puma (~> 3.11)
+  puma (~> 3.12)
   qiniu (~> 6.8.1)
   rack-cors
   rails (~> 5.2.3)
