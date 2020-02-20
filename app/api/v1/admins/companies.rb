@@ -24,6 +24,7 @@ module V1
           optional 'search', type: String, desc: '商户名或编号检索'
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+          optional :live, type: Integer, desc: '是否活跃 活跃： 1 不活跃： 0'
         end
         get '/' do
           companies = Company.search_conn(params).order('updated_at desc')

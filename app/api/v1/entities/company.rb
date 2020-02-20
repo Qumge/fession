@@ -12,6 +12,7 @@ module V1
       expose :bank
       expose :enc_bank_no
       expose :h5_link
+      expose :live
       expose :follow do |instance, options|
         user = options[:user]
         if user.present? && user.follow_companies.where(id: instance.id).present?

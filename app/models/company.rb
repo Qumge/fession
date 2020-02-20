@@ -12,6 +12,7 @@
 #  enc_bank_no     :string(255)
 #  enc_true_name   :string(255)
 #  invalid_amount  :bigint           default(0)
+#  live            :boolean          default(TRUE)
 #  locked_at       :datetime
 #  name            :string(255)
 #  no              :string(255)
@@ -44,6 +45,7 @@ class Company < ApplicationRecord
   has_many :customers
   has_one :customer, -> {where(role_type: 'admin_customer')}
   has_many :money_products
+  has_many :orders
 
   STATUS = {active: '正常', locked: '冻结'}
   BANK = {"1002"=>"工商银行", "1005"=>"农业银行", "1003"=>"建设银行", "1026"=>"中国银行", "1020"=>"交通银行", "1001"=>"招商银行", "1066"=>"邮储银行", "1006"=>"民生银行", "1010"=>"平安银行", "1021"=>"中信银行", "1004"=>"浦发银行", "1009"=>"兴业银行", "1022"=>"光大银行", "1027"=>"广发银行", "1025"=>"华夏银行", "1056"=>"宁波银行", "4836"=>"北京银行", "1024"=>"上海银行", "1054"=>"南京银行"}
@@ -73,7 +75,26 @@ class Company < ApplicationRecord
       if params[:search].present?
         companies = companies.where('companies.no like ? or companies.name like ?', "%#{params[:search]}%", "%#{params[:search]}%")
       end
+      if params[:live].present?
+        companies = companies.where(live: params[:live])
+      end
       companies
+    end
+
+
+    def set_live
+      Company.all.each do |company|
+        order = company.orders.where('status != ?', 'wait').last
+        if order.present?
+          if order.created_at + 15.days < DateTime.now
+            company.update live: false
+          end
+        else
+          if company.created_at + 15.days < DateTime.now
+            company.update live: false
+          end
+        end
+      end
     end
   end
 

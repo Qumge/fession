@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_16_093821) do
+ActiveRecord::Schema.define(version: 2020_02_20_051526) do
 
   create_table "addresses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -168,6 +168,7 @@ ActiveRecord::Schema.define(version: 2020_02_16_093821) do
     t.string "enc_bank_no"
     t.string "enc_true_name"
     t.string "bank_code"
+    t.boolean "live", default: true
     t.index ["deleted_at"], name: "index_companies_on_deleted_at"
   end
 

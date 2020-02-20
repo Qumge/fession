@@ -12,6 +12,7 @@
 #  enc_bank_no     :string(255)
 #  enc_true_name   :string(255)
 #  invalid_amount  :bigint           default(0)
+#  live            :boolean          default(TRUE)
 #  locked_at       :datetime
 #  name            :string(255)
 #  no              :string(255)
