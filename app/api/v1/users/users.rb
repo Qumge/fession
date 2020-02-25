@@ -202,15 +202,8 @@ module V1
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
         end
         get 'task_coin' do
-          fission_log = @current_user.fission_logs.where(task_id: params[:task_id]).first
-          if fission_log.present?
-            p fission_log, 11
-            coin_logs = CoinLog.where(channel: 'fission', model_id: fission_log.subtree_ids).order('created_at desc')
-            present paginate(coin_logs), with: V1::Entities::CoinLog
-          else
-            {errors: '20001', message: '找不到数据'}
-          end
-          
+          coin_logs = CoinLog.joins(share_log: :fission_log).where(channel: 'fission', user_id: @current_user.id).where('fission_logs.task_id = ?', params[:task_id]).order('created_at desc')
+          present paginate(coin_logs), with: V1::Entities::CoinLog
         end
 
         desc '个人任务数据统计', {
