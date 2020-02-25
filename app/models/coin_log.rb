@@ -57,6 +57,12 @@ class CoinLog < ApplicationRecord
     self.share_log&.user&.nick_name
   end
 
+  def sharer
+    user = self.share_log&.user
+    user = User.new unless user.present?
+    user
+  end
+
   def set_coin
     case self.channel
     when 'fission'

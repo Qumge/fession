@@ -6,6 +6,7 @@ module V1
       expose :user_name
       expose :coin
       expose :share_name
+      expose :sharer, using: V1::Entities::User
       expose :channel do |instance, options|
         instance.get_channel
       end
