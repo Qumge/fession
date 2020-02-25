@@ -41,6 +41,30 @@ module V1
           {total_data: total_data, date_headers: date_headers, chart_data: chart_data, table_data: paginate(Kaminari.paginate_array(table_data.to_a))}
         end
 
+        desc '商户数量', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token 运营平台账号",
+                    required: false
+                }
+            }
+        }
+        get 'companies_size' do
+          Company.all.size
+        end
+
+        desc '用户数量数量', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token 运营平台账号",
+                    required: false
+                }
+            }
+        }
+        get 'users_size' do
+          User.all.size
+        end
+
 
         desc '交易数据', {
             headers: {

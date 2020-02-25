@@ -31,6 +31,7 @@ module V1
         mount V1::Admins::Wechat
         mount V1::Admins::Orders
         mount V1::Admins::AfterOrders
+        mount V1::Admins::Tasks
       end
 
       namespace :users do

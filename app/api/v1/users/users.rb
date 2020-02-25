@@ -572,7 +572,28 @@ module V1
           end
         end
 
-
+        desc '任务分享记录树状图', {
+            headers: {
+                "X-Auth-Token" => {
+                    description: "登录token",
+                    required: false
+                }
+            }
+        }
+        params do
+          # company_id 'status', type: String, desc: '商户状态 locked / active'
+          optional 'task_id', type: Integer, desc: '任务id'
+          optional :page,     type: Integer, default: 1, desc: '页码'
+          optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+        end
+        get 'fission_logs' do
+          fission_logs = FissionLog.where(user_id: @current_user.id)
+          p fission_logs, 111
+          if params[:task_id].present?
+            fission_logs = fission_logs.where(task_id: params[:task_id])
+          end
+          present paginate(fission_logs), with: V1::Entities::FissionLogTree
+        end 
 
 
       end
