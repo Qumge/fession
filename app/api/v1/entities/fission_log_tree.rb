@@ -4,6 +4,8 @@ module V1
       format_with(:timestamp) { |dt| dt.try :strftime, '%Y-%m-%d %H:%M:%S' }
       expose :id
       expose :token
+      expose :share_num
+      expose :view_num
       # expose :share_url do |instance, options|
       #   URI::encode "#{instance.task.h5_link}&token=#{instance.token}"
       # end

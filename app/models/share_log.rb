@@ -22,7 +22,7 @@ class ShareLog < ApplicationRecord
   def fission_coin
     task = self.fission_log.task
     task.update share_num: task.share_num + 1 if task.present?
-    fission_log = self.fission_log
+    fission_log = self.fission_log 
     if fission_log.parent.present?
       fission_log.parent.fission_coin 1, self
     end

@@ -7,18 +7,6 @@ module V1
         authenticate!
       end
       resources 'tasks' do
-        desc '所有商户', {
-            headers: {
-                "X-Auth-Token" => {
-                    description: "登录token",
-                    required: false
-                }
-            }
-        }
-        get 'companies' do
-          present Company.all, with: V1::Entities::Company
-        end
-
         desc '所有任务', {
             headers: {
                 "X-Auth-Token" => {
