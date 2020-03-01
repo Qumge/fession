@@ -32,7 +32,7 @@ class PrizeLog < ApplicationRecord
       # 生成一个订单
       Order.prize_order user, prize.product, self
     end
-    prize.update number: prize.number - 1
+    prize.update number: prize.number - 1 if prize.number.present?
   end
 
 end
