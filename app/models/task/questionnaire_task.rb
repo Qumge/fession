@@ -32,6 +32,7 @@
 class Task::QuestionnaireTask < Task
   belongs_to :questionnaire, foreign_key: :model_id, class_name: "::Questionnaire"
   before_save :set_name
+  # validates_uniqueness_of :model_id
   def view_name
     self.questionnaire&.name
   end

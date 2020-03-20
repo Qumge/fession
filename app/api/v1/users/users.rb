@@ -514,7 +514,7 @@ module V1
             params[:date_to] = params[:date_to].to_datetime
           end
           params[:user_id] = @current_user.id
-          total_data, date_headers, chart_data, table_data = AccountData.new(params).data
+          total_data, date_headers, chart_data, table_data = UserTaskData.new(params).data
           {total_data: total_data, date_headers: date_headers, chart_data: chart_data, table_data: paginate(Kaminari.paginate_array(table_data.to_a))}
         end
 

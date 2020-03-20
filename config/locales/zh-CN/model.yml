@@ -22,6 +22,7 @@ zh-CN:
         valid_from: '任务时间'
         valid_to: '任务时间'
         name: '人物名'
+        model_id: '关联的商品/游戏/问卷/文章'
       games:
         cost: '一次游戏消耗金币'
         coin: '游戏金币'

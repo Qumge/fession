@@ -32,6 +32,7 @@
 class Task::ArticleTask < Task
   belongs_to :article, foreign_key: :model_id
   before_save :set_name
+  # validates_uniqueness_of :model_id
 
   def view_name
     self&.article&.subject

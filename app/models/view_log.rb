@@ -26,8 +26,9 @@ class ViewLog < ApplicationRecord
         log.task = task
         if params[:token].present?
           fission_log = FissionLog.find_by token: params[:token]
+          log.task = fission_log.task
           log.fission_log = fission_log
-          raise '错误的token' if fission_log.blank? || fission_log.task != task
+          #raise '错误的token' if fission_log.blank? || fission_log.task != task
         end
         log.save
         log
