@@ -505,6 +505,7 @@ module V1
           optional :date_to, type: String, desc: '结束时间'
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
+          optional :task_id, type: Integer, desc: '任务id'
         end
         get :stat do
           if params[:date_from]
