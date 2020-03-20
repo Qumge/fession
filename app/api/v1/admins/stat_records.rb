@@ -35,7 +35,7 @@ module V1
             params[:date_from] = params[:date_from].to_datetime
           end
           if params[:date_to]
-            params[:date_to] = params[:date_to].to_datetime
+            params[:date_to] = params[:date_to].to_datetime.end_of_day
           end
           total_data, date_headers, chart_data, table_data = Record.data params
           {total_data: total_data, date_headers: date_headers, chart_data: chart_data, table_data: paginate(Kaminari.paginate_array(table_data.to_a))}
@@ -89,7 +89,7 @@ module V1
             params[:date_from] = params[:date_from].to_datetime
           end
           if params[:date_to]
-            params[:date_to] = params[:date_to].to_datetime
+            params[:date_to] = params[:date_to].to_datetime.end_of_day
           end
           total_data, date_headers, chart_data, table_data = SaleData.new(params).data
           {total_data: total_data, date_headers: date_headers, chart_data: chart_data, table_data: paginate(Kaminari.paginate_array(table_data.to_a))}
@@ -114,7 +114,7 @@ module V1
             params[:date_from] = params[:date_from].to_datetime
           end
           if params[:date_to]
-            params[:date_to] = params[:date_to].to_datetime
+            params[:date_to] = params[:date_to].to_datetime.end_of_day
           end
           total_data, date_headers, chart_data, table_data = UserData.new(params).data
           {total_data: total_data, date_headers: date_headers, chart_data: chart_data, table_data: paginate(Kaminari.paginate_array(table_data.to_a))}
@@ -139,7 +139,7 @@ module V1
             params[:date_from] = params[:date_from].to_datetime
           end
           if params[:date_to]
-            params[:date_to] = params[:date_to].to_datetime
+            params[:date_to] = params[:date_to].to_datetime.end_of_day
           end
           total_data, date_headers, chart_data, table_data = CompanyData.new(params).data
           {total_data: total_data, date_headers: date_headers, chart_data: chart_data, table_data: paginate(Kaminari.paginate_array(table_data.to_a))}

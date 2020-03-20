@@ -132,7 +132,7 @@ module V1
             date_from = params[:date_from].to_datetime
           end
           if params[:date_to].present?
-            date_to = params[:date_to].to_datetime
+            date_to = params[:date_to].to_datetime.end_of_day
           end
           game = @game_model.find_by company_id: nil
           if game.present?

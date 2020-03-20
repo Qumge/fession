@@ -167,7 +167,7 @@ module V1
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
         end
         get 'tasks' do
-          present paginate(@current_user.fission_logs), with: V1::Entities::FissionLog
+          present paginate(@current_user.fission_logs.order('fission_logs.created_at desc')), with: V1::Entities::FissionLog
         end
 
         desc '我的任务详情', {
@@ -226,7 +226,7 @@ module V1
             params[:date_from] = params[:date_from].to_datetime
           end
           if params[:date_to]
-            params[:date_to] = params[:date_to].to_datetime
+            params[:date_to] = params[:date_to].to_datetime.end_of_day
           end
           params[:user_id] = @current_user.id
           total_data, date_headers, chart_data, table_data = AccountData.new(params).data
@@ -512,7 +512,7 @@ module V1
             params[:date_from] = params[:date_from].to_datetime
           end
           if params[:date_to]
-            params[:date_to] = params[:date_to].to_datetime
+            params[:date_to] = params[:date_to].to_datetime.end_of_day
           end
           params[:user_id] = @current_user.id
           total_data, date_headers, chart_data, table_data = UserTaskData.new(params).data
