@@ -23,7 +23,7 @@ module V1
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
         end
         get 'tasks' do
-          tasks = Task.joins(:company).all
+          tasks = Task.joins(:company).all.order('tasks.created_at desc')
           if params[:company_id].present?
             tasks = tasks.where(company_id: params[:company_id])
           end
