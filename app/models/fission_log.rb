@@ -25,6 +25,7 @@ class FissionLog < ApplicationRecord
 
 
   has_many :audits, foreign_key: :model_id
+  has_many :coin_logs, -> {where(channel: 'fission')}, foreign_key: :model_id
 
 
   class << self
@@ -50,6 +51,10 @@ class FissionLog < ApplicationRecord
 
   def view_num
     self.view_logs.size
+  end
+
+  def fission_coins
+    coin_logs.sum :coin
   end
 
 
