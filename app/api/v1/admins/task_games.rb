@@ -17,6 +17,8 @@ module V1
                           Game::Egg
                         when 'Game::Scratch'
                           Game::Scratch
+                        when 'Game::Tiger'
+                          Game::Tiger
                         when 'Game::Dice'
                           Game::Dice
                         end

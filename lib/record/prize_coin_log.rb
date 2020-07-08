@@ -35,7 +35,7 @@ class Record::PrizeCoinLog < Record
     s = {}
     date_headers.each do |date|
       data = date_group_records[date]
-      s[date] = data.present? ? data.sum(:coin) : 0
+      s[date] = data.present? ? data.sum(&:coin) : 0
     end
     s
   end
