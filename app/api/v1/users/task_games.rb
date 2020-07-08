@@ -10,7 +10,7 @@ module V1
       resources 'task_games' do
         desc '游戏任务列表'
         params do
-          optional :type, type: String, desc: '游戏类型 Game::Wheel Game::Egg Game::Scratch'
+          optional :type, type: String, desc: '游戏类型 Game::Wheel Game::Egg Game::Tiger Game::Dice Game::Scratch'
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
           optional :status, type: String, desc: '任务状态', default: 'success'

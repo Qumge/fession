@@ -18,7 +18,7 @@ module V1
         }
         params do
           optional :type, type: String, desc: "状态 Task::QuestionnaireTask Task::ArticleTask Task::LinkTask Task::ProductTask Task::GameTask"
-          optional :game_type, type: String, desc: '游戏类型  Game::Wheel Game::Tiger Game::Scratch Game::egg'
+          optional :game_type, type: String, desc: '游戏类型  Game::Wheel Game::Tiger Game::Scratch Game::Egg Game::Dice '
           optional :date_from, type: String, desc: '起始时间'
           optional :date_to, type: String, desc: '结束时间'
           optional :task_id, type: String, desc: '任务id'

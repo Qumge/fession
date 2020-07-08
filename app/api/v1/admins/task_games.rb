@@ -17,6 +17,8 @@ module V1
                           Game::Egg
                         when 'Game::Scratch'
                           Game::Scratch
+                        when 'Game::Dice'
+                          Game::Dice
                         end
         end
 
@@ -32,7 +34,7 @@ module V1
           optional 'sorts', type: String, desc: "排序[{column: 'coin', sort: 'desc'}, {column: 'number', sort: 'desc'}]", default: [{column: 'coin', sort: 'desc'}, {column: 'number', sort: 'desc'}].to_json
           optional :page,     type: Integer, default: 1, desc: '页码'
           optional :per_page, type: Integer, desc: '每页数据个数', default: Settings.per_page
-          optional :type, type: String, desc: '游戏类型 Game::Wheel Game::Egg Game::Scratch'
+          optional :type, type: String, desc: '游戏类型 Game::Wheel Game::Egg Game::Dice Game::Scratch'
           optional :company_id, type: Integer, desc: '商户'
           optional :status, type: String, desc: "状态 wait: '待审核', failed: '已拒绝', success: '审核成功' 数据库中只存储这三种状态 进行中和已经结束（active overtime）由有效时间和success组合而成 检索时使用（wait active overtime failed ）"
         end
@@ -59,7 +61,7 @@ module V1
             }
         }
         params do
-          requires :type, type: String, desc: '游戏类型 Game::Wheel Game::Egg Game::Scratch'
+          requires :type, type: String, desc: '游戏类型 Game::Wheel Game::Egg Game::Scratch Game::Dice'
           requires :name, type: String, desc: '游戏名'
           requires :coin, type: Integer, desc: '金币总数 用于转发任务'
           requires :game_coin, type: Integer, desc: '奖池金币总数'

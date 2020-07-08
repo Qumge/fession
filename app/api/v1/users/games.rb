@@ -17,7 +17,7 @@ module V1
             }
         }
         params do
-          optional :type, type: String, desc: '游戏类型 Game::Wheel Game::Egg Game::Scratch'
+          optional :type, type: String, desc: '游戏类型 Game::Wheel Game::Egg Game::Dice Game::Tiger Game::Scratch'
         end
         get '/' do
           games = ::Game.where(company_id: nil)

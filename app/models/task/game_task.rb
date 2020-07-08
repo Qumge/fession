@@ -49,6 +49,8 @@ class Task::GameTask < Task
              'scratch_card'
            when 'Game::Tiger'
              'tiger'
+           when 'Game::Dice'
+             'dice'
            end
     "/pages/game/#{path}?id=#{self.game.id}"
   end

@@ -1,37 +1,37 @@
-default: &default
-  adapter: mysql2
-  encoding: utf8
-  pool: 5
-  username: root
-  password: 123456
-  host: localhost
+#default: &default
+#  adapter: mysql2
+#  encoding: utf8
+#  pool: 5
+#  username: root
+#  password: 123456
+#  host: localhost
+#
+#development:
+#  <<: *default
+#  database: fission_dev_1
+#
+## Warning: The database defined as "test" will be erased and
+## re-generated from your development database when you run "rake".
+## Do not set this db to the same as development or production.
+#test:
+#  <<: *default
+#  database: fission_test
 
-development:
-  <<: *default
-  database: fission_dev_1
+ default: &default
+   adapter: mysql2
+   encoding: utf8
+   pool: 5
+   username: root
+   password: liebian123456
+   host: 106.15.57.136
 
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
-test:
-  <<: *default
-  database: fission_test
+ development:
+   <<: *default
+   database: fission_production
 
-# default: &default
-#   adapter: mysql2
-#   encoding: utf8
-#   pool: 5
-#   username: root
-#   password: liebian123456
-#   host: 106.15.57.136
-
-# development:
-#   <<: *default
-#   database: fission_production
-
-# # Warning: The database defined as "test" will be erased and
-# # re-generated from your development database when you run "rake".
-# # Do not set this db to the same as development or production.
-# test:
-#   <<: *default
-#   database: fission_test
+ # Warning: The database defined as "test" will be erased and
+ # re-generated from your development database when you run "rake".
+ # Do not set this db to the same as development or production.
+ test:
+   <<: *default
+   database: fission_test

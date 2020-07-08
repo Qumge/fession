@@ -139,6 +139,8 @@ class Game < ApplicationRecord
              'scratch_card'
            when 'Game::Tiger'
              'tiger'
+           when 'Game::Dice'
+             'dice'
            end
     "#{Settings.h5_url}/pages/game/#{path}?id=#{self.id}"
   end
